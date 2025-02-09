@@ -2,10 +2,10 @@
 ipython>=5.5.0
 ipywidgets>=7.6.5
 tqdm>=4.62.0
-numpy>=1.21, <1.27
+numpy>=1.21,<2.2
 pandas>=2.2.0 #latest sktime makes tests fail if pandas 2.1
 jinja2>=3
-scipy>=1.6.1,<=1.11.4 #to fix later (https://github.com/mljar/mljar-supervised/issues/691)
+scipy>=1.6.1,<=1.16 #to fix later (https://github.com/mljar/mljar-supervised/issues/691)
 joblib>=1.2.0,<1.4  # joblib<1.2.0 is vulnerable to Arbitrary Code Execution (https://github.com/advisories/GHSA-6hrg-qmvc-2xh8)  # joblib 1.4.0 breaks PyCaret
 scikit-learn>1.4.0
 pyod>=1.1.3 #1.1.3 to support scikit-learn 1.4 (https://github.com/yzhao062/pyod/issues/542)
@@ -26,7 +26,7 @@ trio>=0.22.0,<0.25.0 #fixes problems about third-party packages, remove after ht
 setuptools; python_version>='3.12'
 
 # Plotting
-matplotlib<3.8.0 #stem(..., use_line_collection=False) is no longer supported. 
+matplotlib<3.11 #stem(..., use_line_collection=False) is no longer supported since 3.8
 mljar-scikit-plot #this is a updated version of original scikit-plot
 # yellowbrick<=1.5, have conflict with recent matplotlib by use_line_collection error
 # should use yellowbrick>1.5 when fixed (https://github.com/DistrictDataLabs/yellowbrick/issues/1312)
