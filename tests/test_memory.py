@@ -15,7 +15,8 @@ from sklearn.base import BaseEstimator
 from xxhash import xxh128
 
 from pycaret.datasets import get_data
-from pycaret.internal.memory import FastMemory, fast_hash as hash
+from pycaret.internal.memory import FastMemory
+from pycaret.internal.memory import fast_hash as hash
 from pycaret.regression import RegressionExperiment
 
 
