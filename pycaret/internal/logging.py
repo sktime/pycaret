@@ -43,7 +43,6 @@ class redirect_output:
         # Current Python process redirects
         self.redirect_stdout = redirect_stdout(LoggerWriter(self.logger.info))
         self.redirect_stderr = redirect_stderr(LoggerWriter(self.logger.warning))
-        # This redirects stdout/stderr from C libraries and child processes (joblib)
         self.c_redirect = None
 
     def __enter__(self):
