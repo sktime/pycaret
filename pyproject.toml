@@ -217,6 +217,7 @@ test = [
   # "codecov>=2.1.12",  # https://github.com/home-assistant/core/issues/91283
   "fugue[dask]",
   "dash[testing]",
+  "pytest-timeout",
 ]
 
 
