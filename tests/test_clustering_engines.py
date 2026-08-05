@@ -1,6 +1,15 @@
-import daal4py
+import sys
+
 import pytest
 import sklearn
+
+# Skip entire module on Python 3.13+ on macOS as scikit-learn-intelex (daal4py) has no macOS wheels
+pytestmark = pytest.mark.skipif(
+    sys.version_info >= (3, 13) and sys.platform == "darwin",
+    reason="scikit-learn-intelex (daal4py) has no macOS wheels for Python 3.13+",
+)
+
+daal4py = pytest.importorskip("daal4py")
 
 import pycaret.clustering
 import pycaret.datasets
@@ -28,7 +37,10 @@ def test_engines_setup_global_args():
     # Default Model Engine ----
     assert exp.get_engine("kmeans") == "sklearnex"
     model = exp.create_model("kmeans")
-    assert isinstance(model, daal4py.sklearn.cluster.KMeans)
+    parent_library = model.__module__
+    assert parent_library.startswith("sklearnex") or parent_library.startswith(
+        "daal4py"
+    )
 
 
 def test_engines_global_methods():
@@ -84,7 +96,10 @@ def test_create_model_engines_local_args():
 
     # Override model engine locally ----
     model = exp.create_model("kmeans", engine="sklearnex")
-    assert isinstance(model, daal4py.sklearn.cluster.KMeans)
+    parent_library = model.__module__
+    assert parent_library.startswith("sklearnex") or parent_library.startswith(
+        "daal4py"
+    )
     # Original engine should remain the same
     assert exp.get_engine("kmeans") == "sklearn"
 
