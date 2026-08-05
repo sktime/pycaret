@@ -282,6 +282,12 @@ class FastMemorizedFunc(MemorizedFunc):
             coerce_mmap=(self.mmap_mode is not None),
         )
 
+    def _get_output_identifiers(self, *args, **kwargs):
+        """Generate the function and argument identifiers for caching."""
+        func_id = self.func_id
+        args_id = self._get_argument_hash(*args, **kwargs)
+        return func_id, args_id
+
     # Changes here include:
     # 1. _cached_call calls _get_output_identifiers and then calls call,
     #    which also calls _get_output_identifiers. Here, we cache the

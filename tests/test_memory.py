@@ -15,7 +15,7 @@ from sklearn.base import BaseEstimator
 from xxhash import xxh128
 
 from pycaret.datasets import get_data
-from pycaret.internal.memory import fast_hash as hash
+from pycaret.internal.memory import FastMemory, fast_hash as hash
 from pycaret.regression import RegressionExperiment
 
 
@@ -337,6 +337,21 @@ def test_hashes_stay_the_same_with_numpy_objects():
     finally:
         e1.shutdown()
         e2.shutdown()
+
+
+def test_fast_memory_caches_results(tmpdir):
+    memory = FastMemory(str(tmpdir), min_time_to_cache=0)
+    call_count = 0
+
+    @memory.cache
+    def increment(value):
+        nonlocal call_count
+        call_count += 1
+        return value + 1
+
+    assert increment(1) == 2
+    assert increment(1) == 2
+    assert call_count == 1
 
 
 class MyOwnModel(BaseEstimator):
