@@ -1495,7 +1495,9 @@ class LinearCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import LinearRegression
 
         if self.gpu_param == "force":
@@ -1552,7 +1554,9 @@ class ElasticNetCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import ElasticNet
 
         if self.gpu_param == "force":
@@ -1613,7 +1617,9 @@ class RidgeCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import Ridge
 
         if self.gpu_param == "force":
@@ -1673,7 +1679,9 @@ class LassoCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import Lasso
 
         if self.gpu_param == "force":
@@ -2040,7 +2048,9 @@ class KNeighborsCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.neighbors import KNeighborsRegressor
 
         if self.gpu_param == "force":
