@@ -40,6 +40,7 @@ jobs:
   test_notebooks:
     runs-on: ubuntu-latest
     name: Test notebooks
+    needs: code-quality
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
@@ -84,6 +85,7 @@ jobs:
         shell: bash
 
     name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
+    needs: code-quality
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
