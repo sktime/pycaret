@@ -59,7 +59,9 @@ jobs:
 
       - name: Install pycaret and dependencies
         shell: bash
-        run: uv pip install .[dev,test] --no-cache-dir
+        run: |
+          uv pip install ".[dev,test]" ipykernel nbmake pytest-xdist --no-cache-dir
+          python -m ipykernel install --user --name cikernel
         env:
           UV_SYSTEM_PYTHON: 1
 
