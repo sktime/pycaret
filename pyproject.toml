@@ -70,7 +70,6 @@ dependencies = [
   "cloudpickle",
   "deprecation>=2.1.0",
   "xxhash",
-  "wurlitzer; platform_system != 'Windows'",
   "trio>=0.22.0,<0.25.0",  # fixes problems about third-party packages, remove after httpcore 1.05
   "setuptools; python_version>='3.12'",
   # Plotting
