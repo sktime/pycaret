@@ -55,7 +55,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full]"
           python -m ipykernel install --user --name cikernel
@@ -87,7 +87,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full]"
           python -m ipykernel install --user --name cikernel
@@ -131,7 +131,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
@@ -170,7 +170,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
       - name: Python version and dependency list
@@ -208,7 +208,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
@@ -247,7 +247,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
@@ -286,7 +286,7 @@ jobs:
 
           # https://github.com/yaml/pyyaml/issues/736
           echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
