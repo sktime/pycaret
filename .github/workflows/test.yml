@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  code_quality:
+  code-quality:
     runs-on: ubuntu-latest
     name: Code quality checks
     steps:
@@ -190,10 +190,10 @@ jobs:
     needs: code-quality
     runs-on: ${{ matrix.os }}
     strategy:
-        fail-fast: false
-        matrix:
-          os: [ubuntu-latest, macOS-latest, windows-latest]
-          python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Check out source repository
