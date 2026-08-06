@@ -45,6 +45,7 @@ def test_bats_containers_disabled_when_numpy_2_is_installed(
     monkeypatch, container_class
 ):
     """BATS adapters must not be initialized when their NumPy constraint fails."""
+
     def check_dependencies(package, *args, **kwargs):
         assert package == "numpy<2"
         assert kwargs == {"severity": "none"}
