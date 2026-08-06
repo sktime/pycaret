@@ -1,5 +1,6 @@
-import pycaret.classification as pc
 import pandas as pd
+
+import pycaret.classification as pc
 from pycaret.datasets import get_data
 from pycaret.parallel import FugueBackend
 
