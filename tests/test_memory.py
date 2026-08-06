@@ -11,6 +11,7 @@ from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 import pytest
+from joblib.memory import MemorizedFunc
 from sklearn.base import BaseEstimator
 from xxhash import xxh128
 
@@ -353,6 +354,27 @@ def test_fast_memory_caches_results(tmpdir):
     assert increment(1) == 2
     assert increment(1) == 2
     assert call_count == 1
+
+
+def test_fast_memory_persists_input_with_call_id(tmpdir, monkeypatch):
+    persisted_calls = []
+
+    def persist_input(self, duration, call_id, args, kwargs):
+        persisted_calls.append((call_id, args, kwargs))
+        return {}
+
+    monkeypatch.setattr(MemorizedFunc, "_persist_input", persist_input)
+    memory = FastMemory(str(tmpdir), min_time_to_cache=0)
+
+    @memory.cache
+    def identity(value):
+        return value
+
+    assert identity("value") == "value"
+    call_id, args, kwargs = persisted_calls[0]
+    assert memory.store_backend.contains_item(call_id)
+    assert args == ("value",)
+    assert kwargs == {}
 
 
 class MyOwnModel(BaseEstimator):

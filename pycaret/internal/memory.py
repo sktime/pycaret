@@ -320,7 +320,7 @@ class FastMemorizedFunc(MemorizedFunc):
             )
 
             duration = time.time() - start_time
-            metadata = self._persist_input(duration, args, kwargs)
+            metadata = self._persist_input(duration, [func_id, args_id], args, kwargs)
         else:
             metadata = None
         # PYCARET CHANGES END
