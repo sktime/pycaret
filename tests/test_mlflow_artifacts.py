@@ -5,12 +5,11 @@ from unittest.mock import patch
 import pytest
 from sklearn.pipeline import Pipeline
 
-pytest.importorskip("mlflow")
-
 from pycaret.loggers.mlflow_logger import MlflowLogger
 
 
 def test_log_sklearn_pipeline_uses_cloudpickle_serialization():
+    pytest.importorskip("mlflow")
     logger = MlflowLogger()
     default_conda_env = {
         "dependencies": ["python=3.10", "pip", {"pip": []}],
