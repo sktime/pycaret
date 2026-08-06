@@ -1146,6 +1146,11 @@ class BATSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("BATS not available: requires numpy<2.")
+            self.active = False
+            return
+
         try:
             from sktime.forecasting.bats import BATS  # type: ignore
 
@@ -1221,6 +1226,11 @@ class TBATSContainer(TimeSeriesContainer):
         self.logger = get_logger()
         np.random.seed(experiment.seed)
         self.gpu_imported = False
+
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("TBATS not available: requires numpy<2.")
+            self.active = False
+            return
 
         try:
             from sktime.forecasting.tbats import TBATS
