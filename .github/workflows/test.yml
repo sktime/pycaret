@@ -113,7 +113,7 @@ jobs:
         run: uv pip list
 
       - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "not (tuning_grid or tuning_random)"
+        run: pytest --durations=20 --timeout=60 -m "not (tuning_grid or tuning_random)"
 
   test_plots:
     name: Test plotting
@@ -151,7 +151,7 @@ jobs:
         run: uv pip list
 
       - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "plotting"
+        run: pytest --durations=20 --timeout=60 -m "plotting"
 
   test_tuners:
     name: Test tuners
