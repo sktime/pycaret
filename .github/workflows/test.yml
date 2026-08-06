@@ -113,7 +113,7 @@ jobs:
         run: uv pip list
 
       - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
+        run: pytest --durations=0 --timeout=60 -m "not (tuning_grid or tuning_random)"
 
   test_plots:
     name: Test plotting
@@ -153,8 +153,8 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 --timeout=60 -m "plotting"
 
-  test_ts_tune_random:
-    name: Test random tuning
+  test_tuners:
+    name: Test tuners
     needs: code-quality
     runs-on: ubuntu-latest
     strategy:
@@ -181,7 +181,7 @@ jobs:
 
       - name: Install pycaret and dependencies
         shell: bash
-        run: uv pip install .[dev,test,mlops] --no-cache-dir
+        run: uv pip install .[dev,test,mlops,tuners] --no-cache-dir
         env:
           UV_SYSTEM_PYTHON: 1
 
@@ -189,46 +189,7 @@ jobs:
         run: uv pip list
 
       - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "tuning_random"
-
-  test_ts_tune_grid:
-    name: Test grid tuning
-    needs: code-quality
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-
-    steps:
-      - name: Check out source repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Display Python version
-        run: python -c "import sys; print(sys.version)"
-
-      - name: Install pycaret and dependencies
-        shell: bash
-        run: uv pip install .[dev,test,mlops] --no-cache-dir
-        env:
-          UV_SYSTEM_PYTHON: 1
-
-      - name: Show dependencies
-        run: uv pip list
-
-      - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "tuning_grid"
+        run: pytest --durations=0 --timeout=60 -m  "(tuning_grid or tuning_random)"
 
   test_benchmarks:
     runs-on: ubuntu-latest
@@ -265,4 +226,4 @@ jobs:
         run: uv pip list
 
       - name: Run benchmarks
-        run: pytest --durations=0 --timeout=60 -m "benchmark"
+        run: pytest --durations=20 --timeout=60 -m "benchmark"
