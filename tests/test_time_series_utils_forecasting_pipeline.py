@@ -7,7 +7,6 @@ from sktime.forecasting.base import BaseForecaster
 from sktime.forecasting.naive import NaiveForecaster
 
 from pycaret.time_series import TSForecastingExperiment
-from pycaret.utils.time_series.forecasting import _get_exogenous_capability
 from pycaret.utils.time_series.forecasting.models import DummyForecaster
 from pycaret.utils.time_series.forecasting.pipeline import (
     _add_model_to_pipeline,
@@ -353,7 +352,8 @@ def test_add_model_to_pipeline_noexo(load_pos_and_neg_data):
     assert isinstance(pipeline.steps_[-1][1].steps_[-1][1], NaiveForecaster)
     assert isinstance(pipeline.steps[-1][1].steps_[-1][1], NaiveForecaster)
     assert isinstance(pipeline.steps_[-1][1].steps[-1][1], NaiveForecaster)
-    assert _get_exogenous_capability(pipeline)[0] is False
+    assert pipeline.get_tag("capability:exogenous") is False
+    assert pipeline.get_tag("ignores-exogeneous-X") is True
 
     # -------------------------------------------------------------------------#
     # B. Forecasting Pipeline
@@ -460,16 +460,16 @@ def test_add_model_to_pipeline_noexo(load_pos_and_neg_data):
 
 
 @pytest.mark.parametrize(
-    "model, expected_exogenous_tag, expected_exogenous_value",
+    "model, expected_capability_exogenous",
     [
-        (_CanonicalTagForecaster(capability_exogenous=True), "capability:exogenous", True),
-        (_CanonicalTagForecaster(capability_exogenous=False), "capability:exogenous", False),
-        (_LegacyTagForecaster(ignores_exogeneous_X=True), "ignores-exogeneous-X", True),
-        (_LegacyTagForecaster(ignores_exogeneous_X=False), "ignores-exogeneous-X", False),
+        (_CanonicalTagForecaster(capability_exogenous=True), True),
+        (_CanonicalTagForecaster(capability_exogenous=False), False),
+        (_LegacyTagForecaster(ignores_exogeneous_X=True), False),
+        (_LegacyTagForecaster(ignores_exogeneous_X=False), True),
     ],
 )
-def test_add_model_to_pipeline_propagates_supported_exogenous_tag(
-    load_pos_and_neg_data, model, expected_exogenous_tag, expected_exogenous_value
+def test_add_model_to_pipeline_propagates_canonical_and_legacy_tags(
+    load_pos_and_neg_data, model, expected_capability_exogenous
 ):
     """Tests exogenous and index tags are propagated from replacement models."""
     exp = TSForecastingExperiment()
@@ -483,7 +483,14 @@ def test_add_model_to_pipeline_propagates_supported_exogenous_tag(
     ]
 
     for pipeline_layer in pipeline_layers:
-        assert pipeline_layer.get_tag(expected_exogenous_tag) is expected_exogenous_value
+        assert (
+            pipeline_layer.get_tag("capability:exogenous")
+            is expected_capability_exogenous
+        )
+        assert (
+            pipeline_layer.get_tag("ignores-exogeneous-X")
+            is not expected_capability_exogenous
+        )
         assert pipeline_layer.get_tag("enforce_index_type") == "test-index-type"
 
 

@@ -4,10 +4,7 @@
 import pytest
 
 from pycaret.utils.time_series import TSExogenousPresent
-from pycaret.utils.time_series.forecasting import (
-    _check_and_clean_coverage,
-    _get_exogenous_capability,
-)
+from pycaret.utils.time_series.forecasting import _check_and_clean_coverage
 from pycaret.utils.time_series.forecasting.models import _disable_exogenous_enforcement
 
 pytestmark = pytest.mark.filterwarnings("ignore::UserWarning")
@@ -128,24 +125,6 @@ def test_disable_exogenous_enforcement_supports_canonical_and_legacy_tags(
             exp_has_exogenous=TSExogenousPresent.YES,
         )
         is expected
-    )
-
-
-@pytest.mark.parametrize(
-    "forecaster, expected_capability, expected_tag",
-    [
-        (_CanonicalExogenousForecaster(capability_exogenous=True), True, "capability:exogenous"),
-        (_CanonicalExogenousForecaster(capability_exogenous=False), False, "capability:exogenous"),
-        (_LegacyExogenousForecaster(ignores_exogeneous_X=True), False, "ignores-exogeneous-X"),
-        (_LegacyExogenousForecaster(ignores_exogeneous_X=False), True, "ignores-exogeneous-X"),
-    ],
-)
-def test_get_exogenous_capability_supports_canonical_and_legacy_tags(
-    forecaster, expected_capability, expected_tag
-):
-    assert _get_exogenous_capability(forecaster) == (
-        expected_capability,
-        expected_tag,
     )
 
 

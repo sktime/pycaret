@@ -2,7 +2,6 @@ import pandas as pd
 from sktime.forecasting.base import BaseForecaster
 
 from pycaret.utils.time_series import TSExogenousPresent
-from pycaret.utils.time_series.forecasting import _get_exogenous_capability
 
 # from pycaret.time_series import TSForecastingExperiment
 
@@ -55,7 +54,11 @@ def _disable_exogenous_enforcement(
         does not supports it. False otherwise.
     """
 
-    capability_exogenous, _ = _get_exogenous_capability(forecaster)
+    capability_exogenous = forecaster.get_tag(
+        "capability:exogenous", tag_value_default=None, raise_error=False
+    )
+    if capability_exogenous is None:
+        capability_exogenous = not forecaster.get_tag("ignores-exogeneous-X")
 
     # Disable models only if the experiment has exogenous variables
     if (

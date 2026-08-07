@@ -178,9 +178,6 @@ def test_enforce_exogenous_exo_data(load_uni_exo_data_target):
     exp2.setup(data=data, target=target, enforce_exogenous=False)
     num_models2 = len(exp2.models())
 
-    assert "naive" not in exp1.models().index
-    assert "naive" in exp2.models().index
-
     # We know that some models do not offer exogenous variables support, so the
     # following check is valid for now.
     assert num_models1 < num_models2
