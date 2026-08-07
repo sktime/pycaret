@@ -77,6 +77,7 @@ jobs:
           pip list
       - name: Run failed LightGBM tests
         run: |
+          pytest tests/test_time_series_base.py -k "test_create_predict_finalize_model and lightgbm_cds_dt"
           pytest \
             tests/test_check_fairness.py::test_check_fairness_binary_classification \
             tests/test_check_fairness.py::test_check_fairness_multiclass_classification \
@@ -96,7 +97,6 @@ jobs:
             'tests/test_preprocess.py::test_iterative_imputer[lightgbm-cat_only]' \
             'tests/test_regression.py::test_regression[True]' \
             'tests/test_regression.py::test_regression[False]' \
-            'tests/test_time_series_base.py::test_create_predict_finalize_model[lightgbm_cds_dt-fh28]' \
             tests/test_utils.py::test_utils \
             'tests/test_time_series_blending.py::test_blend_model_basic[mean]' \
             'tests/test_time_series_blending.py::test_blend_model_basic[median]' \
