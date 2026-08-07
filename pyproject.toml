@@ -23,7 +23,7 @@ maintainers = [
 authors = [
     { name = "pycaret developers" },
 ]
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.9,<3.15"
 classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
@@ -38,6 +38,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Software Development",
@@ -51,11 +53,11 @@ dependencies = [
   "ipython>=5.5.0",
   "ipywidgets>=7.6.5",
   "tqdm>=4.62.0",
-  "numpy>=1.21, <1.27",
+  "numpy>=1.21,<3",  # numpy 2.x required for python 3.13+ wheels
   "pandas>=2.2.0",  # latest sktime makes tests fail if pandas 2.1
-  "jinja2>=3",
-  "scipy>=1.6.1,<=1.11.4",  # to fix later (
-  "joblib>=1.2.0,<1.4",  # joblib<1.2.0 is vulnerable to Arbitrary Code Execution
+  "jinja2>=3",  # not imported directly, required by pandas Styler which pycaret uses
+  "scipy>=1.6.1,<2",  # scipy 1.14.1+ required for python 3.13+ wheels
+  "joblib>=1.2.0",  # joblib<1.2.0 is vulnerable to Arbitrary Code Execution; 1.4+ needed on python 3.14
   "scikit-learn>1.4.0",
   "pyod>=1.1.3",  # 1.1.3 to support scikit-learn 1.4
   "imbalanced-learn>=0.12.0",  # >=0.12.0 to support scikit-learn 1.4
@@ -64,16 +66,14 @@ dependencies = [
   "requests>=2.27.1",  # Required by pycaret.datasets
   "psutil>=5.9.0",
   "cloudpickle",
-  "deprecation>=2.1.0",
   "xxhash",
-  "trio>=0.22.0,<0.25.0",  # fixes problems about third-party packages, remove after httpcore 1.05
   "setuptools; python_version>='3.12'",
   # Plotting
-  "matplotlib<3.8.0",  # stem(..., use_line_collection=False) is no longer supported.
+  "matplotlib<4",  # old use_line_collection cap no longer needed, fixed in shap 0.44
   "mljar-scikit-plot",  # this is a updated version of original scikit-plot
   "yellowbrick>=1.4",
   "plotly>=5.14.0",
-  "kaleido>=0.2.1",
+  "kaleido>=0.2.1",  # not imported directly, needed by plotly for the png renderer used on large TS plots
   "schemdraw==0.15",  # 0.16 only supports Python >3.8
   "plotly-resampler>=0.8.3.1",
   # Time-series
