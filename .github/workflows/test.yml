@@ -143,7 +143,7 @@ jobs:
 
       - name: Install pycaret and dependencies
         shell: bash
-        run: uv pip install .[dev,test,mlops] --no-cache-dir
+        run: uv pip install .[dev,test,mlops,models] --no-cache-dir
         env:
           UV_SYSTEM_PYTHON: 1
 
@@ -217,6 +217,10 @@ jobs:
 
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
+
+      - name: Install libomp (macOS)
+        if: runner.os == 'macOS'
+        run: brew install libomp
 
       - name: Install pycaret and dependencies
         shell: bash
