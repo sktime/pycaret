@@ -7,6 +7,18 @@ from sktime.forecasting.base import ForecastingHorizon
 PyCaretForecastingHorizonTypes = Union[List[int], int, np.ndarray, ForecastingHorizon]
 
 
+def _get_exogenous_capability(forecaster) -> Tuple[bool, str]:
+    """Returns exogenous capability and its supported sktime tag name."""
+    capability_exogenous = forecaster.get_tag(
+        "capability:exogenous", tag_value_default=None, raise_error=False
+    )
+    if capability_exogenous is not None:
+        return capability_exogenous, "capability:exogenous"
+
+    ignores_exogeneous_X = forecaster.get_tag("ignores-exogeneous-X")
+    return not ignores_exogeneous_X, "ignores-exogeneous-X"
+
+
 def _check_and_clean_coverage(coverage: Union[float, List[float]]) -> List[float]:
     """Checks the coverage to make sure it is of the allowed types (float or List).
     Returns the lower and upper quantiles for the coverage.
