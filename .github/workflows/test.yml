@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  code_quality:
+  code-quality:
     runs-on: ubuntu-latest
     name: Code quality checks
     steps:
@@ -36,7 +36,7 @@ jobs:
           flake8-version: 7.1.1
 
   # JOBS MUST START WITH test !!!!
-  test_notebooks_regression:
+  test-notebooks-regression:
     runs-on: ubuntu-latest
     name: Test notebook (Regression)
     steps:
@@ -68,7 +68,7 @@ jobs:
       - name: Run notebook
         run: pytest --nbmake --nbmake-kernel=cikernel --nbmake-timeout=3000 "tutorials/Tutorial - Regression.ipynb"
 
-  test_notebooks:
+  test-notebooks:
     runs-on: ubuntu-latest
     name: Test notebooks (excluding Regression)
     steps:
@@ -144,7 +144,7 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
 
-  test_plots:
+  test-plots:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -182,7 +182,7 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "plotting"
 
-  test_ts_tune_random:
+  test-ts-tune-random:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -221,7 +221,7 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "tuning_random"
 
-  test_ts_tune_grid:
+  test-ts-tune-grid:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -260,7 +260,7 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "tuning_grid"
 
-  test_benchmarks:
+  test-benchmarks:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
