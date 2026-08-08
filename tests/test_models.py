@@ -1,9 +1,38 @@
+from unittest.mock import patch
+
+import numba
+import pytest
+from numba.core.dispatcher import Dispatcher
+
 import pycaret.datasets
 from pycaret.anomaly import AnomalyExperiment
 from pycaret.classification import ClassificationExperiment
 from pycaret.clustering import ClusteringExperiment
 from pycaret.regression import RegressionExperiment
 from pycaret.time_series import TSForecastingExperiment
+
+
+@pytest.fixture
+def disable_numba():
+    """
+    Forces numba to use the original python functions.
+
+    This is required as numba code in pyod (anomaly) seems to not work
+    correctly leading to exceptions if ran from within pytest.
+    """
+    old = numba.config.DISABLE_JIT
+    # This will not affect already compiled functions...
+    numba.config.DISABLE_JIT = True
+
+    # ...which is why we force the Numba dispatcher to simply
+    # call the underlying python function for already compiled
+    # ones
+    def pyfunc_call(self, *args, **kwargs):
+        return self.py_func(*args, **kwargs)
+
+    with patch.object(Dispatcher, "__call__", pyfunc_call):
+        yield
+    numba.config.DISABLE_JIT = old
 
 
 def check_exp(exp, **kwargs):
@@ -56,7 +85,7 @@ def test_model_equality_clustering():
     check_exp(exp)
 
 
-def test_model_equality_anomaly():
+def test_model_equality_anomaly(disable_numba):
     exp = AnomalyExperiment()
     exp.setup(
         pycaret.datasets.get_data("anomaly"),

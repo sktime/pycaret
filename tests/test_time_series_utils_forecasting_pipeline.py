@@ -3,6 +3,7 @@
 
 import numpy as np
 import pytest
+from sktime.forecasting.base import BaseForecaster
 from sktime.forecasting.naive import NaiveForecaster
 
 from pycaret.time_series import TSForecastingExperiment
@@ -16,6 +17,44 @@ from pycaret.utils.time_series.forecasting.pipeline import (
 )
 
 pytestmark = pytest.mark.filterwarnings("ignore::UserWarning")
+
+
+class _CanonicalTagForecaster(BaseForecaster):
+    _tags = {
+        "capability:exogenous": True,
+        "enforce_index_type": "test-index-type",
+    }
+
+    def __init__(self, capability_exogenous):
+        self.set_tags(**{"capability:exogenous": capability_exogenous})
+
+    def _fit(self, y, X=None, fh=None):
+        return self
+
+    def _predict(self, fh=None, X=None):
+        return np.zeros(0 if fh is None else len(fh))
+
+
+class _LegacyTagForecaster(BaseForecaster):
+    _tags = {
+        "ignores-exogeneous-X": True,
+        "enforce_index_type": "test-index-type",
+    }
+
+    def __init__(self, ignores_exogeneous_X):
+        self.set_tags(**{"ignores-exogeneous-X": ignores_exogeneous_X})
+
+    def get_tag(self, tag_name, tag_value_default=None, raise_error=True):
+        if tag_name == "capability:exogenous":
+            return tag_value_default
+        return super().get_tag(tag_name, tag_value_default, raise_error)
+
+    def _fit(self, y, X=None, fh=None):
+        return self
+
+    def _predict(self, fh=None, X=None):
+        return np.zeros(0 if fh is None else len(fh))
+
 
 ##############################
 # Functions Start Here ####
@@ -313,6 +352,8 @@ def test_add_model_to_pipeline_noexo(load_pos_and_neg_data):
     assert isinstance(pipeline.steps_[-1][1].steps_[-1][1], NaiveForecaster)
     assert isinstance(pipeline.steps[-1][1].steps_[-1][1], NaiveForecaster)
     assert isinstance(pipeline.steps_[-1][1].steps[-1][1], NaiveForecaster)
+    assert pipeline.get_tag("capability:exogenous") is False
+    assert pipeline.get_tag("ignores-exogeneous-X") is True
 
     # -------------------------------------------------------------------------#
     # B. Forecasting Pipeline
@@ -356,7 +397,6 @@ def test_add_model_to_pipeline_noexo(load_pos_and_neg_data):
             exp.pipeline.steps_[-1][1].steps[i][1].__class__
             is pipeline.steps_[-1][1].steps[i][1].__class__
         )
-
     ###############################
     # 2: Not Empty Pipeline ####
     ###############################
@@ -417,6 +457,41 @@ def test_add_model_to_pipeline_noexo(load_pos_and_neg_data):
             exp.pipeline.steps_[-1][1].steps[i][1].__class__
             is pipeline.steps_[-1][1].steps[i][1].__class__
         )
+
+
+@pytest.mark.parametrize(
+    "model, expected_capability_exogenous",
+    [
+        (_CanonicalTagForecaster(capability_exogenous=True), True),
+        (_CanonicalTagForecaster(capability_exogenous=False), False),
+        (_LegacyTagForecaster(ignores_exogeneous_X=True), False),
+        (_LegacyTagForecaster(ignores_exogeneous_X=False), True),
+    ],
+)
+def test_add_model_to_pipeline_propagates_canonical_and_legacy_tags(
+    load_pos_and_neg_data, model, expected_capability_exogenous
+):
+    """Tests exogenous and index tags are propagated from replacement models."""
+    exp = TSForecastingExperiment()
+    exp.setup(data=load_pos_and_neg_data, fh=12)
+
+    pipeline = _add_model_to_pipeline(pipeline=exp.pipeline, model=model)
+    pipeline_layers = [
+        pipeline.steps[-1][1],
+        pipeline.steps_[-1][1],
+        pipeline,
+    ]
+
+    for pipeline_layer in pipeline_layers:
+        assert (
+            pipeline_layer.get_tag("capability:exogenous")
+            is expected_capability_exogenous
+        )
+        assert (
+            pipeline_layer.get_tag("ignores-exogeneous-X")
+            is not expected_capability_exogenous
+        )
+        assert pipeline_layer.get_tag("enforce_index_type") == "test-index-type"
 
 
 def test_add_model_to_pipeline_exo(load_uni_exo_data_target):
@@ -487,7 +562,6 @@ def test_add_model_to_pipeline_exo(load_uni_exo_data_target):
             exp.pipeline.steps_[-1][1].steps[i][1].__class__
             is pipeline.steps_[-1][1].steps[i][1].__class__
         )
-
     ###############################
     # 2: Not Empty Pipeline ####
     ###############################
