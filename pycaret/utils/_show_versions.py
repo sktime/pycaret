@@ -49,6 +49,7 @@ required_deps = [
     "cloudpickle",
     "deprecation",
     "xxhash",
+    "wurlitzer",
 ]
 
 optional_deps = [

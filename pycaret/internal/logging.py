@@ -13,6 +13,12 @@ from collections.abc import Callable
 from contextlib import redirect_stderr, redirect_stdout
 from typing import Optional, Union
 
+try:
+    from wurlitzer import pipes
+except ImportError:
+    # Fails on windows. See https://github.com/minrk/wurlitzer/pull/63
+    pipes = None
+
 
 # From https://stackoverflow.com/a/66209331
 class LoggerWriter:
@@ -43,7 +49,15 @@ class redirect_output:
         # Current Python process redirects
         self.redirect_stdout = redirect_stdout(LoggerWriter(self.logger.info))
         self.redirect_stderr = redirect_stderr(LoggerWriter(self.logger.warning))
-        self.c_redirect = None
+        # This redirects stdout/stderr from C libraries and child processes (joblib)
+        self.c_redirect = (
+            pipes(
+                stdout=LoggerWriter(self.logger.info),
+                stderr=LoggerWriter(self.logger.warning),
+            )
+            if pipes
+            else None
+        )
 
     def __enter__(self):
         self.redirect_stdout.__enter__()
