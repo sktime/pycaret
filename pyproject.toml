@@ -1,6 +1,6 @@
 [project]
 name = "pycaret"
-version = "3.4.1"
+version = "3.5.0"
 description = "PyCaret - An open source, low-code machine learning library in Python."
 readme = "README.md"
 keywords = [
@@ -71,7 +71,6 @@ dependencies = [
   "psutil>=5.9.0",
   "cloudpickle",
   "xxhash",
-  "wurlitzer; platform_system != 'Windows'",
   "trio>=0.22.0,<0.25.0; python_version<'3.13'",
   "trio>=0.27.0; python_version>='3.13'",
   "setuptools; python_version>='3.12'",
