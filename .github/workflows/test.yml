@@ -116,6 +116,7 @@ jobs:
         shell: bash
 
     name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
+    needs: code-quality
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
