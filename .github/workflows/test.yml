@@ -38,6 +38,7 @@ jobs:
   # JOBS MUST START WITH test !!!!
   test-notebooks-regression:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     name: Test notebook (Regression)
     steps:
       - name: Check out source repository
@@ -70,6 +71,7 @@ jobs:
 
   test-notebooks:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     name: Test notebooks (excluding Regression)
     steps:
       - name: Check out source repository
@@ -102,6 +104,7 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
@@ -146,6 +149,7 @@ jobs:
 
   test-plots:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -184,6 +188,7 @@ jobs:
 
   test-ts-tune-random:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -223,6 +228,7 @@ jobs:
 
   test-ts-tune-grid:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -262,6 +268,7 @@ jobs:
 
   test-benchmarks:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
