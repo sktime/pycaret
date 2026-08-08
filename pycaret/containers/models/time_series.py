@@ -1146,6 +1146,11 @@ class BATSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("BATS not available: requires numpy<2.")
+            self.active = False
+            return
+
         try:
             from sktime.forecasting.bats import BATS  # type: ignore
 
@@ -1221,6 +1226,11 @@ class TBATSContainer(TimeSeriesContainer):
         self.logger = get_logger()
         np.random.seed(experiment.seed)
         self.gpu_imported = False
+
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("TBATS not available: requires numpy<2.")
+            self.active = False
+            return
 
         try:
             from sktime.forecasting.tbats import TBATS
@@ -1509,7 +1519,9 @@ class LinearCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import LinearRegression
 
         if self.gpu_param == "force":
@@ -1566,7 +1578,9 @@ class ElasticNetCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import ElasticNet
 
         if self.gpu_param == "force":
@@ -1627,7 +1641,9 @@ class RidgeCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import Ridge
 
         if self.gpu_param == "force":
@@ -1687,7 +1703,9 @@ class LassoCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.linear_model import Lasso
 
         if self.gpu_param == "force":
@@ -2054,7 +2072,9 @@ class KNeighborsCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", extra=None, severity="error")  # noqa: E501
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra=None, severity="error"
+            )
             from sklearnex.neighbors import KNeighborsRegressor
 
         if self.gpu_param == "force":
@@ -2643,7 +2663,7 @@ class BaseCdsDtForecaster(BaseForecaster):
 
     _tags = {
         "scitype:y": "univariate",  # which y are fine? univariate/multivariate/both
-        "ignores-exogeneous-X": False,  # does estimator use the exogenous X?
+        "capability:exogenous": True,  # does estimator use the exogenous X?
         "handles-missing-data": False,  # can estimator handle missing data?
         "y_inner_mtype": "pd.Series",  # which types do _fit, _predict, assume for y?
         "X_inner_mtype": "pd.DataFrame",  # which types do _fit, _predict, assume for X?

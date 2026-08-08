@@ -180,6 +180,7 @@ class MlflowLogger(BaseLogger):
                 self._construct_pipeline_if_needed(model, prep_pipe),
                 "model",
                 conda_env=default_conda_env,
+                serialization_format="cloudpickle",
                 # signature=signature,
                 # input_example=input_example,
             )

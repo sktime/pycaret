@@ -1,3 +1,5 @@
+import pandas as pd
+
 import pycaret.classification as pc
 from pycaret.datasets import get_data
 from pycaret.parallel import FugueBackend
@@ -5,6 +7,24 @@ from pycaret.parallel import FugueBackend
 
 def _score_dummy(y_true, y_prob, axis=0):
     return 0.0
+
+
+def test_remote_compare_models_allows_missing_report_callback(monkeypatch):
+    class Experiment:
+        def compare_models(self, include, **params):
+            return include[0]
+
+        def pull(self):
+            return pd.DataFrame({"score": [1.0]})
+
+    backend = FugueBackend()
+    backend._params = {"include": ["model"], "n_select": 1}
+    monkeypatch.setattr(backend, "remote_setup", Experiment)
+
+    result = backend._remote_compare_models([[0]])
+
+    assert len(result) == 1
+    assert isinstance(result[0][0], bytes)
 
 
 def test_classification_parallel():
