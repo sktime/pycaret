@@ -30,7 +30,6 @@ required_deps = [
     "imblearn",
     "category_encoders",
     "lightgbm",
-    "numba",
     "requests",
     "matplotlib",
     "scikitplot",
@@ -49,7 +48,6 @@ required_deps = [
     "cloudpickle",
     "deprecation",
     "xxhash",
-    "wurlitzer",
 ]
 
 optional_deps = [
