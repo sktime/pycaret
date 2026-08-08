@@ -30,6 +30,7 @@ required_deps = [
     "imblearn",
     "category_encoders",
     "lightgbm",
+    "numba",
     "requests",
     "matplotlib",
     "scikitplot",
