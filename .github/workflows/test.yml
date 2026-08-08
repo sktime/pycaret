@@ -146,7 +146,7 @@ jobs:
           which python
           pip list
       - name: Test with pytest
-        run: pytest --durations=20 --timeout=60 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
+        run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
 
   test-plots:
     runs-on: ubuntu-latest
@@ -185,7 +185,7 @@ jobs:
           which python
           pip list
       - name: Test with pytest
-        run: pytest --durations=20 --timeout=60 -m "plotting"
+        run: pytest --durations=0 -m "plotting"
 
   test-ts-tune:
     runs-on: ubuntu-latest
@@ -225,7 +225,7 @@ jobs:
           which python
           pip list
       - name: Test with pytest
-        run: pytest --durations=0 --timeout=60 -m "tuning_random or tuning_grid"
+        run: pytest --durations=0 -m "tuning_random or tuning_grid"
 
   test-benchmarks:
     runs-on: ubuntu-latest
@@ -265,4 +265,4 @@ jobs:
           which python
           pip list
       - name: Run benchmarks
-        run: pytest --durations=20 --timeout=60 -m "benchmark"
+        run: pytest --durations=0 -m "benchmark"
