@@ -1,7 +1,6 @@
-import matplotlib
 import pandas as pd
 import pytest
-from packaging import version
+from skbase.utils.dependencies import _check_soft_dependencies
 
 import pycaret.datasets
 import pycaret.regression
@@ -29,7 +28,7 @@ def test_plot():
     available_plots = exp._available_plots
 
     skip_plots = set()
-    if version.parse(matplotlib.__version__) >= version.parse("3.8.0"):
+    if not _check_soft_dependencies("matplotlib<3.8", severity="none"):
         skip_plots.add("cooks")
 
     for plot in available_plots:
