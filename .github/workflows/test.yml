@@ -138,7 +138,7 @@ jobs:
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[full, test]"
-
+          if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
           echo "Python version expected: ${{ matrix.python-version }}"
