@@ -69,11 +69,7 @@ dependencies = [
   "numba>=0.60.0,<0.63; python_version>='3.13'",
   "requests>=2.27.1",
   "psutil>=5.9.0",
-  "markupsafe>=2.0.1",
-  "importlib_metadata>=4.12.0",
-  "nbformat>=4.2.0",
   "cloudpickle",
-  "deprecation>=2.1.0",
   "xxhash",
   "wurlitzer; platform_system != 'Windows'",
   "trio>=0.22.0,<0.25.0; python_version<'3.13'",
@@ -237,6 +233,7 @@ test = [
   "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
+  "pytest-timeout",
 ]
 
 
