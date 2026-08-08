@@ -186,15 +186,15 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "plotting"
 
-  test-ts-tune-random:
+  test-ts-tune:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
         python-version: [ '3.10', '3.11', '3.12', '3.13' ]
 
-    name: Test random tuning
+    name: Test tuning
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -224,47 +224,7 @@ jobs:
           which python
           pip list
       - name: Test with pytest
-        run: pytest --durations=0 -m "tuning_random"
-
-  test-ts-tune-grid:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [ '3.10', '3.11', '3.12', '3.13' ]
-
-    name: Test grid tuning
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip' # caching pip dependencies
-      - name: Install dependencies
-        # SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL required due to
-        # pyLDAvis 3.3.1 having an "sklearn" dependency
-        run: |
-          export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
-          python -m pip install -U pip
-          python -m pip install -U uv
-          python -m uv pip install -U pytest numpy
-
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
-
-          python -m uv pip install ".[full, test]"
-          if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
-      - name: Python version and dependency list
-        run: |
-          echo "Python version expected: ${{ matrix.python-version }}"
-          python --version
-          which python
-          pip list
-      - name: Test with pytest
-        run: pytest --durations=0 -m "tuning_grid"
+        run: pytest --durations=0 -m "tuning_random or tuning_grid"
 
   test-benchmarks:
     runs-on: ubuntu-latest
