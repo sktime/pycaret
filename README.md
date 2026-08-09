@@ -2,7 +2,7 @@
 
 ## **PyCaret - the open-source, low-code machine learning framework**
 
-#### 🎉🎉🎉 **PyCaret 3.4 is now available!** 🎉🎉🎉
+#### 🎉🎉🎉 **PyCaret 3.5.0 is now available!** 🎉🎉🎉
 
 PyCaret is a low-code, end-to-end ML and model management tool for the experimentation cycle.
 

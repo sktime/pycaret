@@ -2,7 +2,7 @@ from skbase.utils.dependencies import _check_python_version
 
 from pycaret.utils._show_versions import show_versions
 
-version_ = "3.4.0"
+version_ = "3.5.0"
 
 __version__ = version_
 
