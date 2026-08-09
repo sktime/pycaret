@@ -383,7 +383,7 @@ def _add_corr_bounds_subplot(
     """
 
     # For some reason scattergl does not work here. Hence switching to scatter.
-    # (refer: https://github.com/pycaret/pycaret/issues/2211).
+    # (refer: https://github.com/sktime/pycaret/issues/2211).
 
     # Add the Upper Confidence Interval ----
     fig.add_scatter(

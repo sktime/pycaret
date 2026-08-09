@@ -139,7 +139,7 @@ def _fit_and_score(
 
     # y_test is "y_true" and used for metrics, hence it can not have missing values
     # Hence using y_imputed
-    # Refer to: https://github.com/pycaret/pycaret/issues/2369
+    # Refer to: https://github.com/sktime/pycaret/issues/2369
     y_test_imputed = y_imputed.iloc[test]
     y_train_imputed = y_imputed.iloc[train]  # Needed for MASE, RMSSE, etc.
 
@@ -148,7 +148,7 @@ def _fit_and_score(
             "\ny_test has missing values. This condition should not have occurred. "
             "\nPlease file a report issue on GitHub with a reproducible example of "
             "how this condition was generated."
-            "\nhttps://github.com/pycaret/pycaret/issues/new/choose"
+            "\nhttps://github.com/sktime/pycaret/issues/new/choose"
         )
 
     # Fit the forecaster ----

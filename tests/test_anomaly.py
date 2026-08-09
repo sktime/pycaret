@@ -30,7 +30,7 @@ def test_anomaly(data):
     # create model
     iforest = pycaret.anomaly.create_model("iforest", experiment_custom_tags={"tag": 1})
     knn = pycaret.anomaly.create_model("knn", experiment_custom_tags={"tag": 1})
-    # https://github.com/pycaret/pycaret/issues/3606
+    # https://github.com/sktime/pycaret/issues/3606
     cluster = pycaret.anomaly.create_model("cluster", experiment_custom_tags={"tag": 1})
 
     # Plot model

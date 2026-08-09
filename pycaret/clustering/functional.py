@@ -1,6 +1,6 @@
 # Copyright (C) 2019-2024 PyCaret
 # Author: Moez Ali (moez.ali@queensu.ca)
-# Contributors (https://github.com/pycaret/pycaret/graphs/contributors)
+# Contributors (https://github.com/sktime/pycaret/graphs/contributors)
 # License: MIT
 
 

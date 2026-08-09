@@ -32,14 +32,14 @@ msg1 = (
     "on where the results are coming from (model or data respectively)."
     "\nIf you believe that this error should not be raised, please file an issue "
     "on GitHub with a reproducible example:"
-    "\nhttps://github.com/pycaret/pycaret/issues"
+    "\nhttps://github.com/sktime/pycaret/issues"
 )
 
 msg2 = (
     "model_labels can not be None. Please specify correct value for model_labels."
     "\nIf you believe that this error should not be raised, please file an issue "
     "on GitHub with a reproducible example:"
-    "\nhttps://github.com/pycaret/pycaret/issues"
+    "\nhttps://github.com/sktime/pycaret/issues"
 )
 
 
@@ -246,7 +246,7 @@ def plot_series(
             raise ValueError(
                 "X is not None, but X_labels is None. This should not have occurred."
                 "\nPlease file a report here with a reproducible example:"
-                "\nhttps://github.com/pycaret/pycaret/issues"
+                "\nhttps://github.com/sktime/pycaret/issues"
             )
         subplot_titles.extend(X_labels)
 

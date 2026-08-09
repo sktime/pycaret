@@ -17,7 +17,7 @@ def convert_to_fp64(X):
     return X
 
 
-# Fixes https://github.com/pycaret/pycaret/issues/3606
+# Fixes https://github.com/sktime/pycaret/issues/3606
 class CBLOFForceToDouble(CBLOF):
     """CBLOF with forced float32 -> float64 conversion"""
 
