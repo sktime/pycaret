@@ -95,12 +95,12 @@ Documentation
 -------------
 We use `sphinx <https://www.sphinx-doc.org/>`_ to build our documentation and `readthedocs <https://pycaret.readthedocs.io/en/latest/index.html>`_ to host it. The source files can be found in ``docs/source/``. The main configuration file for sphinx is ``conf.py`` and the main page is ``index.rst``.
 
-To build the documentation locally, you need to install a few extra dependencies listed in
-``docs/source/requirements.txt``:
+To build the documentation locally, you need to install the documentation
+dependency set.
 
 .. code-block:: shell
 
-    pip install -r docs/source/requirements.txt
+    pip install -e ".[docs]"
 
 To build the website locally, run:
 
