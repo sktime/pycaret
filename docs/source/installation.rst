@@ -41,10 +41,10 @@ To install the unstable development release, you can install the nightly version
 .. code-block:: bash
 
     # install the nightly build 
-    pip install "https://github.com/sktime/pycaret.git#egg=pycaret"
+    pip install "git+https://github.com/sktime/pycaret.git#egg=pycaret"
 
     # or install the full version of the nightly build
-    pip install "https://github.com/sktime/pycaret.git#egg=pycaret[full]"
+    pip install "git+https://github.com/sktime/pycaret.git#egg=pycaret[full]"
 
 PyCaret on GPU
 ***************
