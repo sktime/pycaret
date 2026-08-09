@@ -66,7 +66,7 @@ dependencies = [
   "lightgbm>=3.0.0,<4.7.0; python_version < '3.13'",
   "lightgbm>=3.0.0; python_version >= '3.13'",
   "numba>=0.55.0; python_version<'3.13'",
-  "numba>=0.60.0,<0.63; python_version>='3.13'",
+  "numba>=0.60.0,<0.67; python_version>='3.13'",
   "requests>=2.27.1",
   "psutil>=5.9.0",
   "cloudpickle",
