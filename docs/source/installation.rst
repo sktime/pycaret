@@ -38,7 +38,7 @@ Installing the nightly build
 
 To install the unstable development release, you can install the nightly version of PyCaret directly from GitHub.
 
-.. code-block:: python
+.. code-block:: bash
 
     # install the nightly build 
     pip install "https://github.com/sktime/pycaret.git#egg=pycaret"
