@@ -48,12 +48,8 @@ class redirect_output:
     def __enter__(self):
         self.redirect_stdout.__enter__()
         self.redirect_stderr.__enter__()
-        if self.c_redirect:
-            self.c_redirect.__enter__()
 
     def __exit__(self, *args, **kwargs):
-        if self.c_redirect:
-            self.c_redirect.__exit__(*args, **kwargs)
         self.redirect_stderr.__exit__(*args, **kwargs)
         self.redirect_stdout.__exit__(*args, **kwargs)
 

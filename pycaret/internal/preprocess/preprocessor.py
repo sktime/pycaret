@@ -258,9 +258,7 @@ class Preprocessor:
                 self.data.index = self.index[: len(self.data)]
                 test_data.index = self.index[-len(test_data) :]
 
-            self.data = self._set_index(
-                pd.concat([self.data, test_data]).reset_index(drop=True)
-            )
+            self.data = self._set_index(pd.concat([self.data, test_data]))
             self.idx = [
                 self.data.index[: -len(test_data)],
                 self.data.index[-len(test_data) :],
@@ -680,7 +678,7 @@ class Preprocessor:
 
                 # Encoder always needs mapping of NaN value
                 mapping[key] = {v: i for i, v in enumerate(value)}
-                mapping[key].setdefault(np.NaN, -1)
+                mapping[key].setdefault(np.nan, -1)
 
             ord_estimator = TransformerWrapper(
                 transformer=OrdinalEncoder(

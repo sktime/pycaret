@@ -3,7 +3,9 @@
 
 import pytest
 
+from pycaret.utils.time_series import TSExogenousPresent
 from pycaret.utils.time_series.forecasting import _check_and_clean_coverage
+from pycaret.utils.time_series.forecasting.models import _disable_exogenous_enforcement
 
 pytestmark = pytest.mark.filterwarnings("ignore::UserWarning")
 
@@ -77,3 +79,65 @@ def test_check_and_clean_coverage():
         "'coverage' must be of type float or a List of floats of length 2."
         in exceptionmsg
     )
+
+
+class _CanonicalExogenousForecaster:
+    def __init__(self, capability_exogenous):
+        self.capability_exogenous = capability_exogenous
+
+    def get_tag(self, tag_name, tag_value_default=None, raise_error=True):
+        if tag_name == "capability:exogenous":
+            return self.capability_exogenous
+        raise AssertionError(f"Unexpected tag lookup: {tag_name}")
+
+
+class _LegacyExogenousForecaster:
+    def __init__(self, ignores_exogeneous_X):
+        self.ignores_exogeneous_X = ignores_exogeneous_X
+
+    def get_tag(self, tag_name, tag_value_default=None, raise_error=True):
+        if tag_name == "capability:exogenous":
+            assert tag_value_default is None
+            assert not raise_error
+            return tag_value_default
+        if tag_name == "ignores-exogeneous-X":
+            return self.ignores_exogeneous_X
+        raise AssertionError(f"Unexpected tag lookup: {tag_name}")
+
+
+@pytest.mark.parametrize(
+    "forecaster, expected",
+    [
+        (_CanonicalExogenousForecaster(capability_exogenous=True), False),
+        (_CanonicalExogenousForecaster(capability_exogenous=False), True),
+        (_LegacyExogenousForecaster(ignores_exogeneous_X=False), False),
+        (_LegacyExogenousForecaster(ignores_exogeneous_X=True), True),
+    ],
+)
+def test_disable_exogenous_enforcement_supports_canonical_and_legacy_tags(
+    forecaster, expected
+):
+    """Tests canonical and legacy exogenous-capability tag semantics."""
+    assert (
+        _disable_exogenous_enforcement(
+            forecaster=forecaster,
+            enforce_exogenous=True,
+            exp_has_exogenous=TSExogenousPresent.YES,
+        )
+        is expected
+    )
+
+
+def test_disable_exogenous_enforcement_propagates_tag_lookup_errors():
+    """Tests failures unrelated to a missing canonical tag are not hidden."""
+
+    class FailingForecaster:
+        def get_tag(self, tag_name, tag_value_default=None, raise_error=True):
+            raise RuntimeError("unexpected tag lookup failure")
+
+    with pytest.raises(RuntimeError, match="unexpected tag lookup failure"):
+        _disable_exogenous_enforcement(
+            forecaster=FailingForecaster(),
+            enforce_exogenous=True,
+            exp_has_exogenous=TSExogenousPresent.YES,
+        )

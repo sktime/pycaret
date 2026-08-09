@@ -1146,10 +1146,22 @@ class BATSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        from sktime.forecasting.bats import BATS  # type: ignore
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("BATS not available: requires numpy<2.")
+            self.active = False
+            return
 
-        # Disable container if certain features are not supported but enforced ----
-        dummy = BATS()
+        try:
+            from sktime.forecasting.bats import BATS  # type: ignore
+
+            # Disable container if certain features are not supported but enforced ----
+            dummy = BATS()
+        except (ModuleNotFoundError, ImportError) as e:
+            # BATS/tbats package may not be compatible with numpy 2.0+ (Python 3.13+)
+            self.logger.warning(f"BATS not available: {e}")
+            self.active = False
+            return
+
         self.active = _check_enforcements(forecaster=dummy, experiment=experiment)
         if not self.active:
             return
@@ -1215,10 +1227,22 @@ class TBATSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        from sktime.forecasting.tbats import TBATS
+        if not _check_soft_dependencies("numpy<2", severity="none"):
+            self.logger.warning("TBATS not available: requires numpy<2.")
+            self.active = False
+            return
 
-        # Disable container if certain features are not supported but enforced ----
-        dummy = TBATS()
+        try:
+            from sktime.forecasting.tbats import TBATS
+
+            # Disable container if certain features are not supported but enforced ----
+            dummy = TBATS()
+        except (ModuleNotFoundError, ImportError) as e:
+            # TBATS/tbats package may not be compatible with numpy 2.0+ (Python 3.13+)
+            self.logger.warning(f"TBATS not available: {e}")
+            self.active = False
+            return
+
         self.active = _check_enforcements(forecaster=dummy, experiment=experiment)
         if not self.active:
             return
@@ -2639,7 +2663,7 @@ class BaseCdsDtForecaster(BaseForecaster):
 
     _tags = {
         "scitype:y": "univariate",  # which y are fine? univariate/multivariate/both
-        "ignores-exogeneous-X": False,  # does estimator use the exogenous X?
+        "capability:exogenous": True,  # does estimator use the exogenous X?
         "handles-missing-data": False,  # can estimator handle missing data?
         "y_inner_mtype": "pd.Series",  # which types do _fit, _predict, assume for y?
         "X_inner_mtype": "pd.DataFrame",  # which types do _fit, _predict, assume for X?
