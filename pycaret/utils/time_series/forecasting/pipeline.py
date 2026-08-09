@@ -67,8 +67,17 @@ def _add_model_to_pipeline(
     # Clone Tags so that the ability to get prediction intervals can be set correctly
     # based on the replacement model and not based on the pipeline model
     # https://github.com/sktime/sktime/blob/v0.14.0/sktime/forecasting/compose/_pipeline.py#L313-L318
+    capability_exogenous = model.get_tag(
+        "capability:exogenous", tag_value_default=None, raise_error=False
+    )
+    if capability_exogenous is None:
+        exogenous_tag = "ignores-exogeneous-X"
+        capability_exogenous = not model.get_tag(exogenous_tag)
+    else:
+        exogenous_tag = "capability:exogenous"
+
     tags_to_clone = [
-        "ignores-exogeneous-X",  # does estimator ignore the exogeneous X?
+        exogenous_tag,
         "capability:pred_int",  # can the estimator produce prediction intervals?
         "requires-fh-in-fit",  # is forecasting horizon already required in fit?
         "enforce_index_type",  # index type that needs to be enforced in X/y
@@ -79,6 +88,14 @@ def _add_model_to_pipeline(
     pipeline_with_model.steps_[-1][1].clone_tags(model, tags_to_clone)
     # Clone tags for ForecastingPipeline
     pipeline_with_model.clone_tags(model, tags_to_clone)
+
+    propagated_exogenous_tags = {
+        "capability:exogenous": capability_exogenous,
+        "ignores-exogeneous-X": not capability_exogenous,
+    }
+    pipeline_with_model.steps[-1][1].set_tags(**propagated_exogenous_tags)
+    pipeline_with_model.steps_[-1][1].set_tags(**propagated_exogenous_tags)
+    pipeline_with_model.set_tags(**propagated_exogenous_tags)
 
     return pipeline_with_model
 

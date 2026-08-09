@@ -1,6 +1,6 @@
 [project]
 name = "pycaret"
-version = "3.4.0"
+version = "3.5.0"
 description = "PyCaret - An open source, low-code machine learning library in Python."
 readme = "README.md"
 keywords = [
@@ -12,7 +12,7 @@ keywords = [
   "forecasting",
   "machine-learning",
   "regression",
-  "scikit-learn",
+  "scikit-learn<1.5",
   "time-series",
 ]
 license = { file = "LICENSE" }
@@ -23,7 +23,7 @@ maintainers = [
 authors = [
     { name = "pycaret developers" },
 ]
-requires-python = ">=3.9,<3.15"
+requires-python = ">=3.10,<3.15"
 classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
@@ -34,7 +34,6 @@ classifiers = [
   "Operating System :: Unix",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -48,39 +47,51 @@ classifiers = [
 # this set should be kept minimal!
 dependencies = [
   # Base
-  "packaging",
   "scikit-base>=0.6.1",
   "ipython>=5.5.0",
   "ipywidgets>=7.6.5",
   "tqdm>=4.62.0",
-  "numpy>=1.21,<3",  # numpy 2.x required for python 3.13+ wheels
-  "pandas>=2.2.0",  # latest sktime makes tests fail if pandas 2.1
-  "jinja2>=3",  # not imported directly, required by pandas Styler which pycaret uses
-  "scipy>=1.6.1,<2",  # scipy 1.14.1+ required for python 3.13+ wheels
-  "joblib>=1.2.0",  # joblib<1.2.0 is vulnerable to Arbitrary Code Execution; python 3.14 needs joblib>=1.5 (1.4 and older break in Hasher)
-  "scikit-learn>1.4.0",
-  "pyod>=1.1.3",  # 1.1.3 to support scikit-learn 1.4
-  "imbalanced-learn>=0.12.0",  # >=0.12.0 to support scikit-learn 1.4
+  "numpy>=1.21,<2.0; python_version<'3.13'",
+  "numpy>=2.0,<3; python_version>='3.13'",
+  "pandas>=1.5.0,<2.2; python_version<'3.13'",
+  "pandas>=2.2.0; python_version>='3.13'",
+  "jinja2>=3",
+  "scipy>=1.6.1,<=1.11.4; python_version<'3.13'",
+  "scipy>=1.14.0.<2; python_version>='3.13'",
+  "joblib>=1.4.2",
+  "scikit-learn>=1.4,<1.5; python_version<'3.13'",
+  "scikit-learn>=1.5; python_version>='3.13'",
+  "pyod>=1.1.3",
+  "imbalanced-learn>=0.12.0",
   "category-encoders>=2.4.0",
-  "lightgbm>=3.0.0",
-  "requests>=2.27.1",  # Required by pycaret.datasets
+  "lightgbm>=3.0.0,<4.7.0; python_version < '3.13'",
+  "lightgbm>=3.0.0; python_version >= '3.13'",
+  "numba>=0.55.0; python_version<'3.13'",
+  "numba>=0.60.0,<0.63; python_version>='3.13'",
+  "requests>=2.27.1",
   "psutil>=5.9.0",
   "cloudpickle",
   "xxhash",
+  "trio>=0.22.0,<0.25.0; python_version<'3.13'",
+  "trio>=0.27.0; python_version>='3.13'",
   "setuptools; python_version>='3.12'",
+  "packaging>=21.0",
   # Plotting
-  "matplotlib<4",  # <3.8 cap lifted for py3.13+ wheels; known gap: yellowbrick 1.5 cooks plot still uses removed stem kwarg
-  "mljar-scikit-plot",  # this is a updated version of original scikit-plot
-  "yellowbrick>=1.4",
+  "matplotlib>=3.5.0,<3.8.0; python_version<'3.13'",
+  "matplotlib>=3.8.0,<4; python_version>='3.13'",
+  "mljar-scikit-plot",
+  "yellowbrick>=1.4; python_version<'3.13'",
+  "yellowbrick>=1.5; python_version>='3.13'",
   "plotly>=5.14.0",
-  "kaleido>=0.2.1",  # not imported directly, needed by plotly for the png renderer used on large TS plots
-  "schemdraw==0.15",  # 0.16 only supports Python >3.8
+  "kaleido>=0.2.1",
+  "schemdraw==0.15",
   "plotly-resampler>=0.8.3.1",
   # Time-series
   "statsmodels>=0.12.1",
-  "sktime",  # sktime adds support for scikit-learn 1.5 in version sktime 0.31
+  "sktime>=0.31.0",
   "tbats>=1.1.3",
-  "pmdarima>=2.0.4",
+  "pmdarima>=2.0.4; python_version<'3.13'",
+  "pmdarima>=2.1.0; python_version>='3.13'",
 ]
 
 [project.optional-dependencies]
@@ -101,93 +112,103 @@ dependencies = [
 # users can install via "pip install pycaret[full]"
 #
 full = [
-  "shap~=0.44.0",  # 0.44.0 fixes matplotlib use_line_collection error
+  "shap>=0.49.1,<0.50.0; python_version < '3.13'",
+  "shap>=0.50.0; python_version >= '3.13'",
   "interpret>=0.2.7",
   "umap-learn>=0.5.2",
   "pyyaml",
-  "ydata-profiling>=4.3.1",
-  "explainerdashboard>=0.3.8",  # For dashboard method
-  "fairlearn==0.7.0",  # For check_fairness method
-  "xgboost>=2.0.0",
+  "ydata-profiling>=4.3.1,<4.13; python_version<'3.10'",
+  "ydata-profiling>=4.13.0; python_version>='3.10'",
+  "standard-imghdr; python_version>='3.13'",
+  "explainerdashboard>=0.3.8",
+  "fairlearn>=0.7.0",
+  "xgboost>=2.0.0,<3.1.0; python_version < '3.13'",
+  "xgboost>=3.1.1; python_version >= '3.13'",
   "catboost>=1.2.5",
   "kmodes>=0.11.1",
   "mlxtend>=0.19.0",
-  "statsforecast<1.8.0,>1.6",
-  "scikit-learn-intelex>=2023.0.1; platform_machine == 'x86_64' or platform_machine == 'AMD64'",
-  "tune-sklearn",
-  "ray[tune]",
+  "statsforecast>=1.6.0,<=2.0.1",
+  "scikit-learn-intelex==2024.2.0; python_version < '3.13' and platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
+  "scikit-learn-intelex>=2024.0.0; (python_version >= '3.13' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
+  "tune-sklearn; python_version<'3.13'",
+  "ray[tune]; python_version<'3.13'",
   "hyperopt>=0.2.7",
   "optuna>=3.0.0",
   "optuna-integration",
-  "scikit-optimize>=0.9.0",
+  "scikit-optimize>=0.9.0; python_version<'3.12'",
   "mlflow>=2.0.0",
   "gradio>=3.50.2",
-  "boto3>=1.24.56",  # For deploy_model method
-  "fastapi",  # For web api
-  "uvicorn>=0.17.6",  # For web api
-  "m2cgen>=0.9.0",  # For model conversion
-  "evidently<0.4.30",  # test_check_drift fails with 0.4.30
-  "dask>=2024.4.1",  # Python 3.11.9 breaks Dask (
-  "distributed>=2024.4.1",  # Python 3.11.9 breaks Dask (
-  "fugue~=0.8.0",
+  "boto3>=1.24.56",
+  "fastapi",
+  "uvicorn>=0.17.6",
+  "m2cgen>=0.9.0",
+  "evidently>=0.7.0,<0.8.0",
+  "dask>=2024.1.0",
+  "distributed>=2024.1.0",
+  "fugue>=0.9.0",
   "flask",
-  "Werkzeug>=2.2,<3.0",
-  "pytest==8.3.2",
-  "moto<5.0.0",  # missing moto.mock_s3 on moto>=5.0.0
-  # "codecov>=2.1.12",  # https://github.com/home-assistant/core/issues/91283
+  "Werkzeug>=2.2,<=3.0.6",
+  "pytest>=8.0.0",
+  "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
+  "dash-bootstrap-components<2.0.0",
   "black>=24.8.0",
   "isort>=5.13.2",
   "flake8>=7.1.1",
   "setuptools>=71.1.0",
-  "mypy>=0.11.1",
+  "mypy>=1.0.0",
 ]
 
 analysis = [
-  "shap~=0.44.0",  # 0.44.0 fixes matplotlib use_line_collection error
+  "shap>=0.49.1,<0.50.0; python_version < '3.13'",
+  "shap>=0.50.0; python_version >= '3.13'",
   "interpret>=0.2.7",
   "umap-learn>=0.5.2",
   "pyyaml",
-  "ydata-profiling>=4.3.1",
-  "explainerdashboard>=0.3.8",  # For dashboard method
-  "fairlearn==0.7.0",  # For check_fairness method
+  "ydata-profiling>=4.3.1,<4.13; python_version<'3.10'",
+  "ydata-profiling>=4.13.0; python_version>='3.10'",
+  "standard-imghdr; python_version>='3.13'",
+  "explainerdashboard>=0.3.8",
+  "fairlearn>=0.7.0",
 ]
 
 models = [
-  "xgboost>=2.0.0",
+  "xgboost>=2.0.0,<3.1.0; python_version < '3.13'",
+  "xgboost>=3.1.1; python_version >= '3.13'",
   "catboost>=1.2.5",
   "kmodes>=0.11.1",
   "mlxtend>=0.19.0",
-  "statsforecast<1.8.0,>1.6",
-  "scikit-learn-intelex>=2023.0.1; platform_machine == 'x86_64' or platform_machine == 'AMD64'",
+  "statsforecast>=1.6.0,<=2.0.1",
+  "scikit-learn-intelex==2024.2.0; python_version == '3.10' and platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
+  "scikit-learn-intelex>=2024.0.0; (python_version != '3.10' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
 ]
 
 tuners = [
-  "tune-sklearn",
-  "ray[tune]",
+  "tune-sklearn; python_version<'3.13'",
+  "ray[tune]; python_version<'3.13'",
   "hyperopt>=0.2.7",
   "optuna>=3.0.0",
   "optuna-integration",
-  "scikit-optimize>=0.9.0",
+  "scikit-optimize>=0.9.0; python_version<'3.12'",
 ]
 
 mlops = [
   "mlflow>=2.0.0",
   "gradio>=3.50.2",
-  "boto3>=1.24.56",  # For deploy_model method
-  "fastapi",  # For web api
-  "uvicorn>=0.17.6",  # For web api
-  "m2cgen>=0.9.0",  # For model conversion
-  "evidently<0.4.30",  # test_check_drift fails with 0.4.30
+  "boto3>=1.24.56",
+  "fastapi",
+  "uvicorn>=0.17.6",
+  "m2cgen>=0.9.0",
+  "evidently>=0.7.0,<0.8.0",
 ]
 
 parallel = [
-  "dask>=2024.4.1",  # Python 3.11.9 breaks Dask (
-  "distributed>=2024.4.1",  # Python 3.11.9 breaks Dask (
-  "fugue~=0.8.0",
+  "dask>=2024.1.0",
+  "distributed>=2024.1.0",
+  "fugue>=0.9.0",
   "flask",
-  "Werkzeug>=2.2,<3.0",
+  "Werkzeug>=2.2,<=3.0.6",
 ]
 
 prophet = [
@@ -200,16 +221,16 @@ dev = [
   "isort>=5.13.2",
   "flake8>=7.1.1",
   "setuptools>=71.1.0",
-  "mypy>=0.11.1",
+  "mypy>=1.0.0",
 ]
 
 
 # CI related soft dependency sets - not for users of pycaret
 # they are stable and subject to deprecation policies
 test = [
-  "pytest==8.3.2",
-  "moto<5.0.0",  # missing moto.mock_s3 on moto>=5.0.0
-  # "codecov>=2.1.12",  # https://github.com/home-assistant/core/issues/91283
+  "anywidget>=0.9.13",
+  "pytest>=8.0.0",
+  "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
   "pytest-timeout",

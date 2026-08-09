@@ -1,6 +1,8 @@
 import pytest
 import sklearn
 
+daal4py = pytest.importorskip("daal4py")
+
 import pycaret.clustering
 import pycaret.datasets
 
@@ -27,9 +29,10 @@ def test_engines_setup_global_args():
     # Default Model Engine ----
     assert exp.get_engine("kmeans") == "sklearnex"
     model = exp.create_model("kmeans")
-    import daal4py
-
-    assert isinstance(model, daal4py.sklearn.cluster.KMeans)
+    parent_library = model.__module__
+    assert parent_library.startswith("sklearnex") or parent_library.startswith(
+        "daal4py"
+    )
 
 
 def test_engines_global_methods():
@@ -85,9 +88,10 @@ def test_create_model_engines_local_args():
 
     # Override model engine locally ----
     model = exp.create_model("kmeans", engine="sklearnex")
-    import daal4py
-
-    assert isinstance(model, daal4py.sklearn.cluster.KMeans)
+    parent_library = model.__module__
+    assert parent_library.startswith("sklearnex") or parent_library.startswith(
+        "daal4py"
+    )
     # Original engine should remain the same
     assert exp.get_engine("kmeans") == "sklearn"
 

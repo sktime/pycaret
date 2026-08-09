@@ -130,7 +130,6 @@ class MultimetricScorerPatched(_MultimetricScorer):
             return True
 
     def _score(self, method_caller, estimator, X, y_true, **kwargs):
-
         self._warn_overlap(
             message=(
                 "There is an overlap between set kwargs of this scorer instance and"
