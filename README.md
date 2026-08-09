@@ -1,4 +1,4 @@
-<a href="https://py-caret.readthedocs.io/en/latest/"><img src="https://github.com/sktime/pycaret/blob/main/docs/images/logo.png"?raw=1 width="175" align="right" /></a>
+<a href="https://py-caret.readthedocs.io/en/latest/"><img src="https://github.com/sktime/pycaret/blob/main/docs/images/logo.png?raw=1" width="175" align="right" /></a>
 
 ## **PyCaret - the open-source, low-code machine learning framework**
 
