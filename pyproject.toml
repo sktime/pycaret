@@ -214,13 +214,20 @@ prophet = [
   "prophet>=1.0.1",
 ]
 
-# dev - the developer dependency set, for contributors to sktime
+# dev - the developer dependency set, for contributors
 dev = [
   "black>=24.8.0",
   "isort>=5.13.2",
   "flake8>=7.1.1",
   "setuptools>=71.1.0",
   "mypy>=1.0.0",
+]
+
+# docs - the dependency set used for doc build
+docs = [
+  "sphinx>=3.0.0",
+  "sphinx-rtd-theme>=0.5.0",
+  "numpy",
 ]
 
 
