@@ -241,8 +241,8 @@ test = [
 Documentation = "https://pycaret.gitbook.io/"
 Download = "https://pypi.org/project/pycaret/#files"
 Homepage = "https://pycaret.org/"
-"Release Notes" = "https://github.com/pycaret/pycaret/releases"
-Repository = "https://github.com/pycaret/pycaret"
+"Release Notes" = "https://github.com/sktime/pycaret/releases"
+Repository = "https://github.com/sktime/pycaret"
 
 [build-system]
 build-backend = "setuptools.build_meta"

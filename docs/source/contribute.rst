@@ -17,10 +17,10 @@ the pull requests to fix typo / improve grammar or semantic structuring
 of documents. Here are a few documents you can work on:
 
 -  Official Tutorials:
-   https://github.com/pycaret/pycaret/tree/master/tutorials
--  README.md https://github.com/pycaret/pycaret/blob/master/README.md
+   https://github.com/sktime/pycaret/tree/master/tutorials
+-  README.md https://github.com/sktime/pycaret/blob/master/README.md
 -  Functional Documentation / Docstrings:
-   https://github.com/pycaret/pycaret/tree/master/pycaret
+   https://github.com/sktime/pycaret/tree/master/pycaret
 
 Open Issues
 -----------
@@ -34,7 +34,7 @@ Medium Writers
 
 If you are interested or have already written a Medium story covering
 ``PyCaret``. You can submit your story in a ``markdown`` format. Submit
-a PR to https://github.com/pycaret/pycaret/tree/master/resources. To
+a PR to https://github.com/sktime/pycaret/tree/master/resources. To
 convert medium stories into ``markdown`` format please download this
 chrome extension:
 https://chrome.google.com/webstore/detail/export-to-markdown/dodkihcbgpjblncjahodbnlgkkflliim
@@ -49,7 +49,7 @@ sprint leader.
 What we currently need help on?
 -------------------------------
 -  Improving unit-test cases and test coverage
-   https://github.com/pycaret/pycaret/tree/master/tests
+   https://github.com/sktime/pycaret/tree/master/tests
 -  Refactor preprocessing pipeline to support GPU
 -  Dask Integration
 
