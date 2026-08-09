@@ -81,7 +81,7 @@ pip install pycaret[dev]
 pip install pycaret[analysis,models]
 ```
 
-Check out all [optional dependencies](https://github.com/pycaret/pycaret/blob/master/requirements-optional.txt). If you want to install everything including all the optional dependencies:
+If you want to install everything including all the optional dependencies:
 
 ```python
 # install full version
@@ -91,7 +91,7 @@ pip install pycaret[full]
 Install the development version of the library directly from the source. The API may be unstable. It is not recommended for production use.
 
 ```python
-pip install git+https://github.com/pycaret/pycaret.git@master --upgrade
+pip install git+https://github.com/sktime/pycaret.git@master --upgrade
 ```
 
 ## 📦 Option 3: Docker
@@ -227,31 +227,27 @@ pip install scikit-learn-intelex
 ```
 
 # 🤝 Contributors
-<a href="https://github.com/pycaret/pycaret/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=pycaret/pycaret" width=600/>
+<a href="https://github.com/sktime/pycaret/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sktime/pycaret" width=600/>
 </a>
 
 # 📝 License
-PyCaret is completely free and open-source and licensed under the [MIT](https://github.com/pycaret/pycaret/blob/master/LICENSE) license.
+PyCaret is completely free and open-source and licensed under the [MIT](https://github.com/sktime/pycaret/blob/master/LICENSE) license.
 
 # ℹ️ More Information
 
 | Important Links              |            Description                                       |
 | -------------------------- | -------------------------------------------------------------- |
+| :loudspeaker: **[Discord]**        | Discord community and community discussions |
 | :star: **[Tutorials]**        | Tutorials developed and maintained by core developers       |
-| :clipboard: **[Example Notebooks]** | Example notebooks created by community               |
-| :orange_book: **[Blog]** | Official blog by creator of PyCaret                      |
 | :books: **[Documentation]**      | API docs                              |
 | :tv: **[Videos]**            | Video resources             |
 | ✈️ **[Cheat sheet]**            | Community Cheat sheet            |
-| :loudspeaker: **[Discussions]**        | Community Discussion board on GitHub|
 | :hammer_and_wrench: **[Release Notes]**          | Release Notes          |
 
-[tutorials]: https://pycaret.gitbook.io/docs/get-started/tutorials
-[Example notebooks]: https://github.com/pycaret/examples
-[Blog]: https://pycaret.gitbook.io/docs/learn-pycaret/official-blog
+[Tutorials]: https://py-caret.readthedocs.io/en/latest/tutorials.html
 [Documentation]: https://pycaret.gitbook.io/docs/
 [Videos]: https://pycaret.gitbook.io/docs/learn-pycaret/videos
 [Cheat sheet]: https://pycaret.gitbook.io/docs/learn-pycaret/cheat-sheet
-[Discussions]: https://github.com/pycaret/pycaret/discussions
-[Release Notes]: https://github.com/pycaret/pycaret/releases
+[Discord]: https://discord.com/invite/54ACzaFsn7
+[Release Notes]: https://github.com/sktime/pycaret/releases
