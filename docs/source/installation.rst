@@ -4,14 +4,15 @@ Installation
 Installing the latest release
 *****************************
 
-Installing PyCaret is the first step towards building your first machine learning model in PyCaret. Installation is easy and takes only a few minutes. All hard dependencies are also installed with PyCaret. `Click here <https://github.com/sktime/pycaret/blob/master/requirements.txt>`_ to see the complete list of hard dependencies. 
+Installing PyCaret is the first step towards building your first machine learning model in PyCaret.
+Installation is easy and takes only a few minutes.
 
 In order to avoid potential conflicts with other packages, it is strongly recommended to use a virtual environment, e.g. python3 virtualenv (see `python3 virtualenv documentation <https://docs.python.org/3/tutorial/venv.html>`_) or `conda environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_. Using an isolated environment makes it possible to install a specific version of pycaret and its dependencies independently of any previously installed Python packages. See an example below of how to create a conda environment and install PyCaret. 
 
 .. code-block:: python
 
     # create a conda environment
-    conda create --name yourenvname python=3.10
+    conda create --name yourenvname python=3.12
 
     # activate conda environment
     conda activate yourenvname
@@ -25,7 +26,7 @@ In order to avoid potential conflicts with other packages, it is strongly recomm
 
 Installing the full version 
 ***************************
-PyCaret's default installation is a slim version of pycaret which only installs hard dependencies that are `listed here <https://github.com/sktime/pycaret/blob/master/requirements.txt>`_. To install the full version of pycaret, use the following command:
+To install pycaret with all optional dependencies, use the following command:
 
 .. code-block:: python
 
@@ -35,7 +36,7 @@ PyCaret's default installation is a slim version of pycaret which only installs 
 Installing the nightly build
 ****************************
 
-PyCaret is a fast-evolving machine learning library. Often, you want to have access to the latest features but want to avoid waiting for the next release. In order to do that, you can install the nightly version of PyCaret directly from GitHub.
+To install the unstable development release, you can install the nightly version of PyCaret directly from GitHub.
 
 .. code-block:: python
 
