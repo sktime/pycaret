@@ -12,7 +12,6 @@ keywords = [
   "forecasting",
   "machine-learning",
   "regression",
-  "scikit-learn<1.5",
   "time-series",
 ]
 license = { file = "LICENSE" }
