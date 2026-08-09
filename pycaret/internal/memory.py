@@ -268,9 +268,20 @@ def fast_hash(obj, hash_name="xxhash", coerce_mmap=False, protocol=None):
     return hasher.hash(obj)
 
 
-class FastMemorizedFunc(MemorizedFunc):
-    # Will only cache if function took longer than min_time_to_cache
-    # seconds to run.
+class _LegacyFastMemorizedFunc(MemorizedFunc):
+    """``MemorizedFunc`` tuned for speed, for ``joblib < 1.4``.
+
+    Written against the old private joblib API. Avoids hashing the call
+    arguments twice per cached call and only caches results of calls that
+    took longer than ``min_time_to_cache`` seconds to run.
+
+    Parameters
+    ----------
+    min_time_to_cache : float, default=DEFAULT_MIN_TIME_TO_CACHE
+        Minimum duration of a call, in seconds, for its result to be
+        persisted to the cache.
+    """
+
     def __init__(self, *args, min_time_to_cache=DEFAULT_MIN_TIME_TO_CACHE, **kwargs):
         super().__init__(*args, **kwargs)
         self._cached_output_identifiers = None
@@ -423,7 +434,113 @@ class FastMemorizedFunc(MemorizedFunc):
         )
 
 
+class _NewFastMemorizedFunc(MemorizedFunc):
+    """``MemorizedFunc`` tuned for speed, for ``joblib >= 1.4``.
+
+    The double argument hashing avoided by the legacy class is fixed
+    upstream since joblib 1.4, so only two tweaks remain: xxhash-based
+    argument hashing and only caching sufficiently slow calls.
+
+    Parameters
+    ----------
+    min_time_to_cache : float, default=DEFAULT_MIN_TIME_TO_CACHE
+        Minimum duration of a call, in seconds, for its result to be
+        persisted to the cache.
+    """
+
+    def __init__(self, *args, min_time_to_cache=DEFAULT_MIN_TIME_TO_CACHE, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.min_time_to_cache = min_time_to_cache
+
+    def _get_args_id(self, *args, **kwargs):
+        """Hash the call arguments with ``fast_hash`` instead of joblib's md5.
+
+        Returns
+        -------
+        str
+            Hash of the filtered call arguments.
+        """
+        return fast_hash(
+            filter_args(self.func, self.ignore, args, kwargs),
+            coerce_mmap=(self.mmap_mode is not None),
+        )
+
+    def _after_call(self, call_id, args, kwargs, shelving, output, start_time):
+        """Persist the output only if the call was slow enough.
+
+        Calls faster than ``min_time_to_cache`` seconds are returned
+        without being written to the cache store.
+
+        Parameters
+        ----------
+        call_id : tuple of (str, str)
+            Function and argument identifiers of the call.
+        args : tuple
+            Positional arguments of the call.
+        kwargs : dict
+            Keyword arguments of the call.
+        shelving : bool
+            Whether the call was made via ``call_and_shelve``.
+        output : Any
+            Return value of the wrapped function.
+        start_time : float
+            Time when the call started, as returned by ``time.time()``.
+
+        Returns
+        -------
+        tuple of (Any, dict or None)
+            The output, or a reference to it when shelving, and the call
+            metadata, which is ``None`` when the result was not cached.
+        """
+        duration = time.time() - start_time
+        if duration >= self.min_time_to_cache:
+            return super()._after_call(
+                call_id, args, kwargs, shelving, output, start_time
+            )
+        if self._verbose > 0:
+            _, name = get_func_name(self.func)
+            msg = "%s - not caching as it took %s" % (name, format_time(duration))
+            print(max(0, (80 - len(msg))) * "_" + msg)
+        if shelving:
+            return NotMemorizedResult(output), None
+        return output, None
+
+
+# select the implementation matching the private API of the installed joblib
+_NEW_MEMORY_API = hasattr(MemorizedFunc, "_get_args_id") and hasattr(
+    MemorizedFunc, "_after_call"
+)
+
+FastMemorizedFunc = (
+    _NewFastMemorizedFunc if _NEW_MEMORY_API else _LegacyFastMemorizedFunc
+)
+
+
+# joblib 1.4 deprecated and 1.5 removed the ``bytes_limit`` argument of
+# ``Memory.__init__``; the limit is instead passed to ``Memory.reduce_size``.
+_INIT_TAKES_BYTES_LIMIT = "bytes_limit" in inspect.signature(Memory.__init__).parameters
+
+
 class FastMemory(Memory):
+    """``joblib.Memory`` subclass tuned for speed.
+
+    Turns cached functions into ``FastMemorizedFunc`` and periodically
+    reduces the cache store to ``bytes_limit``.
+
+    Parameters
+    ----------
+    min_time_to_cache : float, default=DEFAULT_MIN_TIME_TO_CACHE
+        Minimum duration of a call, in seconds, for its result to be
+        persisted to the cache.
+    caches_between_reduce : int, default=DEFAULT_CALLS_BETWEEN_REDUCE
+        Number of functions to cache before the store size is reduced again.
+    bytes_limit : int or str, optional
+        Limit of the cache store size, in bytes. Accepted on all supported
+        joblib versions; joblib 1.5 removed the argument from
+        ``Memory.__init__``, in which case it is enforced through
+        ``reduce_size`` instead.
+    """
+
     def __init__(
         self,
         *args,
@@ -432,6 +549,8 @@ class FastMemory(Memory):
         bytes_limit=None,
         **kwargs,
     ):
+        if not _INIT_TAKES_BYTES_LIMIT:
+            self.bytes_limit = kwargs.pop("bytes_limit", None)
         super().__init__(*args, **kwargs)
         self.min_time_to_cache = min_time_to_cache
         self.caches_between_reduce = caches_between_reduce
@@ -439,16 +558,11 @@ class FastMemory(Memory):
         self.reduce_size()
 
     def reduce_size(self):
+        """Reduce the cache store to ``bytes_limit`` and reset the counter."""
         self._cache_counter = 0
-        try:
-            sig = inspect.signature(super().reduce_size)
-        except (TypeError, ValueError):
-            sig = None
-
-        if sig is not None and "bytes_limit" in sig.parameters:
-            return super().reduce_size(bytes_limit=self._bytes_limit)
-
-        return super().reduce_size()
+        if _INIT_TAKES_BYTES_LIMIT:
+            return super().reduce_size()
+        return super().reduce_size(bytes_limit=self.bytes_limit)
 
     def cache(self, func=None, ignore=None, verbose=None, mmap_mode=False):
         ret = super().cache(func, ignore, verbose, mmap_mode)
@@ -462,7 +576,12 @@ class FastMemory(Memory):
         return ret
 
     def __del__(self):
-        self.reduce_size()
+        # never raise from a destructor: reduce_size can fail if __init__
+        # did not complete or during interpreter teardown
+        try:
+            self.reduce_size()
+        except Exception:
+            pass
 
 
 def get_memory(memory: Union[bool, str, Path, Memory]) -> Memory:

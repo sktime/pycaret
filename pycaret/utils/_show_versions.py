@@ -47,7 +47,6 @@ required_deps = [
     "markupsafe",
     "pickle5",
     "cloudpickle",
-    "deprecation",
     "xxhash",
 ]
 
