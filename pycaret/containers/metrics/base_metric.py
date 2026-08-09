@@ -3,7 +3,6 @@
 # Module: containers.metrics.base_metric
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
 # Contributors (https://github.com/sktime/pycaret/graphs/contributors)
-# License: MIT
 
 
 from typing import Any, Dict, Optional, Union

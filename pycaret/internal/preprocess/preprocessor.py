@@ -1,5 +1,4 @@
 # Author: Mavs (m.524687@gmail.com)
-# License: MIT
 
 from copy import deepcopy
 

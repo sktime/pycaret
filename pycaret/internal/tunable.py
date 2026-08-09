@@ -1,6 +1,5 @@
 # Module: internal.tunable
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 # Provides a VotingClassifier which weights can be tuned.
 

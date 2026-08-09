@@ -1,6 +1,5 @@
 # Module: internal.distributions
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 from typing import Dict, Optional
 

@@ -1,6 +1,5 @@
 # Module: internal.persistence
 # Author: Moez Ali <moez.ali@queensu.ca> and Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 import gc
 import os
 from typing import Dict, Optional

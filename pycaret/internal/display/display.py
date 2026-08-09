@@ -1,6 +1,5 @@
 # Module: internal.display class
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 from typing import Any, Dict, List, Optional
 

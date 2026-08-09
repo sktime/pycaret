@@ -1,6 +1,5 @@
 # Module: internal.plotting
 # Author: Moez Ali <moez.ali@queensu.ca> and Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 import os
 from typing import Optional

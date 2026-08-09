@@ -3,7 +3,6 @@
 # Module: containers.metrics.clustering
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
 # Contributors (https://github.com/sktime/pycaret/graphs/contributors)
-# License: MIT
 
 # The purpose of this module is to serve as a central repository of clustering metrics. The `clustering` module will
 # call `get_all_metrics_containers()`, which will return instances of all classes in this module that have `ClusterMetricContainer`
