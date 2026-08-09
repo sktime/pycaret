@@ -1,9 +1,12 @@
 """Module to test time_series models
 """
 
+from types import SimpleNamespace
+
 import pandas as pd  # type: ignore
 import pytest
 
+from pycaret.containers.models import time_series
 from pycaret.time_series import TSForecastingExperiment
 
 ##########################
@@ -33,6 +36,46 @@ def test_naive_models(load_pos_and_neg_data):
     not_expected = ["snaive"]
     for model in not_expected:
         assert model not in exp.models().index
+
+
+@pytest.mark.parametrize(
+    "container_class", [time_series.BATSContainer, time_series.TBATSContainer]
+)
+def test_bats_containers_disabled_when_numpy_2_is_installed(
+    monkeypatch, container_class
+):
+    """BATS adapters must not be initialized when their NumPy constraint fails."""
+
+    def check_dependencies(package, *args, **kwargs):
+        assert package == "numpy<2"
+        assert kwargs == {"severity": "none"}
+        return False
+
+    monkeypatch.setattr(time_series, "_check_soft_dependencies", check_dependencies)
+
+    container = container_class(SimpleNamespace(seed=42))
+
+    assert not container.active
+
+
+def test_bats_models_omitted_when_numpy_2_is_installed(
+    monkeypatch, load_pos_and_neg_data
+):
+    """Inactive BATS containers are excluded from model and tuning registries."""
+    check_soft_dependencies = time_series._check_soft_dependencies
+
+    def check_dependencies(package, *args, **kwargs):
+        if package == "numpy<2":
+            return False
+        return check_soft_dependencies(package, *args, **kwargs)
+
+    monkeypatch.setattr(time_series, "_check_soft_dependencies", check_dependencies)
+    exp = TSForecastingExperiment()
+    exp.setup(data=load_pos_and_neg_data, verbose=False)
+
+    unavailable_models = {"bats", "tbats"}
+    assert unavailable_models.isdisjoint(exp.models().index)
+    assert unavailable_models.isdisjoint(exp._all_models_internal)
 
 
 def test_custom_models(load_pos_data):

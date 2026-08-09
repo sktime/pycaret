@@ -12,6 +12,7 @@ Changes include:
 """
 
 import hashlib
+import inspect
 import pickle
 import struct
 import sys
@@ -281,6 +282,12 @@ class FastMemorizedFunc(MemorizedFunc):
             coerce_mmap=(self.mmap_mode is not None),
         )
 
+    def _get_output_identifiers(self, *args, **kwargs):
+        """Generate the function and argument identifiers for caching."""
+        func_id = self.func_id
+        args_id = self._get_argument_hash(*args, **kwargs)
+        return func_id, args_id
+
     # Changes here include:
     # 1. _cached_call calls _get_output_identifiers and then calls call,
     #    which also calls _get_output_identifiers. Here, we cache the
@@ -313,7 +320,7 @@ class FastMemorizedFunc(MemorizedFunc):
             )
 
             duration = time.time() - start_time
-            metadata = self._persist_input(duration, args, kwargs)
+            metadata = self._persist_input(duration, [func_id, args_id], args, kwargs)
         else:
             metadata = None
         # PYCARET CHANGES END
@@ -366,7 +373,7 @@ class FastMemorizedFunc(MemorizedFunc):
                 if not shelving:
                     # When shelving, we do not need to load the output
                     out = self.store_backend.load_item(
-                        [func_id, args_id], msg=msg, verbose=self._verbose
+                        [func_id, args_id], verbose=self._verbose
                     )
                 else:
                     out = None
@@ -395,7 +402,7 @@ class FastMemorizedFunc(MemorizedFunc):
                 # Memmap the output at the first call to be consistent with
                 # later calls
                 out = self.store_backend.load_item(
-                    [func_id, args_id], msg=msg, verbose=self._verbose
+                    [func_id, args_id], verbose=self._verbose
                 )
 
         return (out, args_id, metadata)
@@ -422,15 +429,25 @@ class FastMemory(Memory):
         *args,
         min_time_to_cache=DEFAULT_MIN_TIME_TO_CACHE,
         caches_between_reduce=DEFAULT_CALLS_BETWEEN_REDUCE,
+        bytes_limit=None,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.min_time_to_cache = min_time_to_cache
         self.caches_between_reduce = caches_between_reduce
+        self._bytes_limit = bytes_limit
         self.reduce_size()
 
     def reduce_size(self):
         self._cache_counter = 0
+        try:
+            sig = inspect.signature(super().reduce_size)
+        except (TypeError, ValueError):
+            sig = None
+
+        if sig is not None and "bytes_limit" in sig.parameters:
+            return super().reduce_size(bytes_limit=self._bytes_limit)
+
         return super().reduce_size()
 
     def cache(self, func=None, ignore=None, verbose=None, mmap_mode=False):

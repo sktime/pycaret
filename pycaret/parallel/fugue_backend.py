@@ -186,7 +186,7 @@ class FugueBackend(ParallelBackend):
         return top_models[0] if len(top_models) == 1 else top_models
 
     def _remote_compare_models(
-        self, idx: List[List[Any]], report: Optional[Callable]
+        self, idx: List[List[Any]], report: Optional[Callable] = None
     ) -> List[List[Any]]:
         include = [self._params["include"][i[0]] for i in idx]
         instance = self.remote_setup()
