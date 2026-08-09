@@ -37,9 +37,10 @@ jobs:
 
   # JOBS MUST START WITH test !!!!
   test-notebooks-regression:
+    name: Test notebook (Regression)
+    needs: code-quality
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    name: Test notebook (Regression)
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
@@ -70,9 +71,10 @@ jobs:
         run: pytest --nbmake --nbmake-kernel=cikernel --nbmake-timeout=3000 "tutorials/Tutorial - Regression.ipynb"
 
   test-notebooks:
+    name: Test notebooks (excluding Regression)
+    needs: code-quality
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    name: Test notebooks (excluding Regression)
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
@@ -103,6 +105,8 @@ jobs:
         run: pytest --nbmake --nbmake-kernel=cikernel -n=auto --nbmake-timeout=3000 --ignore=./tutorials/translations --ignore="tutorials/Tutorial - Regression.ipynb" ./tutorials/
 
   test:
+    name: Full tests (py-${{ matrix.python-version }}, ${{ matrix.os }})
+    needs: code-quality
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     strategy:
@@ -115,8 +119,6 @@ jobs:
       run:
         shell: bash
 
-    name: Python ${{ matrix.python-version }} on OS ${{ matrix.os }}
-    needs: code-quality
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -149,14 +151,15 @@ jobs:
         run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
 
   test-plots:
-    runs-on: ubuntu-latest
+    name: Test plotting
+    needs: code-quality
     timeout-minutes: 15
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
-    name: Test plotting
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -187,15 +190,16 @@ jobs:
       - name: Test with pytest
         run: pytest --durations=0 -m "plotting"
 
-  test-ts-tune:
-    runs-on: ubuntu-latest
+  test-tune:
+    name: Test tuning
+    needs: code-quality
     timeout-minutes: 90
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
-    name: Test tuning
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -228,14 +232,15 @@ jobs:
         run: pytest --durations=0 -m "tuning_random or tuning_grid"
 
   test-benchmarks:
-    runs-on: ubuntu-latest
+    name: Benchmark tests
+    needs: code-quality
     timeout-minutes: 60
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
-    name: Benchmark tests
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
