@@ -19,12 +19,9 @@ sys.path.insert(0, os.path.abspath("../.."))
 # -- Project information -----------------------------------------------------
 
 project = "pycaret"
-copyright = "Copyright (C) 2020-2024 PyCaret"
-author = "Moez Ali"
-contributors = "https://github.com/pycaret/pycaret/graphs/contributors"
-
-# The full version, including alpha/beta/rc tags
-release = "3.4.0"
+copyright = "Copyright (C) 2026-present PyCaret maintainers"
+author = "pycaret maintainers"
+contributors = "https://github.com/sktime/pycaret/graphs/contributors"
 
 
 # -- General configuration ---------------------------------------------------

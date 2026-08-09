@@ -40,10 +40,9 @@ pytest pycaret
 # Documentation
 We use [`sphinx`](https://www.sphinx-doc.org/) to build our documentation and [readthedocs](https://py-caret.readthedocs.io/en/latest/index.html) to host it. The source files can be found in [`docs/source/`](docs/source). The main configuration file for sphinx is [`conf.py`](docs/source/conf.py) and the main page is [`index.rst`](docs/source/index.rst).
 
-To build the documentation locally, you need to install a few extra dependencies listed in
-[`docs/source/requirements.txt`](docs/source/requirements.txt):
+To build the documentation locally, you need to the documentation dependency set:
 ```shell
-pip install -r docs/source/requirements.txt
+pip install -e ".[docs]"
 ```
 To build the website locally, run:
 ```shell
