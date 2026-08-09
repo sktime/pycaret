@@ -9,7 +9,7 @@ Installation is easy and takes only a few minutes.
 
 In order to avoid potential conflicts with other packages, it is strongly recommended to use a virtual environment, e.g. python3 virtualenv (see `python3 virtualenv documentation <https://docs.python.org/3/tutorial/venv.html>`_) or `conda environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_. Using an isolated environment makes it possible to install a specific version of pycaret and its dependencies independently of any previously installed Python packages. See an example below of how to create a conda environment and install PyCaret. 
 
-.. code-block:: python
+.. code-block:: bash
 
     # create a conda environment
     conda create --name yourenvname python=3.12
@@ -28,7 +28,7 @@ Installing the full version
 ***************************
 To install pycaret with all optional dependencies, use the following command:
 
-.. code-block:: python
+.. code-block:: bash
 
     # install the full version of pycaret
     pip install pycaret-core[full]
@@ -65,7 +65,7 @@ CatBoost is only enabled on GPU when dataset has > 50,000 rows.
 
 cuML >= 0.15 cannot be installed on Google Colab. Instead use `blazingSQL <https://blazingsql.com/>`_ which comes pre-installed with cuML 0.15. Use following command to install pycaret:
 
-.. code-block:: python
+.. code-block:: bash
 
     # install pycaret
     !/opt/conda-environments/rapids-stable/bin/python -m pip install --upgrade pycaret
