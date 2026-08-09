@@ -1,6 +1,6 @@
 # Copyright (C) 2019-2024 PyCaret
 # Author: Moez Ali (moez.ali@queensu.ca)
-# Contributors (https://github.com/pycaret/pycaret/graphs/contributors)
+# Contributors (https://github.com/sktime/pycaret/graphs/contributors)
 # License: MIT
 
 
@@ -1299,7 +1299,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                         np.std(decomp_mult.resid * decomp_mult.seasonal)
                     ) ** 2
 
-                    # added if conditions to avoid division by zero (https://github.com/pycaret/pycaret/issues/3997)
+                    # added if conditions to avoid division by zero (https://github.com/sktime/pycaret/issues/3997)
                     Fs_add = (
                         np.maximum(1 - var_r_add / var_rs_add, 0)
                         if var_rs_add != 0
@@ -1477,7 +1477,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
         # Remove COVERAGE when enforce_pi is False ----
         # User can add it manually if they want when enforce_pi is set to False.
-        # Refer: https://github.com/pycaret/pycaret/issues/1900
+        # Refer: https://github.com/sktime/pycaret/issues/1900
         if not self.enforce_pi and "coverage" in self._get_metrics():
             self.remove_metric("COVERAGE")
 
@@ -1789,7 +1789,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
             whether the data is white noise or not, the values of non-seasonal difference
             "d" and seasonal difference "D" to use in certain models.
             Allowed values are: ["all", "train"].
-            Refer for more details: https://github.com/pycaret/pycaret/issues/3202
+            Refer for more details: https://github.com/sktime/pycaret/issues/3202
 
 
         seasonal_period: list or int or str, default = None
@@ -3920,7 +3920,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
         # Sometimes the plot is not successful, such as decomp with RangeIndex.
         # In such cases, plotting should be bypassed.
         if fig is not None:
-            # Per https://github.com/pycaret/pycaret/issues/1699#issuecomment-962460539
+            # Per https://github.com/sktime/pycaret/issues/1699#issuecomment-962460539
             if save:
                 plot_name = self._available_plots[plot]
                 plot_filename = f"{plot_name}.html"
@@ -4534,7 +4534,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
             # Impute the entire dataset
             # The imputed test portion will be used as `y_true` for metrics
             # The imputed train portion will be used for metrics such as MASE, RMSSE.
-            # Refer to: https://github.com/pycaret/pycaret/issues/2369
+            # Refer to: https://github.com/sktime/pycaret/issues/2369
             y_test_imputed = self._get_y_data(split="test", data_type="imputed")
             y_train_imputed = self._get_y_data(split="train", data_type="imputed")
 
@@ -5238,7 +5238,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
             # Changes to Max to take into account gaps in fh
             # e.g. fh=np.arange(25,73)
-            # - see https://github.com/pycaret/pycaret/issues/1865
+            # - see https://github.com/sktime/pycaret/issues/1865
             fh_max_length = max(self.fh)
 
             # Step length will always end up being <= fh_max_length
@@ -5604,7 +5604,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                 "This condition should not have occurred. "
                 "\nPlease file a report issue on GitHub with a reproducible example of "
                 "how this condition was generated."
-                "\nhttps://github.com/pycaret/pycaret/issues/new/choose"
+                "\nhttps://github.com/sktime/pycaret/issues/new/choose"
             )
 
     def _get_y_X_used_for_training(

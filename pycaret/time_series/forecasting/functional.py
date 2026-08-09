@@ -1,6 +1,6 @@
 # Copyright (C) 2019-2024 PyCaret
 # Author: Moez Ali (moez.ali@queensu.ca)
-# Contributors (https://github.com/pycaret/pycaret/graphs/contributors)
+# Contributors (https://github.com/sktime/pycaret/graphs/contributors)
 # License: MIT
 
 
@@ -295,7 +295,7 @@ def setup(
         whether the data is white noise or not, the values of non-seasonal difference
         "d" and seasonal difference "D" to use in certain models.
         Allowed values are: ["all", "train"].
-        Refer for more details: https://github.com/pycaret/pycaret/issues/3202
+        Refer for more details: https://github.com/sktime/pycaret/issues/3202
 
 
     seasonal_period: list or int or str, default = None

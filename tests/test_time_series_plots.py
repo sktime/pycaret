@@ -362,7 +362,7 @@ def test_plot_multiple_model_overlays(
 
 def test_plot_final_model_exo():
     """Tests running plot model after running finalize_model when exogenous
-    variables are present. Fix for https://github.com/pycaret/pycaret/issues/3565
+    variables are present. Fix for https://github.com/sktime/pycaret/issues/3565
     """
     data = get_data("uschange")
     target = "Consumption"

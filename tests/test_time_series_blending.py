@@ -155,7 +155,7 @@ def test_blend_model_custom_folds(load_pos_and_neg_data):
 def test_blend_with_larger_predict_fh():
     """Test to make sure that blending predictions work when the forecast horizon
     used in predictions is larger than the one used for training
-    Ref: https://github.com/pycaret/pycaret/issues/2329
+    Ref: https://github.com/sktime/pycaret/issues/2329
     """
     data = get_data("airline", verbose=False)
     assert isinstance(data, (pd.Series, pd.DataFrame))

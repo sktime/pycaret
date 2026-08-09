@@ -1,6 +1,6 @@
 # Copyright (C) 2019-2024 PyCaret
 # Author: Moez Ali (moez.ali@queensu.ca)
-# Contributors (https://github.com/pycaret/pycaret/graphs/contributors)
+# Contributors (https://github.com/sktime/pycaret/graphs/contributors)
 # License: MIT
 
 
@@ -5062,7 +5062,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 raise ValueError(
                     "If estimator is a Pipeline, it must implement `feature_names_in_`."
                 )
-            # We use copy instead of deepcopy because of https://github.com/pycaret/pycaret/issues/2769
+            # We use copy instead of deepcopy because of https://github.com/sktime/pycaret/issues/2769
             # Catboost behaves strange when deep copied. Using copy is fine
             # since the underlying estimators are only used for transform
             pipeline = copy(estimator)

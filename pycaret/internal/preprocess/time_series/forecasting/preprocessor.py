@@ -307,7 +307,7 @@ class TSForecastingPreprocessor:
     # ):
     #     """Select relevant features."""
     #     self.logger.info("Set up feature selection.")
-    #     # TODO: Maybe implement https://github.com/pycaret/pycaret/issues/2230
+    #     # TODO: Maybe implement https://github.com/sktime/pycaret/issues/2230
     #     # self.pipeline.steps.append(("feature_selection", feature_selector))
 
     # def _add_custom_pipeline(self, custom_pipeline):

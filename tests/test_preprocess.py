@@ -153,7 +153,7 @@ def test_weird_chars_in_column_names():
 def test_weird_chars_in_column_names_no_impact_on_other_preprocessors():
     """Assert that CleanColumnNames doesn't impact other preprocessors
     and that it meets the goal of making LightGBM work in all cases."""
-    # https://github.com/pycaret/pycaret/issues/3324
+    # https://github.com/sktime/pycaret/issues/3324
 
     # Dataset snippet from https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification
     dataset = """UDI,Product ID,Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min],Target,Failure Type
@@ -278,7 +278,7 @@ def test_iterative_imputer(dtypes_to_select, imputer):
 
 def test_iterative_imputer_many_categories():
     """Test iterative imputer with a dataset with many categories"""
-    # tests for pycaret/pycaret/issues/3636
+    # tests for sktime/pycaret/issues/3636
     data = pycaret.datasets.get_data("titanic")
     pycaret.classification.setup(
         data,
