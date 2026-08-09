@@ -1,6 +1,5 @@
 # Module: containers.models.anomaly
 # Author: Moez Ali <moez.ali@queensu.ca> and Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 # The purpose of this module is to serve as a central repository of anomaly models. The `anomaly` module will
 # call `get_all_model_containers()`, which will return instances of all classes in this module that have `ClassifierContainer`

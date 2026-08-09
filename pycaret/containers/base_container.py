@@ -1,6 +1,5 @@
 # Module: containers.base_container
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 import inspect
 from typing import Any, Dict, Optional

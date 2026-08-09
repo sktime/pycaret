@@ -1,6 +1,5 @@
 # Module: containers.models.clustering
 # Author: Moez Ali <moez.ali@queensu.ca> and Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 # The purpose of this module is to serve as a central repository of clustering models. The `clustering` module will
 # call `get_all_model_containers()`, which will return instances of all classes in this module that have `ClassifierContainer`

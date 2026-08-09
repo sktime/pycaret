@@ -1,6 +1,5 @@
 # Module: internal.pipeline
 # Author: Antoni Baum (Yard1) <antoni.baum@protonmail.com>
-# License: MIT
 
 # Provides a Pipeline supporting partial_fit (needed for tune warm start)
 # and copying over fit attributes from the final estimator, so that it can be plotted directly
