@@ -89,7 +89,7 @@ pip install pycaret-core[full]
 Install the development version of the library directly from the source. The API may be unstable. It is not recommended for production use.
 
 ```python
-pip install git+https://github.com/sktime/pycaret.git@main --upgrade
+pip install git+https://github.com/sktime/pycaret.git --upgrade
 ```
 
 ## 📦 Option 3: Docker
