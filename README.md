@@ -89,7 +89,7 @@ pip install pycaret[full]
 Install the development version of the library directly from the source. The API may be unstable. It is not recommended for production use.
 
 ```python
-pip install git+https://github.com/sktime/pycaret.git@master --upgrade
+pip install git+https://github.com/sktime/pycaret.git@main --upgrade
 ```
 
 ## 📦 Option 3: Docker
@@ -230,7 +230,7 @@ pip install scikit-learn-intelex
 </a>
 
 # 📝 License
-PyCaret is completely free and open-source and licensed under the [MIT](https://github.com/sktime/pycaret/blob/master/LICENSE) license.
+PyCaret is completely free and open-source and licensed under the [MIT](https://github.com/sktime/pycaret/blob/main/LICENSE) license.
 
 # ℹ️ More Information
 

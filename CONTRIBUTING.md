@@ -6,7 +6,7 @@ Thank you for choosing to contribute in PyCaret. There are a ton of great open-s
 There is always a room for improvement in documentation. We welcome all the pull requests to fix typo / improve grammar or semantic structuring of documents. Here are few documents you can work on:
 
 - [Official Documentation](https://github.com/sktime/pycaret-docs) 
-- [Tutorials](https://github.com/sktime/pycaret/tree/master/tutorials)
+- [Tutorials](https://github.com/sktime/pycaret/tree/main/tutorials)
 - [Docstrings](https://py-caret.readthedocs.io/en/stable/)
 
 # Open Issues

@@ -1,7 +1,7 @@
 PyCaret 
 =======
 
-.. image:: https://raw.githubusercontent.com/sktime/pycaret/master/docs/images/logo.png
+.. image:: https://raw.githubusercontent.com/sktime/pycaret/main/docs/images/logo.png
 
 PyCaret is a low-code, end-to-end ML and model management tool for the experimentation cycle.
 
@@ -13,10 +13,10 @@ The design and simplicity of PyCaret is inspired by the emerging role of citizen
 **Key Links and Resources**\ :
 
 * `Release Notes <https://github.com/sktime/pycaret/releases>`_
-* `Example Notebooks <https://github.com/sktime/pycaret/tree/master/examples>`_
-* `Blog Posts <https://github.com/sktime/pycaret/tree/master/resources>`_
+* `Example Notebooks <https://github.com/sktime/pycaret/tree/main/examples>`_
+* `Blog Posts <https://github.com/sktime/pycaret/tree/main/resources>`_
 * `LinkedIn <https://www.linkedin.com/company/scikit-time/>`_
-* `Contribute <https://github.com/sktime/pycaret/blob/master/CONTRIBUTING.md>`_
+* `Contribute <https://github.com/sktime/pycaret/blob/main/CONTRIBUTING.md>`_
 
 
 .. toctree::

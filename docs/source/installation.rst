@@ -85,8 +85,8 @@ Run PyCaret on a Docker Container
 *********************************
 A Docker container runs in a virtual environment and is the easiest way to deploy applications using PyCaret. Dockerfile from base image python:3.7 and python:3.7-slim is tested for PyCaret >= 2.0.
 
-- `python:3.7 <https://github.com/sktime/pycaret/blob/master/docker%20python37/Dockerfile>`_
-- `python:3.7-slim <https://github.com/sktime/pycaret/blob/master/Dockerfile>`_
+- `python:3.7 <https://github.com/sktime/pycaret/blob/main/docker%20python37/Dockerfile>`_
+- `python:3.7-slim <https://github.com/sktime/pycaret/blob/main/Dockerfile>`_
 
 .. code-block:: python
 
