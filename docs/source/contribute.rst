@@ -17,10 +17,10 @@ the pull requests to fix typo / improve grammar or semantic structuring
 of documents. Here are a few documents you can work on:
 
 -  Official Tutorials:
-   https://github.com/pycaret/pycaret/tree/master/tutorials
--  README.md https://github.com/pycaret/pycaret/blob/master/README.md
+   https://github.com/sktime/pycaret/tree/main/tutorials
+-  README.md https://github.com/sktime/pycaret/blob/main/README.md
 -  Functional Documentation / Docstrings:
-   https://github.com/pycaret/pycaret/tree/master/pycaret
+   https://github.com/sktime/pycaret/tree/main/pycaret
 
 Open Issues
 -----------
@@ -34,7 +34,7 @@ Medium Writers
 
 If you are interested or have already written a Medium story covering
 ``PyCaret``. You can submit your story in a ``markdown`` format. Submit
-a PR to https://github.com/pycaret/pycaret/tree/master/resources. To
+a PR to https://github.com/sktime/pycaret/tree/main/resources. To
 convert medium stories into ``markdown`` format please download this
 chrome extension:
 https://chrome.google.com/webstore/detail/export-to-markdown/dodkihcbgpjblncjahodbnlgkkflliim
@@ -49,13 +49,13 @@ sprint leader.
 What we currently need help on?
 -------------------------------
 -  Improving unit-test cases and test coverage
-   https://github.com/pycaret/pycaret/tree/master/tests
+   https://github.com/sktime/pycaret/tree/main/tests
 -  Refactor preprocessing pipeline to support GPU
 -  Dask Integration
 
 Development setup
 -----------------
-Follow `installation instructions <https://pycaret.readthedocs.io/en/latest/installation.html#installing-the-latest-release>`_ to first create a virtual environment. Then, install development version of the package:
+Follow `installation instructions <https://py-caret.readthedocs.io/en/latest/installation.html#installing-the-latest-release>`_ to first create a virtual environment. Then, install development version of the package:
 
 .. code-block:: shell
 
@@ -93,7 +93,7 @@ To run tests, except skipped ones (search for ``@pytest.mark.skip`` decorator ov
 
 Documentation
 -------------
-We use `sphinx <https://www.sphinx-doc.org/>`_ to build our documentation and `readthedocs <https://pycaret.readthedocs.io/en/latest/index.html>`_ to host it. The source files can be found in ``docs/source/``. The main configuration file for sphinx is ``conf.py`` and the main page is ``index.rst``.
+We use `sphinx <https://www.sphinx-doc.org/>`_ to build our documentation and `readthedocs <https://py-caret.readthedocs.io/en/latest/index.html>`_ to host it. The source files can be found in ``docs/source/``. The main configuration file for sphinx is ``conf.py`` and the main page is ``index.rst``.
 
 To build the documentation locally, you need to install the documentation
 dependency set.

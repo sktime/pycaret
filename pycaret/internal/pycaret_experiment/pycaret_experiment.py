@@ -144,7 +144,7 @@ class _PyCaretExperiment:
         if not self._setup_ran:
             raise RuntimeError(
                 "This function/method requires the users to run setup() first."
-                "\nMore info: https://pycaret.gitbook.io/docs/get-started/quickstart"
+                "\nMore info: https://py-caret.readthedocs.io/en/latest/installation.html"
             )
 
     def deploy_model(

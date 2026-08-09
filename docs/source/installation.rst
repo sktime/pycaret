@@ -4,20 +4,21 @@ Installation
 Installing the latest release
 *****************************
 
-Installing PyCaret is the first step towards building your first machine learning model in PyCaret. Installation is easy and takes only a few minutes. All hard dependencies are also installed with PyCaret. `Click here <https://github.com/pycaret/pycaret/blob/master/requirements.txt>`_ to see the complete list of hard dependencies. 
+Installing PyCaret is the first step towards building your first machine learning model in PyCaret.
+Installation is easy and takes only a few minutes.
 
 In order to avoid potential conflicts with other packages, it is strongly recommended to use a virtual environment, e.g. python3 virtualenv (see `python3 virtualenv documentation <https://docs.python.org/3/tutorial/venv.html>`_) or `conda environments <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_. Using an isolated environment makes it possible to install a specific version of pycaret and its dependencies independently of any previously installed Python packages. See an example below of how to create a conda environment and install PyCaret. 
 
-.. code-block:: python
+.. code-block:: bash
 
     # create a conda environment
-    conda create --name yourenvname python=3.10
+    conda create --name yourenvname python=3.12
 
     # activate conda environment
     conda activate yourenvname
 
     # install pycaret
-    pip install pycaret
+    pip install pycaret-core
 
     # create notebook kernel connected with the conda environment
     python -m ipykernel install --user --name yourenvname --display-name "display-name"
@@ -25,25 +26,25 @@ In order to avoid potential conflicts with other packages, it is strongly recomm
 
 Installing the full version 
 ***************************
-PyCaret's default installation is a slim version of pycaret which only installs hard dependencies that are `listed here <https://github.com/pycaret/pycaret/blob/master/requirements.txt>`_. To install the full version of pycaret, use the following command:
+To install pycaret with all optional dependencies, use the following command:
 
-.. code-block:: python
+.. code-block:: bash
 
     # install the full version of pycaret
-    pip install pycaret[full]
+    pip install pycaret-core[full]
 
 Installing the nightly build
 ****************************
 
-PyCaret is a fast-evolving machine learning library. Often, you want to have access to the latest features but want to avoid waiting for the next release. In order to do that, you can install the nightly version of PyCaret directly from GitHub.
+To install the unstable development release, you can install the nightly version of PyCaret directly from GitHub.
 
-.. code-block:: python
+.. code-block:: bash
 
     # install the nightly build 
-    pip install "https://github.com/pycaret/pycaret.git#egg=pycaret"
+    pip install "git+https://github.com/sktime/pycaret.git#egg=pycaret-core"
 
     # or install the full version of the nightly build
-    pip install "https://github.com/pycaret/pycaret.git#egg=pycaret[full]"
+    pip install "git+https://github.com/sktime/pycaret.git#egg=pycaret-core[full]"
 
 PyCaret on GPU
 ***************
@@ -64,7 +65,7 @@ CatBoost is only enabled on GPU when dataset has > 50,000 rows.
 
 cuML >= 0.15 cannot be installed on Google Colab. Instead use `blazingSQL <https://blazingsql.com/>`_ which comes pre-installed with cuML 0.15. Use following command to install pycaret:
 
-.. code-block:: python
+.. code-block:: bash
 
     # install pycaret
     !/opt/conda-environments/rapids-stable/bin/python -m pip install --upgrade pycaret
@@ -84,8 +85,8 @@ Run PyCaret on a Docker Container
 *********************************
 A Docker container runs in a virtual environment and is the easiest way to deploy applications using PyCaret. Dockerfile from base image python:3.7 and python:3.7-slim is tested for PyCaret >= 2.0.
 
-- `python:3.7 <https://github.com/pycaret/pycaret/blob/master/docker%20python37/Dockerfile>`_
-- `python:3.7-slim <https://github.com/pycaret/pycaret/blob/master/Dockerfile>`_
+- `python:3.7 <https://github.com/sktime/pycaret/blob/main/docker%20python37/Dockerfile>`_
+- `python:3.7-slim <https://github.com/sktime/pycaret/blob/main/Dockerfile>`_
 
 .. code-block:: python
 

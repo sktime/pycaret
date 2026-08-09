@@ -10,7 +10,7 @@ body:
       options:
         - label: >
             I have checked that the issue still exists on the latest versions of the docs
-            [here](https://pycaret.gitbook.io/docs/)
+            [here](https://py-caret.readthedocs.io/en/latest/)
           required: true
   - type: textarea
     id: location
@@ -18,8 +18,8 @@ body:
       label: Location of the documentation
       description: >
         Please provide the location of the documentation, e.g. the URL of the documentation, e.g.
-        "https://pycaret.gitbook.io/docs/get-started/installation"
-      placeholder: https://pycaret.gitbook.io/docs/get-started/installation
+        "https://py-caret.readthedocs.io/en/latest/get-started/installation"
+      placeholder: https://py-caret.readthedocs.io/en/latest/get-started/installation
     validations:
       required: true
   - type: textarea

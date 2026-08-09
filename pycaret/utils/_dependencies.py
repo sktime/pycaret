@@ -72,7 +72,7 @@ def _check_soft_dependencies(
     if extra is not None:
         msg += (
             f"\nAlternately, you can install {package} by running "
-            f"`pip install pycaret[{extra}]`"
+            f"`pip install pycaret-core[{extra}]`"
         )
 
     package_available = _skbase_csd(package, severity=severity, msg=msg)
