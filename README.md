@@ -46,44 +46,44 @@ You can install PyCaret with Python's pip package manager:
 
 ```python
 # install pycaret
-pip install pycaret
+pip install pycaret-core
 ```
 
 PyCaret's default installation will not install all the optional dependencies automatically. Depending on the use case, you may be interested in one or more extras:
 
 ```python
 # install analysis extras
-pip install pycaret[analysis]
+pip install pycaret-core[analysis]
 
 # models extras
-pip install pycaret[models]
+pip install pycaret-core[models]
 
 # install tuner extras
-pip install pycaret[tuner]
+pip install pycaret-core[tuner]
 
 # install mlops extras
-pip install pycaret[mlops]
+pip install pycaret-core[mlops]
 
 # install parallel extras
-pip install pycaret[parallel]
+pip install pycaret-core[parallel]
 
 # install test extras
-pip install pycaret[test]
+pip install pycaret-core[test]
 
 # install dev extras
-pip install pycaret[dev]
+pip install pycaret-core[dev]
 
 ##
 
 # install multiple extras together
-pip install pycaret[analysis,models]
+pip install pycaret-core[analysis,models]
 ```
 
 If you want to install everything including all the optional dependencies:
 
 ```python
 # install full version
-pip install pycaret[full]
+pip install pycaret-core[full]
 ```
 ## 📄 Option 2: Build from Source
 Install the development version of the library directly from the source. The API may be unstable. It is not recommended for production use.

@@ -18,7 +18,7 @@ In order to avoid potential conflicts with other packages, it is strongly recomm
     conda activate yourenvname
 
     # install pycaret
-    pip install pycaret
+    pip install pycaret-core
 
     # create notebook kernel connected with the conda environment
     python -m ipykernel install --user --name yourenvname --display-name "display-name"
@@ -31,7 +31,7 @@ To install pycaret with all optional dependencies, use the following command:
 .. code-block:: python
 
     # install the full version of pycaret
-    pip install pycaret[full]
+    pip install pycaret-core[full]
 
 Installing the nightly build
 ****************************
