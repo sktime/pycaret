@@ -2,6 +2,8 @@
 
 ## **PyCaret - the open-source, low-code machine learning framework**
 
+#### 🎉🎉🎉 **PyCaret 3.4 is now available!** 🎉🎉🎉
+
 PyCaret is a low-code, end-to-end ML and model management tool for the experimentation cycle.
 
 PyCaret provides low-code APIs for state-of-art AI frameworks such as scikit-learn, XGBoost, LightGBM, CatBoost, and more.
@@ -9,10 +11,6 @@ PyCaret provides low-code APIs for state-of-art AI frameworks such as scikit-lea
 **This is the active community fork of the `pycaret` package:** community owned,
 professionally maintained, with a permissive license, and published under
 the PyPI name `pycaret-core`. It is maintained in direct continuity of `pycaret 3`.
-
-The PyPI name `pycaret` is no longer owned by the community.
-It is used to promote a commercially licensed project that is not in continuity
-with the previous `pycaret 3` releases, and that is promoted in its place.
 
 
 |  | **[Documentation](https://py-caret.readthedocs.io/en/latest/)** · **[Tutorials](https://py-caret.readthedocs.io/en/latest/tutorials.html)** · **[Release Notes](https://github.com/sktime/pycaret/releases)** |
