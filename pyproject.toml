@@ -1,5 +1,5 @@
 [project]
-name = "pycaret"
+name = "pycaret-core"
 version = "3.5.0"
 description = "PyCaret - An open source, low-code machine learning library in Python."
 readme = "README.md"
