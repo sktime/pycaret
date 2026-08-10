@@ -533,9 +533,17 @@ class _TabularExperiment(_PyCaretExperiment):
             "yellowbrick.utils.types.is_estimator",
             pycaret.internal.patches.yellowbrick.is_estimator,
         ):
-            with patch(
-                "yellowbrick.utils.helpers.is_estimator",
-                pycaret.internal.patches.yellowbrick.is_estimator,
+            # matplotlib >= 3.11 removed matplotlib.cm.get_cmap, which yellowbrick
+            # (unmaintained) still calls at plot time; restore it only for the
+            # duration of the plot call, see #49. create=True adds the attribute
+            # if absent and removes it again on exit, so matplotlib remains
+            # unmodified outside this block.
+            with (
+                patch("matplotlib.cm.get_cmap", plt.get_cmap, create=True),
+                patch(
+                    "yellowbrick.utils.helpers.is_estimator",
+                    pycaret.internal.patches.yellowbrick.is_estimator,
+                ),
             ):
                 _base_dpi = 100
 
