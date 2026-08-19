@@ -24,7 +24,6 @@ from sklearn.pipeline import Pipeline as skPipeline
 from sklearn.utils.validation import check_is_fitted as check_fitted
 
 import pycaret.internal.patches.sklearn
-import pycaret.internal.patches.yellowbrick
 import pycaret.internal.persistence
 import pycaret.internal.preprocess
 from pycaret.containers.metrics.classification import (

@@ -34,7 +34,6 @@ required_deps = [
     "requests",
     "matplotlib",
     "scikitplot",
-    "yellowbrick",
     "plotly",
     "plotly-resampler",
     "kaleido",
