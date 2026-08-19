@@ -82,7 +82,16 @@ PLOT_STYLE = {
 
 
 def _styled(plot):
-    """Decorator running a plot function with ``PLOT_STYLE`` applied."""
+    """Wrap a plot function so that it runs with ``PLOT_STYLE`` applied.
+
+    Args:
+        plot (callable): Function that draws and returns a matplotlib figure.
+
+    Returns:
+        callable: ``plot`` wrapped in a ``matplotlib.pyplot.rc_context``, so
+            that ``PLOT_STYLE`` is active while it runs and never leaks into
+            the caller's matplotlib configuration.
+    """
 
     @functools.wraps(plot)
     def wrapper(*args, **kwargs):
@@ -93,7 +102,15 @@ def _styled(plot):
 
 
 def _colors(n: int) -> list:
-    """Return ``n`` colors cycling through the default color cycle."""
+    """Return ``n`` colors cycling through the module's default color cycle.
+
+    Args:
+        n (int): Number of colors to return.
+
+    Returns:
+        list: Hex color strings of length ``n``, repeating the palette of
+            ``PLOT_STYLE`` when ``n`` exceeds its length.
+    """
     palette = PLOT_STYLE["axes.prop_cycle"].by_key()["color"]
     return [palette[i % len(palette)] for i in range(n)]
 
@@ -108,27 +125,28 @@ def show_matplotlib_figure(
 ) -> str:
     """Save, show, or stream a matplotlib figure and return its file name.
 
-    Parameters
-    ----------
-    fig : matplotlib.figure.Figure
-        Figure to render. It is closed afterwards.
-    name : str
-        Base name of the plot; the file is saved as ``"{name}.png"``.
-    scale : float, default 1
-        Multiplier applied to the figure DPI.
-    save : bool or str, default False
-        If True, save the figure in the current directory. If a string, save it
-        in that directory. If False, display it instead.
-    display_format : str, optional
-        ``"streamlit"`` renders the figure with ``streamlit.write``, anything
-        else with ``matplotlib.pyplot.show``.
-    system : bool, default True
-        Whether to display the figure when it is not saved.
+    Exactly one of the three actions is taken: saving takes precedence,
+    otherwise the figure is rendered with streamlit or shown with matplotlib.
+    The figure is closed in every case.
 
-    Returns
-    -------
-    str
-        The plot file name, used by callers for logging artifacts.
+    Args:
+        fig (matplotlib.figure.Figure): Figure to render.
+        name (str): Base name of the plot; the file is saved as
+            ``"{name}.png"``.
+        scale (float, optional): Multiplier applied to the figure DPI.
+            Defaults to 1.
+        save (bool or str, optional): If True, save the figure in the current
+            directory. If a string, save it in that directory instead. If
+            False, display the figure rather than saving it. Defaults to
+            False.
+        display_format (str, optional): ``"streamlit"`` renders the figure
+            with ``streamlit.write``; any other value falls back to
+            ``matplotlib.pyplot.show``. Defaults to None.
+        system (bool, optional): Whether to display the figure when it is not
+            saved. Defaults to True.
+
+    Returns:
+        str: The plot file name, used by callers for logging artifacts.
     """
     logger = get_logger()
     fig.set_dpi(fig.dpi * scale)
@@ -152,7 +170,23 @@ def show_matplotlib_figure(
 
 
 def _class_scores(estimator, X) -> np.ndarray:
-    """Return per-class scores of shape (n_samples, n_classes)."""
+    """Return per-class scores of a fitted classifier for ``X``.
+
+    Uses ``predict_proba`` when available and falls back to
+    ``decision_function``. One-dimensional decision scores of binary
+    classifiers are expanded to one column per class.
+
+    Args:
+        estimator: Fitted classifier.
+        X (array-like): Samples to score, of shape (n_samples, n_features).
+
+    Returns:
+        numpy.ndarray: Scores of shape (n_samples, n_classes).
+
+    Raises:
+        TypeError: If the estimator exposes neither ``predict_proba`` nor
+            ``decision_function``.
+    """
     if hasattr(estimator, "predict_proba"):
         return np.asarray(estimator.predict_proba(X))
     if hasattr(estimator, "decision_function"):
@@ -167,7 +201,14 @@ def _class_scores(estimator, X) -> np.ndarray:
 
 
 def _label_curve_display(display, xlabel: str) -> None:
-    """Label a learning or validation curve display the way yellowbrick did."""
+    """Relabel a curve display as training versus cross-validation score.
+
+    Args:
+        display: Fitted ``LearningCurveDisplay`` or
+            ``ValidationCurveDisplay`` whose lines, axis labels, and legend
+            are modified in place.
+        xlabel (str): Label of the x axis.
+    """
     for line, label in zip(
         display.lines_, ("Training Score", "Cross Validation Score")
     ):
@@ -178,9 +219,18 @@ def _label_curve_display(display, xlabel: str) -> None:
 
 
 def _fit_params(fit_kwargs: Optional[dict]) -> dict:
-    """Keyword argument forwarding ``fit_kwargs`` to scikit-learn's curve displays.
+    """Build the keyword argument forwarding ``fit_kwargs`` to curve displays.
 
-    ``fit_params`` was renamed to ``params`` in scikit-learn 1.6.
+    scikit-learn renamed the ``fit_params`` argument of
+    ``LearningCurveDisplay`` and ``ValidationCurveDisplay`` to ``params`` in
+    version 1.6; this helper picks the name matching the installed version.
+
+    Args:
+        fit_kwargs (dict, optional): Keyword arguments for ``estimator.fit``.
+
+    Returns:
+        dict: Empty if ``fit_kwargs`` is empty, otherwise a single-entry dict
+            mapping ``"params"`` or ``"fit_params"`` to ``fit_kwargs``.
     """
     if not fit_kwargs:
         return {}
@@ -194,18 +244,19 @@ def plot_roc_auc(estimator, X, y, **kwargs) -> Figure:
     """Plot ROC curves of a fitted classifier.
 
     One-vs-rest curves are drawn per class together with the micro and macro
-    averages, as yellowbrick's ``ROCAUC`` did.
+    averages and the diagonal of a random classifier, with the area under
+    each curve reported in the legend.
 
-    Parameters
-    ----------
-    estimator : fitted classifier
-    X, y : hold-out features and target
-    **kwargs
-        Line properties applied to every ROC curve.
+    Args:
+        estimator: Fitted classifier exposing ``predict_proba`` or
+            ``decision_function``.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        **kwargs: Line properties such as ``linewidth`` or ``alpha``, applied
+            to every ROC curve.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the ROC curves.
     """
     classes = np.asarray(estimator.classes_)
     y_bin = label_binarize(np.asarray(y), classes=classes)
@@ -254,22 +305,22 @@ def plot_precision_recall(
     """Plot the precision-recall curve of a fitted classifier.
 
     Binary problems show the curve of the positive class, multiclass problems
-    the micro-average curve, both with the area under the curve filled and the
-    average precision marked, as yellowbrick's ``PrecisionRecallCurve`` did.
+    the micro-average curve, both with the area under the curve filled and
+    the average precision marked with a horizontal line.
 
-    Parameters
-    ----------
-    estimator : fitted classifier
-    X, y : hold-out features and target
-    per_class : bool, default False
-        For multiclass problems, draw one curve per class instead of the
-        micro average.
-    **kwargs
-        Line properties applied to every precision-recall curve.
+    Args:
+        estimator: Fitted classifier exposing ``predict_proba`` or
+            ``decision_function``.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        per_class (bool, optional): For multiclass problems, draw one curve
+            per class instead of the micro average. Defaults to False.
+        **kwargs: Line properties such as ``linewidth`` or ``alpha``, applied
+            to every precision-recall curve.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the precision-recall
+            curves.
     """
     classes = np.asarray(estimator.classes_)
     y_bin = label_binarize(np.asarray(y), classes=classes)
@@ -326,20 +377,17 @@ def plot_confusion_matrix(
 ) -> Figure:
     """Plot the confusion matrix of a fitted classifier.
 
-    Parameters
-    ----------
-    estimator : fitted classifier
-    X, y : hold-out features and target
-    fontsize : int, default 15
-        Font size of the cell counts.
-    cmap : str, default "Greens"
-        Colormap of the cells.
-    **kwargs
-        Passed to ``ConfusionMatrixDisplay.from_estimator``.
+    Args:
+        estimator: Fitted classifier.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        fontsize (int, optional): Font size of the cell counts. Defaults to
+            15.
+        cmap (str, optional): Colormap of the cells. Defaults to "Greens".
+        **kwargs: Passed to ``ConfusionMatrixDisplay.from_estimator``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the confusion matrix.
     """
     fig, ax = plt.subplots()
     ConfusionMatrixDisplay.from_estimator(
@@ -372,30 +420,32 @@ def plot_discrimination_threshold(
 ) -> Figure:
     """Plot precision, recall, F1 and queue rate against the decision threshold.
 
-    As yellowbrick's ``DiscriminationThreshold`` did, the data is split
-    ``n_trials`` times with ``ShuffleSplit``, a copy of the estimator is fitted
-    on each training part and scored on the test part, and the median of every
-    metric is drawn with its 10 %-90 % quantile band. The threshold maximizing
-    the median F1 is marked. Binary classification only.
+    The data is split ``n_trials`` times with ``ShuffleSplit``, a copy of the
+    estimator is fitted on each training part and scored on the test part,
+    and the median of every metric is drawn with its 10 %-90 % quantile band.
+    The threshold maximizing the median F1 is marked. Binary classification
+    only.
 
-    Parameters
-    ----------
-    estimator : binary classifier
-    X, y : features and target to split
-    n_trials : int, default 50
-        Number of shuffle splits.
-    test_size : float, default 0.1
-        Fraction of samples scored in every trial.
-    random_state : int, optional
-        Seed of the shuffle splits.
-    fit_kwargs : dict, optional
-        Passed to ``estimator.fit``.
-    **kwargs
-        Passed to ``Axes.plot``.
+    Args:
+        estimator: Binary classifier exposing ``predict_proba`` or
+            ``decision_function``; it is refitted on every split.
+        X (array-like): Features of shape (n_samples, n_features) to split
+            into training and scoring parts.
+        y (array-like): Binary target of shape (n_samples,).
+        n_trials (int, optional): Number of shuffle splits. Defaults to 50.
+        test_size (float, optional): Fraction of samples scored in every
+            trial. Defaults to 0.1.
+        random_state (int, optional): Seed of the shuffle splits. Defaults to
+            None.
+        fit_kwargs (dict, optional): Passed to ``estimator.fit``. Defaults to
+            None.
+        **kwargs: Passed to ``Axes.plot`` for every metric line.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the threshold plot.
+
+    Raises:
+        TypeError: If the estimator was fitted on more than two classes.
     """
     classes = np.asarray(estimator.classes_)
     if len(classes) != 2:
@@ -457,16 +507,18 @@ def plot_discrimination_threshold(
 def plot_class_prediction_error(estimator, X, y, **kwargs) -> Figure:
     """Plot stacked bars of predicted classes for every actual class.
 
-    Parameters
-    ----------
-    estimator : fitted classifier
-    X, y : hold-out features and target
-    **kwargs
-        Passed to ``Axes.bar``.
+    Each bar corresponds to one actual class and is split by the classes the
+    estimator predicted for its samples, so off-color segments show where the
+    classifier is confused.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Fitted classifier.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        **kwargs: Passed to ``Axes.bar``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the stacked bar chart.
     """
     classes = np.asarray(estimator.classes_)
     labels = [str(label) for label in estimator.classes_]
@@ -498,18 +550,16 @@ def plot_classification_report(
 ) -> Figure:
     """Plot a heatmap of per-class precision, recall, F1 and support.
 
-    Parameters
-    ----------
-    estimator : fitted classifier
-    X, y : hold-out features and target
-    cmap : str, default "YlOrRd"
-        Colormap of the cells. Support is colored by its share of all samples.
-    **kwargs
-        Passed to ``Axes.imshow``.
+    Args:
+        estimator: Fitted classifier.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        cmap (str, optional): Colormap of the cells. Support cells are
+            colored by their share of all samples. Defaults to "YlOrRd".
+        **kwargs: Passed to ``Axes.imshow``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the heatmap.
     """
     classes = np.asarray(estimator.classes_)
     labels = [str(label) for label in estimator.classes_]
@@ -563,22 +613,26 @@ def plot_decision_boundary(
     two columns. The boundary is drawn with ``DecisionBoundaryDisplay`` and the
     hold-out points are scattered on top.
 
-    Parameters
-    ----------
-    estimator : classifier
-    X_train, y_train : two-column training features and target
-    X_test, y_test : two-column hold-out features and target
-    fit_kwargs : dict, optional
-        Passed to ``estimator.fit``.
-    cmap : str or Colormap, optional
-        Colormap shared by the decision regions and the hold-out points. By
-        default, the module's color cycle is used.
-    **kwargs
-        Passed to ``DecisionBoundaryDisplay.from_estimator``.
+    Args:
+        estimator: Classifier to refit; the passed instance is not modified.
+        X_train (array-like): Training features of shape (n_samples, 2).
+        y_train (array-like): Training target of shape (n_samples,).
+        X_test (array-like): Hold-out features of shape (n_samples, 2),
+            scattered on top of the decision regions.
+        y_test (array-like): Hold-out target of shape (n_samples,), used to
+            color the scattered points by class.
+        fit_kwargs (dict, optional): Passed to ``estimator.fit``. Defaults to
+            None.
+        cmap (str or matplotlib.colors.Colormap, optional): Colormap shared
+            by the decision regions and the hold-out points. Defaults to the
+            module's color cycle.
+        **kwargs: Passed to ``DecisionBoundaryDisplay.from_estimator``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the decision boundary.
+
+    Raises:
+        ValueError: If ``X_train`` does not have exactly two columns.
     """
     X_train, X_test = np.asarray(X_train), np.asarray(X_test)
     y_train, y_test = np.asarray(y_train), np.asarray(y_test)
@@ -627,20 +681,23 @@ def plot_decision_boundary(
 def plot_residuals(estimator, X_train, y_train, X_test, y_test, **kwargs) -> Figure:
     """Plot residuals against predictions for the train and hold-out sets.
 
-    Residuals are ``y_pred - y_true``, following yellowbrick's convention. A
-    histogram of the residuals is drawn next to the scatter plot.
+    Residuals are computed as ``y_pred - y_true``. A histogram of the
+    residuals is drawn next to the scatter plot, and the R² score of each set
+    is reported in the legend.
 
-    Parameters
-    ----------
-    estimator : fitted regressor
-    X_train, y_train : training features and target
-    X_test, y_test : hold-out features and target
-    **kwargs
-        Passed to ``Axes.scatter``.
+    Args:
+        estimator: Fitted regressor.
+        X_train (array-like): Training features of shape
+            (n_samples, n_features).
+        y_train (array-like): Training target of shape (n_samples,).
+        X_test (array-like): Hold-out features of shape
+            (n_samples, n_features).
+        y_test (array-like): Hold-out target of shape (n_samples,).
+        **kwargs: Passed to ``Axes.scatter`` for both point sets.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure with the residual scatter plot and
+            the residual histogram side by side.
     """
     fig, (ax, ax_hist) = plt.subplots(
         1, 2, sharey=True, gridspec_kw={"width_ratios": [4, 1], "wspace": 0.05}
@@ -681,16 +738,15 @@ def plot_prediction_error(estimator, X, y, **kwargs) -> Figure:
     The identity line, the least-squares fit of the points and the R² score
     are shown for reference.
 
-    Parameters
-    ----------
-    estimator : fitted regressor
-    X, y : hold-out features and target
-    **kwargs
-        Passed to ``Axes.scatter``.
+    Args:
+        estimator: Fitted regressor.
+        X (array-like): Hold-out features of shape (n_samples, n_features).
+        y (array-like): Hold-out target of shape (n_samples,).
+        **kwargs: Passed to ``Axes.scatter``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the prediction error
+            plot.
     """
     y_true = np.asarray(y, dtype=float)
     y_pred = np.asarray(estimator.predict(X), dtype=float)
@@ -728,18 +784,19 @@ def plot_prediction_error(estimator, X, y, **kwargs) -> Figure:
 def plot_cooks_distance(X, y, **kwargs) -> Figure:
     """Plot Cook's distance of every observation under an ordinary least squares fit.
 
-    Observations above the ``4 / n`` influence threshold are counted in the
-    legend.
+    The distances measure how much the least-squares fit would change if an
+    observation were left out. Observations above the ``4 / n`` influence
+    threshold are counted in the legend.
 
-    Parameters
-    ----------
-    X, y : numeric training features and target
-    **kwargs
-        Passed to ``Axes.stem``.
+    Args:
+        X (array-like): Numeric training features of shape
+            (n_samples, n_features).
+        y (array-like): Numeric training target of shape (n_samples,).
+        **kwargs: Passed to ``Axes.stem``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the stem plot of the
+            distances.
     """
     X = np.asarray(X, dtype=float)
     y = np.asarray(y, dtype=float)
@@ -778,19 +835,24 @@ def plot_cooks_distance(X, y, **kwargs) -> Figure:
 def plot_rfecv(estimator, X, y, cv=None, groups=None, **kwargs) -> Figure:
     """Plot the cross-validated score against the number of selected features.
 
-    Parameters
-    ----------
-    estimator : estimator exposing ``coef_`` or ``feature_importances_``
-    X, y : training features and target
-    cv : cross-validation splitter, optional
-    groups : array-like, optional
-        Group labels for ``GroupKFold``-style splitters.
-    **kwargs
-        Passed to ``sklearn.feature_selection.RFECV``.
+    Runs recursive feature elimination with cross-validation and draws the
+    mean test score with a one-standard-deviation band, marking the selected
+    number of features.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Estimator exposing ``coef_`` or ``feature_importances_``
+            after fitting, as required by ``RFECV``.
+        X (array-like): Training features of shape (n_samples, n_features).
+        y (array-like): Training target of shape (n_samples,).
+        cv (int, cross-validation splitter, or iterable, optional):
+            Cross-validation strategy, as accepted by ``RFECV``. Defaults to
+            None.
+        groups (array-like, optional): Group labels for ``GroupKFold``-style
+            splitters. Defaults to None.
+        **kwargs: Passed to ``sklearn.feature_selection.RFECV``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the score curve.
     """
     rfecv = RFECV(estimator, cv=cv, **kwargs).fit(X, y, groups=groups)
     results = rfecv.cv_results_
@@ -830,23 +892,27 @@ def plot_learning_curve(
 ) -> Figure:
     """Plot training and cross-validation scores against the training set size.
 
-    Parameters
-    ----------
-    estimator : estimator
-    X, y : training features and target
-    cv : cross-validation splitter, optional
-    groups : array-like, optional
-        Group labels for ``GroupKFold``-style splitters.
-    n_jobs : int, optional
-        Number of parallel jobs.
-    fit_kwargs : dict, optional
-        Passed to ``estimator.fit``.
-    **kwargs
-        Passed to ``LearningCurveDisplay.from_estimator``.
+    The estimator is refitted on ten training set sizes between 30 % and
+    100 % of the data, and both scores are drawn with their variability
+    bands.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Estimator to evaluate; it is refitted for every training
+            set size and cross-validation fold.
+        X (array-like): Training features of shape (n_samples, n_features).
+        y (array-like): Training target of shape (n_samples,).
+        cv (int, cross-validation splitter, or iterable, optional):
+            Cross-validation strategy, as accepted by
+            ``LearningCurveDisplay.from_estimator``. Defaults to None.
+        groups (array-like, optional): Group labels for ``GroupKFold``-style
+            splitters. Defaults to None.
+        n_jobs (int, optional): Number of parallel jobs. Defaults to None.
+        fit_kwargs (dict, optional): Passed to ``estimator.fit``. Defaults to
+            None.
+        **kwargs: Passed to ``LearningCurveDisplay.from_estimator``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the learning curve.
     """
     fig, ax = plt.subplots()
     display = LearningCurveDisplay.from_estimator(
@@ -883,27 +949,28 @@ def plot_validation_curve(
 ) -> Figure:
     """Plot training and cross-validation scores against one hyperparameter.
 
-    Parameters
-    ----------
-    estimator : estimator
-    X, y : training features and target
-    param_name : str
-        Name of the hyperparameter to vary.
-    param_range : array-like
-        Values of the hyperparameter to evaluate.
-    cv : cross-validation splitter, optional
-    groups : array-like, optional
-        Group labels for ``GroupKFold``-style splitters.
-    n_jobs : int, optional
-        Number of parallel jobs.
-    fit_kwargs : dict, optional
-        Passed to ``estimator.fit``.
-    **kwargs
-        Passed to ``ValidationCurveDisplay.from_estimator``.
+    The estimator is refitted for every value in ``param_range``, and both
+    scores are drawn with their variability bands.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Estimator to evaluate; it is refitted for every parameter
+            value and cross-validation fold.
+        X (array-like): Training features of shape (n_samples, n_features).
+        y (array-like): Training target of shape (n_samples,).
+        param_name (str): Name of the hyperparameter to vary.
+        param_range (array-like): Values of the hyperparameter to evaluate.
+        cv (int, cross-validation splitter, or iterable, optional):
+            Cross-validation strategy, as accepted by
+            ``ValidationCurveDisplay.from_estimator``. Defaults to None.
+        groups (array-like, optional): Group labels for ``GroupKFold``-style
+            splitters. Defaults to None.
+        n_jobs (int, optional): Number of parallel jobs. Defaults to None.
+        fit_kwargs (dict, optional): Passed to ``estimator.fit``. Defaults to
+            None.
+        **kwargs: Passed to ``ValidationCurveDisplay.from_estimator``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the validation curve.
     """
     fig, ax = plt.subplots()
     display = ValidationCurveDisplay.from_estimator(
@@ -931,18 +998,18 @@ def plot_manifold(X, y, random_state=None, **kwargs) -> Figure:
     """Plot a two-dimensional t-SNE embedding of ``X`` colored by the target.
 
     Discrete targets get one color per class, continuous targets a colorbar.
+    The time taken to fit the embedding is reported in the title.
 
-    Parameters
-    ----------
-    X, y : numeric features and target
-    random_state : int, optional
-        Seed of the t-SNE embedding.
-    **kwargs
-        Passed to ``sklearn.manifold.TSNE``.
+    Args:
+        X (array-like): Numeric features of shape (n_samples, n_features).
+        y (array-like): Target of shape (n_samples,), used only to color the
+            embedded points.
+        random_state (int, optional): Seed of the t-SNE embedding. Defaults
+            to None.
+        **kwargs: Passed to ``sklearn.manifold.TSNE``.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the embedded points.
     """
     y = np.asarray(y)
     start = time.perf_counter()
@@ -973,15 +1040,18 @@ def plot_manifold(X, y, random_state=None, **kwargs) -> Figure:
 def plot_radviz(X, y, **kwargs) -> Figure:
     """Plot a RadViz projection of the columns of ``X`` colored by class.
 
-    Parameters
-    ----------
-    X, y : numeric features and discrete target
-    **kwargs
-        Passed to ``pandas.plotting.radviz``.
+    Every feature becomes an anchor on the unit circle, and each sample is
+    placed inside the circle at the equilibrium of its normalized feature
+    values, revealing which features separate the classes.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        X (array-like): Numeric features of shape (n_samples, n_features).
+        y (array-like): Discrete target of shape (n_samples,), used to color
+            the points by class.
+        **kwargs: Passed to ``pandas.plotting.radviz``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the RadViz projection.
     """
     X, y = np.asarray(X), np.asarray(y)
 
@@ -1001,7 +1071,21 @@ def plot_radviz(X, y, **kwargs) -> Figure:
 
 
 def _cluster_labels(estimator, X) -> np.ndarray:
-    """Return the cluster label of every sample in ``X``."""
+    """Return the cluster label of every sample in ``X``.
+
+    Args:
+        estimator: Fitted clusterer. Labels are taken from its ``labels_``
+            attribute when present; otherwise a copy is refitted with
+            ``fit_predict``.
+        X (array-like): Samples of shape (n_samples, n_features).
+
+    Returns:
+        numpy.ndarray: Cluster labels of shape (n_samples,).
+
+    Raises:
+        TypeError: If the estimator has neither ``labels_`` nor
+            ``fit_predict``.
+    """
     if hasattr(estimator, "labels_"):
         return np.asarray(estimator.labels_)
     if hasattr(estimator, "fit_predict"):
@@ -1010,7 +1094,16 @@ def _cluster_labels(estimator, X) -> np.ndarray:
 
 
 def _distortion(X, labels) -> float:
-    """Return the sum of squared distances of every sample to its cluster mean."""
+    """Return the sum of squared distances of every sample to its cluster mean.
+
+    Args:
+        X (array-like): Samples of shape (n_samples, n_features).
+        labels (array-like): Cluster label of every sample, of shape
+            (n_samples,).
+
+    Returns:
+        float: The distortion score of the clustering.
+    """
     X = np.asarray(X, dtype=float)
     return sum(
         ((X[labels == label] - X[labels == label].mean(axis=0)) ** 2).sum()
@@ -1019,7 +1112,18 @@ def _distortion(X, labels) -> float:
 
 
 def _elbow_index(x, y) -> int:
-    """Return the index of the point farthest from the chord between the curve ends."""
+    """Return the index of the point farthest from the chord between the curve ends.
+
+    Both coordinates are normalized to [0, 1] first, so the result is the
+    "knee" of the curve regardless of the scales of ``x`` and ``y``.
+
+    Args:
+        x (array-like): X coordinates of the curve, of shape (n_points,).
+        y (array-like): Y coordinates of the curve, of shape (n_points,).
+
+    Returns:
+        int: Index of the elbow point.
+    """
     x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
     points = np.column_stack(
         [(x - x.min()) / (np.ptp(x) or 1), (y - y.min()) / (np.ptp(y) or 1)]
@@ -1036,23 +1140,25 @@ def plot_elbow(
 ) -> Figure:
     """Plot the distortion score against the number of clusters and mark the elbow.
 
-    A copy of ``estimator`` is refitted for every ``k``, so the estimator needs
-    an ``n_clusters`` parameter.
+    A copy of ``estimator`` is refitted for every ``k``, so the estimator
+    needs an ``n_clusters`` parameter. The elbow is the point of the score
+    curve farthest from the straight line between its endpoints.
 
-    Parameters
-    ----------
-    estimator : clusterer with an ``n_clusters`` parameter
-    X : features
-    k_range : iterable of int, default range(2, 11)
-        Numbers of clusters to evaluate.
-    fit_kwargs : dict, optional
-        Passed to ``estimator.fit``.
-    **kwargs
-        Passed to ``Axes.plot``.
+    Args:
+        estimator: Clusterer with an ``n_clusters`` parameter; the passed
+            instance is not modified.
+        X (array-like): Features of shape (n_samples, n_features).
+        k_range (iterable of int, optional): Numbers of clusters to evaluate.
+            Defaults to ``range(2, 11)``.
+        fit_kwargs (dict, optional): Passed to ``estimator.fit``. Defaults to
+            None.
+        **kwargs: Passed to ``Axes.plot`` for the score curve.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Returns:
+        matplotlib.figure.Figure: Figure containing the elbow plot.
+
+    Raises:
+        TypeError: If the estimator has no ``n_clusters`` parameter.
     """
     if "n_clusters" not in estimator.get_params():
         raise TypeError(f"{type(estimator).__name__} has no n_clusters parameter.")
@@ -1086,16 +1192,21 @@ def plot_elbow(
 def plot_silhouette(estimator, X, **kwargs) -> Figure:
     """Plot the silhouette coefficient of every sample, grouped by cluster.
 
-    Parameters
-    ----------
-    estimator : fitted clusterer
-    X : features the estimator was fitted on
-    **kwargs
-        Passed to ``sklearn.metrics.silhouette_samples``.
+    Each cluster is drawn as a sorted horizontal profile of its samples'
+    coefficients, with the average silhouette score marked by a vertical
+    line, showing how dense and well separated the clusters are.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Fitted clusterer.
+        X (array-like): Features the estimator was fitted on, of shape
+            (n_samples, n_features).
+        **kwargs: Passed to ``sklearn.metrics.silhouette_samples``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the silhouette plot.
+
+    Raises:
+        TypeError: If the estimator produced fewer than two clusters.
     """
     labels = _cluster_labels(estimator, X)
     clusters = np.unique(labels)
@@ -1134,18 +1245,23 @@ def plot_silhouette(estimator, X, **kwargs) -> Figure:
 def plot_intercluster_distance(estimator, X, random_state=None, **kwargs) -> Figure:
     """Plot cluster centers embedded in two dimensions with MDS, sized by membership.
 
-    Parameters
-    ----------
-    estimator : fitted clusterer with a ``cluster_centers_`` attribute
-    X : features the estimator was fitted on
-    random_state : int, optional
-        Seed of the MDS embedding.
-    **kwargs
-        Passed to ``Axes.scatter``.
+    Distances between the drawn circles reflect the distances between the
+    cluster centers in the original feature space, and each circle's area
+    scales with the number of samples in its cluster.
 
-    Returns
-    -------
-    matplotlib.figure.Figure
+    Args:
+        estimator: Fitted clusterer with a ``cluster_centers_`` attribute.
+        X (array-like): Features the estimator was fitted on, of shape
+            (n_samples, n_features).
+        random_state (int, optional): Seed of the MDS embedding. Defaults to
+            None.
+        **kwargs: Passed to ``Axes.scatter``.
+
+    Returns:
+        matplotlib.figure.Figure: Figure containing the distance map.
+
+    Raises:
+        TypeError: If the estimator has no ``cluster_centers_`` attribute.
     """
     if not hasattr(estimator, "cluster_centers_"):
         raise TypeError(
