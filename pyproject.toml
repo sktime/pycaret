@@ -95,7 +95,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # there are the following dependency sets:
-# - full - all soft dependencies
+# - full - curated set of soft dependencies, see below
 # - analysis
 # - models
 # - tuners
@@ -106,7 +106,11 @@ dependencies = [
 
 # soft dependencies are not required for the core functionality of pycaret
 
-# all soft dependencies
+# curated set of soft dependencies
+# these are not all soft dependencies, but only those that are compatible
+# with the full supported range of the core dependencies. Soft dependencies
+# that would cap a core dependency are kept out of "full" and only listed
+# in their specific extra.
 #
 # users can install via "pip install pycaret-core[full]"
 #
@@ -116,8 +120,6 @@ full = [
   "interpret>=0.2.7",
   "umap-learn>=0.5.2",
   "pyyaml",
-  "ydata-profiling>=4.3.1,<4.13; python_version<'3.10'",
-  "ydata-profiling>=4.13.0; python_version>='3.10' and python_version<'3.14'",
   "standard-imghdr; python_version>='3.13'",
   "explainerdashboard>=0.3.8",
   "fairlearn>=0.7.0",
