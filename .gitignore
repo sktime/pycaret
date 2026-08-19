@@ -1,40 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+/build
+/dist
+/*.egg-info
+
+# Virtual environments
 venv/
-.ipynb_checkpoints/
+/.venv*
+
+# Tool caches
 .mypy_cache/
 .pytest_cache/
-__pycache__/
-mlruns/
-catboost_info/
-/stacker.py
-/stacknet.py
-/cli.py
-/app.py
-/cli_app.py
-/logo.png
-/model
-/Results.html
-/build
-/pycaret_nightly.egg-info
-/pycaret.egg-info
-/dist
+.ipynb_checkpoints/
+
+# IDE and editor
 .vscode/settings.json
 *code-workspace
-/logs.log
-examples/logs.log
-.log
-tutorials/logs.log
-/docs/build
 .idea/
+/.devcontainer
+.DS_Store
+
+# Docs
+/docs/build
+
+# Runtime artifacts from running pycaret
 *.log
-trained_models/
-*.pkl
+mlruns/
 /mlruns.db
 /mlruns.db-journal
-mlflow_backend.py
-demo4.py
+catboost_info/
 dask*/
-/.venv*
-/.devcontainer
+trained_models/
+*.pkl
 tmp/
-nbtest1.ipynb
-.DS_Store
