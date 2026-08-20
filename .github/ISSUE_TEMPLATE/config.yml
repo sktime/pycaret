@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Stack Overflow
-    url: https://stackoverflow.com/questions/tagged/pycaret
-    about: Please ask and answer usage questions on Stack Overflow
+  - name: "\U0001F4AC All other questions and general chat"
+    url: https://discord.com/channels/1075852648688930887/1336604687545401415
+    about: Chat with the pycaret community on Discord
   - name: Discussions
     url: https://github.com/sktime/pycaret/discussions/new
     about: Ask questions and discuss with other pycaret community members
