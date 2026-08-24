@@ -19,6 +19,13 @@ updates:
     labels:
       - "maintenance"
   - package-ecosystem: "docker"
-    directory: "/"
+    directories:
+      - "/Docker_files/pycaret_slim"
+      - "/Docker_files/pycaret_full"
     schedule:
-      interval: "daily"        
+      interval: "weekly"
+    commit-message:
+      prefix: "[MNT] [Dependabot]"
+      include: "scope"
+    labels:
+      - "maintenance"
