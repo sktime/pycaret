@@ -185,7 +185,6 @@ class _SklearnMixin:
     def _get_cls_path(self):
         pth = self.get_tag("sklearn_path")
 
-
         if self.engine == "sklearnex":
             if _check_soft_dependencies(
                 "scikit-learn-intelex", extra=None, severity="warning"
