@@ -13,7 +13,6 @@ import cloudpickle
 import pandas as pd
 
 import pycaret.internal.patches.sklearn
-import pycaret.internal.patches.yellowbrick
 import pycaret.internal.persistence
 from pycaret.internal.logging import get_logger
 from pycaret.utils.constants import DATAFRAME_LIKE
