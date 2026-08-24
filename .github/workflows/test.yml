@@ -83,6 +83,43 @@ jobs:
           echo "notebooks=$notebooks"
 
   # JOBS MUST START WITH test !!!!
+  test-core:
+    name: Test core dependency set
+    needs: detect
+    if: ${{ needs.detect.outputs.pycaret == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: 'pip' # caching pip dependencies
+      - name: Install core dependencies only
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U uv
+          python -m uv pip install . pytest pytest-timeout
+      - name: Python version and dependency list
+        run: |
+          python --version
+          which python
+          pip list
+      - name: Check module imports with core install
+        run: |
+          python -c "
+          import pycaret
+          import pycaret.anomaly
+          import pycaret.classification
+          import pycaret.clustering
+          import pycaret.datasets
+          import pycaret.regression
+          import pycaret.time_series
+          "
+      - name: Test with pytest
+        run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
+
   test-notebooks-regression:
     name: Test notebook (Regression)
     needs: detect

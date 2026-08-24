@@ -7,6 +7,7 @@ Description: Unit tests for pipeline.py
 
 """
 import io
+from importlib.util import find_spec
 
 import numpy as np
 import pandas as pd
@@ -237,7 +238,20 @@ def test_simple_categorical_imputation(imputation_method):
 
 
 @pytest.mark.parametrize("dtypes_to_select", ("mixed", "num_only", "cat_only"))
-@pytest.mark.parametrize("imputer", ("catboost", "lightgbm", "rf", "lr"))
+@pytest.mark.parametrize(
+    "imputer",
+    (
+        pytest.param(
+            "catboost",
+            marks=pytest.mark.skipif(
+                find_spec("catboost") is None, reason="catboost not installed"
+            ),
+        ),
+        "lightgbm",
+        "rf",
+        "lr",
+    ),
+)
 def test_iterative_imputer(dtypes_to_select, imputer):
     """Test iterative imputer"""
     data = pycaret.datasets.get_data("juice")

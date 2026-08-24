@@ -1,4 +1,7 @@
 import pandas as pd
+import pytest
+
+pytest.importorskip("fugue")
 
 import pycaret.classification as pc
 from pycaret.datasets import get_data
