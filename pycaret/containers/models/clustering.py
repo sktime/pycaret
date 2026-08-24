@@ -188,13 +188,12 @@ class _SklearnMixin:
 
         if self.engine == "sklearn":
             pth = f"sklearn.{sk_pth}"
-        elif self.engine == "sklearnex":
+
+        if self.engine == "sklearnex":
             if _check_soft_dependencies(
                 "scikit-learn-intelex", extra=None, severity="warning"
             ):
                 pth = f"sklearnex.{sk_pth}"
-            else:
-                pth = f"sklearn.{sk_pth}"
 
         if self.experiment.gpu_param == "force" or self.experiment.gpu_param:
             pth = f"cuml.{sk_pth}"
