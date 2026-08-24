@@ -104,11 +104,9 @@ dependencies = [
 
 # soft dependencies are not required for the core functionality of pycaret
 
-# curated set of soft dependencies
-# these are not all soft dependencies, but only those that are compatible
-# with the full supported range of the core dependencies. Soft dependencies
-# that would cap a core dependency are kept out of "full" and only listed
-# in their specific extra.
+# curated set of soft dependencies:
+# soft dependencies that would cap a core dependency are excluded from "full"
+# and listed only in their specific extra, e.g. ydata-profiling in "analysis"
 #
 # users can install via "pip install pycaret-core[full]"
 #
