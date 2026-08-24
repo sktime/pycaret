@@ -55,21 +55,21 @@ class BaseContainer(BaseObject):
 
         self.id = id
         self.name = name
-        self._class_def = class_def
+        self._legacy_class_def = class_def
         self.reference = self.get_class_name()
-        self._args = args
+        self._legacy_args = args
         self.active = True
         super().__init__()
 
     @property
     def class_def(self):
         # temporary solution for downwards compatibility with most model classes
-        return self._class_def
+        return self._legacy_class_def
 
     @property
     def args(self):
         # temporary solution for downwards compatibility with most model classes
-        return self._args
+        return self._legacy_args
 
     def get_class_name(self):
         return pycaret.utils.generic.get_class_name(self.class_def)
