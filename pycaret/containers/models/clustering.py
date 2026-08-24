@@ -14,6 +14,7 @@ from skbase.utils.dependencies import _safe_import
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import ModelContainer
+
 # from pycaret.internal.cuml_wrappers import get_dbscan, get_kmeans
 from pycaret.internal.distributions import Distribution
 from pycaret.utils._dependencies import _check_soft_dependencies
@@ -185,6 +186,7 @@ class ClusterContainer(ModelContainer):
 
     def _get_cls_path(self):
         return self.get_tag("cls_path")
+
 
 class _SklearnMixin:
 
