@@ -196,8 +196,8 @@ class _SklearnMixin:
             pth = f"sklearn.{sk_pth}"
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                    "scikit-learn-intelex", extra=None, severity="warning"
-                ):
+                "scikit-learn-intelex", extra=None, severity="warning"
+            ):
                 pth = f"sklearnex.{sk_pth}"
             else:
                 pth = f"sklearn.{sk_pth}"
