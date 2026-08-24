@@ -183,20 +183,17 @@ class ClusterContainer(ModelContainer):
 class _SklearnMixin:
 
     def _get_cls_path(self):
-        sk_pth = self.get_tag("sklearn_path")
-        sk_pth = sk_pth.replace("sklearn.", "")
+        pth = self.get_tag("sklearn_path")
 
-        if self.engine == "sklearn":
-            pth = f"sklearn.{sk_pth}"
 
         if self.engine == "sklearnex":
             if _check_soft_dependencies(
                 "scikit-learn-intelex", extra=None, severity="warning"
             ):
-                pth = f"sklearnex.{sk_pth}"
+                pth = pth.replace("sklearn", "sklearnex")
 
         if self.experiment.gpu_param == "force" or self.experiment.gpu_param:
-            pth = f"cuml.{sk_pth}"
+            pth = pth.replace("sklearn", "cuml")
             if self.experiment.gpu_param:
                 _check_soft_dependencies("cuml", extra=None, severity="warning")
 
