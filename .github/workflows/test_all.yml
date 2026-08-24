@@ -1,17 +1,15 @@
-name: pycaret
+name: test all
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  schedule:
+    - cron: "0 5 * * 0"
+  workflow_dispatch:
 
 jobs:
   code-quality:
+    # guard so scheduled runs do not execute on forks;
+    # workflow_dispatch is allowed everywhere so the workflow can be tested manually
+    if: ${{ github.repository == 'sktime/pycaret' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     name: Code quality checks
     steps:
@@ -33,60 +31,9 @@ jobs:
           path: pycaret tests
           flake8-version: 7.1.1
 
-  detect:
-    name: Detect changes
-    needs: code-quality
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      pycaret: ${{ steps.filter.outputs.pycaret }}
-      notebooks: ${{ steps.filter.outputs.notebooks }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # needed to diff against the base branch
-      - id: filter
-        name: Detect changed files
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            # on push to main, always run everything
-            echo "pycaret=true" >> "$GITHUB_OUTPUT"
-            echo "notebooks=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # compare against the merge base with the PR target branch
-          BASE=$(git merge-base HEAD origin/${{ github.base_ref }})
-          echo "Comparing against $BASE"
-
-          changed_files=$(git diff --name-only "$BASE" HEAD)
-          echo "Changed files:"
-          echo "$changed_files"
-
-          pycaret=false
-          notebooks=false
-
-          if echo "$changed_files" | grep -qE '^(pycaret/|tests/|datasets/|pyproject\.toml|setup\.cfg|\.github/workflows/)'; then
-            pycaret=true
-          fi
-
-          if echo "$changed_files" | grep -qE '^(tutorials/|pycaret/|datasets/|pyproject\.toml|\.github/workflows/)'; then
-            notebooks=true
-          fi
-
-          echo "pycaret=$pycaret" >> "$GITHUB_OUTPUT"
-          echo "notebooks=$notebooks" >> "$GITHUB_OUTPUT"
-
-          echo "pycaret=$pycaret"
-          echo "notebooks=$notebooks"
-
-  # JOBS MUST START WITH test !!!!
   test-notebooks-regression:
     name: Test notebook (Regression)
-    needs: detect
-    if: ${{ needs.detect.outputs.notebooks == 'true' }}
+    needs: code-quality
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -120,8 +67,7 @@ jobs:
 
   test-notebooks:
     name: Test notebooks (excluding Regression)
-    needs: detect
-    if: ${{ needs.detect.outputs.notebooks == 'true' }}
+    needs: code-quality
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -155,8 +101,7 @@ jobs:
 
   test:
     name: Full tests (py-${{ matrix.python-version }}, ${{ matrix.os }})
-    needs: detect
-    if: ${{ needs.detect.outputs.pycaret == 'true' }}
+    needs: code-quality
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     strategy:
@@ -202,8 +147,7 @@ jobs:
 
   test-plots:
     name: Test plotting
-    needs: detect
-    if: ${{ needs.detect.outputs.pycaret == 'true' }}
+    needs: code-quality
     timeout-minutes: 15
     runs-on: ubuntu-latest
     strategy:
@@ -243,8 +187,7 @@ jobs:
 
   test-tune:
     name: Test tuning
-    needs: detect
-    if: ${{ needs.detect.outputs.pycaret == 'true' }}
+    needs: code-quality
     timeout-minutes: 90
     runs-on: ubuntu-latest
     strategy:
@@ -282,3 +225,44 @@ jobs:
           pip list
       - name: Test with pytest
         run: pytest --durations=0 -m "tuning_random or tuning_grid"
+
+  test-benchmarks:
+    name: Benchmark tests
+    needs: code-quality
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip' # caching pip dependencies
+      - name: Install dependencies
+        # SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL required due to
+        # pyLDAvis 3.3.1 having an "sklearn" dependency
+        run: |
+          export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
+          python -m pip install -U pip
+          python -m pip install -U uv
+          python -m uv pip install -U pytest numpy
+
+          # https://github.com/yaml/pyyaml/issues/736
+          echo 'Cython < 3.0' > /tmp/constraint.txt
+          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
+
+          python -m uv pip install ".[full, test]"
+          if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
+      - name: Python version and dependency list
+        run: |
+          echo "Python version expected: ${{ matrix.python-version }}"
+          python --version
+          which python
+          pip list
+      - name: Run benchmarks
+        run: pytest --durations=0 -m "benchmark"
