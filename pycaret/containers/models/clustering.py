@@ -173,29 +173,39 @@ class ClusterContainer(ModelContainer):
 
     @property
     def class_def(self):
-        return _safe_import(self._get_cls_path())
+        pth, pkg_name = self._get_cls_path()
+        return _safe_import(pth, pkg_name=pkg_name)
 
     def _get_cls_path(self):
-        return self.get_tag("cls_path")
+        pth = self.get_tag("cls_path")
+        pkg_name = pth.split(".")[0]
+        if pkg_name == "sklearn":
+            pkg_name = "scikit-learn"
+        return pth, pkg_name
 
 
 class _SklearnMixin:
 
     def _get_cls_path(self):
         pth = self.get_tag("sklearn_path")
+        pkg_name = "scikit-learn"
+        check_sd = False
 
         if self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
-                pth = pth.replace("sklearn", "sklearnex")
+            pth = pth.replace("sklearn", "sklearnex")
+            pkg_name = "scikit-learn-intelex"
+            check_sd = True
 
         if self.experiment.gpu_param == "force" or self.experiment.gpu_param:
             pth = pth.replace("sklearn", "cuml")
+            pkg_name = "cuml"
             if self.experiment.gpu_param:
-                _check_soft_dependencies("cuml", extra=None, severity="warning")
+                check_sd = True
 
-        return pth
+        if check_sd:
+            _check_soft_dependencies(pkg_name, extra=None, severity="warning")
+
+        return pth, pkg_name
 
 
 class KMeansClusterContainer(ClusterContainer, _SklearnMixin):
