@@ -63,11 +63,17 @@ class BaseContainer(BaseObject):
 
     @property
     def class_def(self):
+        return self._class_def()
+
+    def _class_def(self):
         # temporary solution for downwards compatibility with most model classes
         return self._legacy_class_def
 
     @property
     def args(self):
+        return self._args()
+
+    def _args(self):
         # temporary solution for downwards compatibility with most model classes
         return self._legacy_args
 

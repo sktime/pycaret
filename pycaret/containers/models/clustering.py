@@ -109,29 +109,26 @@ class ClusterContainer(ModelContainer):
 
     @property
     def args(self):
-        return self._args
+        return self._args()
 
-    @property
     def _args(self):
         return {}
 
     @property
     def tune_grid(self):
-        return param_grid_to_lists(self._tune_grid)
+        return param_grid_to_lists(self._tune_grid())
 
-    @property
     def _tune_grid(self):
         return {}
 
     @property
     def tune_distribution(self):
-        return self._tune_distribution
+        return self._tune_distribution()
 
     @property
     def tune_args(self):
-        return self._tune_args
+        return self._tune_args()
 
-    @property
     def _tune_args(self):
         return {}
 
@@ -171,8 +168,7 @@ class ClusterContainer(ModelContainer):
 
         return dict(d)
 
-    @property
-    def class_def(self):
+    def _class_def(self):
         pth, pkg_name = self._get_cls_path()
         return _safe_import(pth, pkg_name=pkg_name)
 
