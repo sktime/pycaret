@@ -83,22 +83,7 @@ You can use PyCaret in your choice of Integrated Development Environment (IDE) b
 
 Run PyCaret on a Docker Container
 *********************************
-A Docker container runs in a virtual environment and is the easiest way to deploy applications using PyCaret. Dockerfile from base image python:3.7 and python:3.7-slim is tested for PyCaret >= 2.0.
+A Docker container runs in a virtual environment and is the easiest way to deploy applications using PyCaret. The repository provides ready-to-use Dockerfiles, based on the Jupyter base-notebook image, for a full and a slim installation:
 
-- `python:3.7 <https://github.com/sktime/pycaret/blob/main/docker%20python37/Dockerfile>`_
-- `python:3.7-slim <https://github.com/sktime/pycaret/blob/main/Dockerfile>`_
-
-.. code-block:: python
-
-    FROM python:3.7-slim
-
-    WORKDIR /app
-    
-    ADD . /app
-
-    RUN apt-get update && apt-get install -y libgomp1
-
-    RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-    CMD pytest #replace it with your entry point.
-
+- `pycaret_full <https://github.com/sktime/pycaret/blob/main/Docker_files/pycaret_full/Dockerfile>`_
+- `pycaret_slim <https://github.com/sktime/pycaret/blob/main/Docker_files/pycaret_slim/Dockerfile>`_
