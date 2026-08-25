@@ -140,7 +140,7 @@ class _PyCaretExperiment:
         """
         if not self._setup_ran:
             raise RuntimeError(
-                "This function/method requires the users to run setup() first."
+                "This function/method requires the user to run setup() first."
                 "\nMore info: https://www.pycaret.net/en/latest/installation.html"
             )
 
