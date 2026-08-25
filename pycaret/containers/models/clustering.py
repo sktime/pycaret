@@ -125,6 +125,9 @@ class ClusterContainer(ModelContainer):
     def tune_distribution(self):
         return self._tune_distribution()
 
+    def _tune_distribution(self):
+        return {}
+
     @property
     def tune_args(self):
         return self._tune_args()
