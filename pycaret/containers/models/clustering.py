@@ -243,7 +243,6 @@ class KMeansClusterContainer(ClusterContainer, _SklearnMixin):
             is_gpu_enabled=gpu_imported,
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
@@ -282,7 +281,6 @@ class MeanShiftClusterContainer(ClusterContainer, _SklearnMixin):
             name="Mean Shift Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_jobs": self.experiment.n_jobs_param}
 
@@ -302,7 +300,6 @@ class SpectralClusteringClusterContainer(ClusterContainer, _SklearnMixin):
             name="Spectral Clustering",
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
@@ -326,7 +323,6 @@ class AgglomerativeClusteringClusterContainer(ClusterContainer, _SklearnMixin):
             name="Agglomerative Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
@@ -390,7 +386,6 @@ class OPTICSClusterContainer(ClusterContainer, _SklearnMixin):
             name="OPTICS Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_jobs": self.experiment.n_jobs_param}
 
@@ -410,7 +405,6 @@ class BirchClusterContainer(ClusterContainer, _SklearnMixin):
             name="Birch Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
@@ -434,7 +428,6 @@ class KModesClusterContainer(ClusterContainer):
             name="K-Modes Clustering",
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
