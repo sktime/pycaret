@@ -23,7 +23,7 @@ updates:
       - "/Docker_files/pycaret_slim"
       - "/Docker_files/pycaret_full"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     commit-message:
       prefix: "[MNT] [Dependabot]"
       include: "scope"
