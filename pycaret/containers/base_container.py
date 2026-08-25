@@ -45,7 +45,7 @@ class BaseContainer(BaseObject):
         self,
         id: str,
         name: str,
-        class_def: type = None,
+        class_def: Optional[type] = None,
         args: Optional[Dict[str, Any]] = None,
     ) -> None:
         if not args:
