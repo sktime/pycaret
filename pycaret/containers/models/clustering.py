@@ -187,9 +187,12 @@ class ClusterContainer(ModelContainer):
 class _SklearnMixin:
 
     def _get_cls_path(self):
-        pth = self.get_tag("sklearn_path")
+        pth = self.get_tag("cls_path")
         pkg_name = "scikit-learn"
         check_sd = False
+
+        if not hasattr(self, "engine"):
+            return pth, pkg_name
 
         if self.engine == "sklearnex":
             pth = pth.replace("sklearn", "sklearnex")
@@ -208,7 +211,7 @@ class _SklearnMixin:
         return pth, pkg_name
 
 
-class KMeansClusterContainer(ClusterContainer, _SklearnMixin):
+class KMeansClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.KMeans"}
 
@@ -252,7 +255,7 @@ class KMeansClusterContainer(ClusterContainer, _SklearnMixin):
         }
 
 
-class AffinityPropagationClusterContainer(ClusterContainer, _SklearnMixin):
+class AffinityPropagationClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.AffinityPropagation"}
 
@@ -268,7 +271,7 @@ class AffinityPropagationClusterContainer(ClusterContainer, _SklearnMixin):
         )
 
 
-class MeanShiftClusterContainer(ClusterContainer, _SklearnMixin):
+class MeanShiftClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.MeanShift"}
 
@@ -288,7 +291,7 @@ class MeanShiftClusterContainer(ClusterContainer, _SklearnMixin):
         return {"n_jobs": self.experiment.n_jobs_param}
 
 
-class SpectralClusteringClusterContainer(ClusterContainer, _SklearnMixin):
+class SpectralClusteringClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.SpectralClustering"}
 
@@ -312,7 +315,7 @@ class SpectralClusteringClusterContainer(ClusterContainer, _SklearnMixin):
         }
 
 
-class AgglomerativeClusteringClusterContainer(ClusterContainer, _SklearnMixin):
+class AgglomerativeClusteringClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.AgglomerativeClustering"}
 
@@ -332,7 +335,7 @@ class AgglomerativeClusteringClusterContainer(ClusterContainer, _SklearnMixin):
         return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
 
-class DBSCANClusterContainer(ClusterContainer, _SklearnMixin):
+class DBSCANClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.DBSCAN"}
 
@@ -376,7 +379,7 @@ class DBSCANClusterContainer(ClusterContainer, _SklearnMixin):
             return {"n_jobs": self.experiment.n_jobs_param}
 
 
-class OPTICSClusterContainer(ClusterContainer, _SklearnMixin):
+class OPTICSClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.OPTICS"}
 
@@ -396,7 +399,7 @@ class OPTICSClusterContainer(ClusterContainer, _SklearnMixin):
         return {"n_jobs": self.experiment.n_jobs_param}
 
 
-class BirchClusterContainer(ClusterContainer, _SklearnMixin):
+class BirchClusterContainer(_SklearnMixin, ClusterContainer):
 
     _tags = {"cls_path": "sklearn.cluster.Birch"}
 
