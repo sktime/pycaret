@@ -109,29 +109,29 @@ class ClusterContainer(ModelContainer):
 
     @property
     def args(self):
-        return self._args
+        return self._args()
 
-    @property
     def _args(self):
         return {}
 
     @property
     def tune_grid(self):
-        return param_grid_to_lists(self._tune_grid)
+        return param_grid_to_lists(self._tune_grid())
 
-    @property
     def _tune_grid(self):
         return {}
 
     @property
     def tune_distribution(self):
-        return self._tune_distribution
+        return self._tune_distribution()
+
+    def _tune_distribution(self):
+        return {}
 
     @property
     def tune_args(self):
-        return self._tune_args
+        return self._tune_args()
 
-    @property
     def _tune_args(self):
         return {}
 
@@ -171,8 +171,7 @@ class ClusterContainer(ModelContainer):
 
         return dict(d)
 
-    @property
-    def class_def(self):
+    def _class_def(self):
         pth, pkg_name = self._get_cls_path()
         return _safe_import(pth, pkg_name=pkg_name)
 
@@ -195,12 +194,12 @@ class _SklearnMixin:
             return pth, pkg_name
 
         if self.engine == "sklearnex":
-            pth = pth.replace("sklearn", "sklearnex")
+            pth = pth.replace("sklearn.", "sklearnex.", 1)
             pkg_name = "scikit-learn-intelex"
             check_sd = True
 
         if self.experiment.gpu_param == "force" or self.experiment.gpu_param:
-            pth = pth.replace("sklearn", "cuml")
+            pth = pth.replace("sklearn.", "cuml.", 1)
             pkg_name = "cuml"
             if self.experiment.gpu_param:
                 check_sd = True
@@ -247,7 +246,6 @@ class KMeansClusterContainer(_SklearnMixin, ClusterContainer):
             is_gpu_enabled=gpu_imported,
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
@@ -286,7 +284,6 @@ class MeanShiftClusterContainer(_SklearnMixin, ClusterContainer):
             name="Mean Shift Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_jobs": self.experiment.n_jobs_param}
 
@@ -306,7 +303,6 @@ class SpectralClusteringClusterContainer(_SklearnMixin, ClusterContainer):
             name="Spectral Clustering",
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
@@ -330,7 +326,6 @@ class AgglomerativeClusteringClusterContainer(_SklearnMixin, ClusterContainer):
             name="Agglomerative Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
@@ -394,7 +389,6 @@ class OPTICSClusterContainer(_SklearnMixin, ClusterContainer):
             name="OPTICS Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_jobs": self.experiment.n_jobs_param}
 
@@ -414,7 +408,6 @@ class BirchClusterContainer(_SklearnMixin, ClusterContainer):
             name="Birch Clustering",
         )
 
-    @property
     def _args(self):
         return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
@@ -438,7 +431,6 @@ class KModesClusterContainer(ClusterContainer):
             name="K-Modes Clustering",
         )
 
-    @property
     def _args(self):
         return {
             "n_clusters": _DEFAULT_N_CLUSTERS,
