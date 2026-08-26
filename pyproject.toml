@@ -256,4 +256,4 @@ requires = [
 ]
 
 [tool.setuptools.packages.find]
-exclude = ["tests", "tests.*"]
+include = ["pycaret", "pycaret.*"]
