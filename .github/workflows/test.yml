@@ -19,21 +19,16 @@ jobs:
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
-      - name: Run black
-        uses: psf/black@stable
+      - name: Run ruff lint and import checks
+        uses: astral-sh/ruff-action@v3
         with:
-          src: pycaret tests
-          version: 24.8.0
-      - name: Check imports
-        uses: jamescurtin/isort-action@master
+          version: 0.16.5
+          args: check --output-format=github
+      - name: Run ruff format check
+        uses: astral-sh/ruff-action@v3
         with:
-          sort-paths: pycaret tests
-          isort-version: 5.13.2
-      - name: Run flake8
-        uses: py-actions/flake8@v2
-        with:
-          path: pycaret tests
-          flake8-version: 7.1.1
+          version: 0.16.5
+          args: format --check --diff
 
   # JOBS MUST START WITH test !!!!
   test-docs-build:

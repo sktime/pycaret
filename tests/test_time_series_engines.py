@@ -1,5 +1,4 @@
-"""Module to test setting of engines in time series
-"""
+"""Module to test setting of engines in time series"""
 
 from sklearn.linear_model import LinearRegression as SklearnLinearRegression
 from sktime.forecasting.arima import AutoARIMA as PmdAutoARIMA

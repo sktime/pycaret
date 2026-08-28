@@ -171,7 +171,7 @@ def test_hash_memmap(tmpdir, coerce_mmap):
 # This is also skipped in joblib tests.
 @pytest.mark.skipif(
     sys.platform == "win32",
-    reason="This test is not stable under windows" " for some reason",
+    reason="This test is not stable under windows for some reason",
 )
 def test_hash_numpy_performance():
     rnd = np.random.RandomState(0)

@@ -1,5 +1,4 @@
-"""Module to test time_series plotting functionality
-"""
+"""Module to test time_series plotting functionality"""
 
 from typing import List
 

@@ -111,11 +111,13 @@ docker run -p 8888:8888 pycaret/full
 
 # loading sample dataset
 from pycaret.datasets import get_data
-data = get_data('juice')
+
+data = get_data("juice")
 
 # init setup
 from pycaret.classification import *
-s = setup(data, target = 'Purchase', session_id = 123)
+
+s = setup(data, target="Purchase", session_id=123)
 
 # model training and selection
 best = compare_models()
@@ -127,11 +129,11 @@ evaluate_model(best)
 pred_holdout = predict_model(best)
 
 # predict on new data
-new_data = data.copy().drop('Purchase', axis = 1)
-predictions = predict_model(best, data = new_data)
+new_data = data.copy().drop("Purchase", axis=1)
+predictions = predict_model(best, data=new_data)
 
 # save model
-save_model(best, 'best_pipeline')
+save_model(best, "best_pipeline")
 ```
 
 ### 2. OOP API
@@ -141,12 +143,14 @@ save_model(best, 'best_pipeline')
 
 # loading sample dataset
 from pycaret.datasets import get_data
-data = get_data('juice')
+
+data = get_data("juice")
 
 # init setup
 from pycaret.classification import ClassificationExperiment
+
 s = ClassificationExperiment()
-s.setup(data, target = 'Purchase', session_id = 123)
+s.setup(data, target="Purchase", session_id=123)
 
 # model training and selection
 best = s.compare_models()
@@ -158,11 +162,11 @@ s.evaluate_model(best)
 pred_holdout = s.predict_model(best)
 
 # predict on new data
-new_data = data.copy().drop('Purchase', axis = 1)
-predictions = s.predict_model(best, data = new_data)
+new_data = data.copy().drop("Purchase", axis=1)
+predictions = s.predict_model(best, data=new_data)
 
 # save model
-s.save_model(best, 'best_pipeline')
+s.save_model(best, "best_pipeline")
 ```
 
 

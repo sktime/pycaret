@@ -228,7 +228,6 @@ def deploy_model(
         try:
             _create_container_azure(container_name)
             _upload_blob_azure(container_name, filename, key)
-            del container_client
         except Exception:
             _upload_blob_azure(container_name, filename, key)
 
