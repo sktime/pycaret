@@ -48,12 +48,12 @@ intersphinx_mapping = {
     "sklearn": ("https://scikit-learn.org/stable/", None),
 }
 
-# Exclude autosummary-generated pages: their links live in docstrings,
-# which still contain broken upstream links (separate cleanup PR).
-linkcheck_exclude_documents = [r"api/generated/.*"]
-
-# LinkedIn blocks requests from non-browser clients.
-linkcheck_ignore = [r"https://www\.linkedin\.com/.*"]
+linkcheck_ignore = [
+    # LinkedIn blocks requests from non-browser clients.
+    r"https://www\.linkedin\.com/.*",
+    # Base path for dataset downloads, not a servable page.
+    r"https://raw\.githubusercontent\.com/pycaret/datasets/main/",
+]
 
 linkcheck_retries = 2
 linkcheck_timeout = 30
