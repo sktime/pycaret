@@ -55,6 +55,8 @@ jobs:
           python -m uv pip install ".[docs]"
       - name: Build docs
         run: sphinx-build -b html docs/source docs/build/html
+      - name: Check links
+        run: sphinx-build -b linkcheck docs/source docs/build/linkcheck
 
   test-notebooks-regression:
     name: Test notebook (Regression)
