@@ -242,10 +242,10 @@ test = [
 
 
 [project.urls]
-"API Reference" = "https://py-caret.readthedocs.io/en/latest/"
-Documentation = "https://py-caret.readthedocs.io/en/latest/"
+"API Reference" = "https://www.pycaret.net/en/latest/"
+Documentation = "https://www.pycaret.net/en/latest/"
 Download = "https://pypi.org/project/pycaret-core/#files"
-Homepage = "https://py-caret.readthedocs.io/en/latest/"
+Homepage = "https://www.pycaret.net/en/latest/"
 "Release Notes" = "https://github.com/sktime/pycaret/releases"
 Repository = "https://github.com/sktime/pycaret"
 

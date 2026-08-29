@@ -11,7 +11,7 @@ assignees: ''
 <!--
 Please check the box below by replacing [ ] with [x] after confirming.
 -->
-- [ ] I have read the [installation guide](https://py-caret.readthedocs.io/en/latest/installation.html).
+- [ ] I have read the [installation guide](https://www.pycaret.net/en/latest/installation.html).
 
 **Platform**
 <!--
