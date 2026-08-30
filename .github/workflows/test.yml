@@ -179,6 +179,10 @@ jobs:
 
           python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
+      - name: Install dependencies on macOS
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install libomp
       - name: Python version and dependency list
         run: |
           echo "Python version expected: ${{ matrix.python-version }}"
