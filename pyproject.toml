@@ -224,7 +224,8 @@ dev = [
 # docs - the dependency set used for doc build
 docs = [
   "sphinx>=3.0.0",
-  "sphinx-rtd-theme>=0.5.0",
+  "pydata-sphinx-theme",
+  "sphinx-copybutton",
   "numpy",
 ]
 

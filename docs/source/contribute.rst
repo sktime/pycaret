@@ -29,16 +29,6 @@ If you would like to help in working on open issues. Look out for
 following tags: ``good first issue`` ``help wanted``
 ``open for contribution``
 
-Medium Writers
---------------
-
-If you are interested or have already written a Medium story covering
-``PyCaret``. You can submit your story in a ``markdown`` format. Submit
-a PR to https://github.com/sktime/pycaret/tree/main/resources. To
-convert medium stories into ``markdown`` format please download this
-chrome extension:
-https://chrome.google.com/webstore/detail/export-to-markdown/dodkihcbgpjblncjahodbnlgkkflliim
-
 Major Contribution
 ------------------
 
