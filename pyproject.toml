@@ -149,7 +149,7 @@ full = [
   "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
-  "dash-bootstrap-components<2.0.0",
+  "dash-bootstrap-components<3.0.0",
   "black>=24.8.0",
   "isort>=5.13.2",
   "flake8>=7.1.1",
