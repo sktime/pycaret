@@ -53,6 +53,8 @@ linkcheck_ignore = [
     r"https://www\.linkedin\.com/.*",
     # Base path for dataset downloads, not a servable page.
     r"https://raw\.githubusercontent\.com/pycaret/datasets/main/",
+    # 403 Client Error: Forbidden
+    r"https://scholar.google.com/",
 ]
 
 linkcheck_retries = 2
