@@ -74,6 +74,10 @@ exclude_patterns = []
 # Sort methods by the order they are found in the source files
 autodoc_member_order = "bysource"
 
+suppress_warnings = [
+    "docutils",  # FIXME: Various docstrings currently raise warnings.
+]
+
 
 # -- Options for HTML output -------------------------------------------------
 
