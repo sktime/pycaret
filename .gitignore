@@ -35,3 +35,4 @@ dask*/
 trained_models/
 *.pkl
 tmp/
+*.db
