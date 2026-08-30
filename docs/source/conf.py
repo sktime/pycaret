@@ -55,6 +55,9 @@ linkcheck_ignore = [
     r"https://raw\.githubusercontent\.com/pycaret/datasets/main/",
     # 403 Client Error: Forbidden
     r"https://scholar.google.com/",
+    # Read timed out
+    r"https://streamlit.io/",
+    r"https://www.streamlit.io/",
 ]
 
 linkcheck_retries = 2
