@@ -1,4 +1,4 @@
-<a href="https://py-caret.readthedocs.io/en/latest/"><img src="https://github.com/sktime/pycaret/blob/main/docs/images/logo.png?raw=1" width="175" align="right" /></a>
+<a href="https://www.pycaret.net/en/latest/"><img src="https://github.com/sktime/pycaret/blob/main/docs/images/logo.png?raw=1" width="175" align="right" /></a>
 
 ## **PyCaret - the open-source, low-code machine learning framework**
 
@@ -13,12 +13,12 @@ professionally maintained, with a permissive license, and published under
 the PyPI name `pycaret-core`. It is maintained in direct continuity of `pycaret 3`.
 
 
-|  | **[Documentation](https://py-caret.readthedocs.io/en/latest/)** · **[Tutorials](https://py-caret.readthedocs.io/en/latest/tutorials.html)** · **[Release Notes](https://github.com/sktime/pycaret/releases)** |
+|  | **[Documentation](https://www.pycaret.net/en/latest/)** · **[Tutorials](https://www.pycaret.net/en/latest/tutorials.html)** · **[Release Notes](https://github.com/sktime/pycaret/releases)** |
 |---|---|
 | **Open&#160;Source** | [![License](https://img.shields.io/pypi/l/ansicolortags.svg)](https://img.shields.io/pypi/l/ansicolortags.svg) [![GC.OS Sponsored](https://img.shields.io/badge/GC.OS-Sponsored%20Project-orange.svg?style=flat&colorA=0eac92&colorB=2077b4)](https://www.gcos.ai/) |
 | **Tutorials** | [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sktime/pycaret/main?filepath=tutorials) |
 | **Community** | [![!discord](https://img.shields.io/static/v1?logo=discord&label=discord&message=chat&color=lightgreen)](https://discord.com/invite/54ACzaFsn7) [![!slack](https://img.shields.io/static/v1?logo=linkedin&label=LinkedIn&message=news&color=lightblue)](https://www.linkedin.com/company/scikit-time/)  |
-| **CI/CD** | [![github-actions](https://img.shields.io/github/actions/workflow/status/sktime/pycaret/release.yml?logo=github)](https://github.com/sktime/pycaret/actions/workflows/release.yml) [![readthedocs](https://img.shields.io/readthedocs/py-caret?logo=readthedocs)](https://py-caret.readthedocs.io/en/latest/tutorials.html) |
+| **CI/CD** | [![github-actions](https://img.shields.io/github/actions/workflow/status/sktime/pycaret/release.yml?logo=github)](https://github.com/sktime/pycaret/actions/workflows/release.yml) [![readthedocs](https://img.shields.io/readthedocs/py-caret?logo=readthedocs)](https://www.pycaret.net/en/latest/tutorials.html) |
 | **Code** |  [![!pypi](https://img.shields.io/pypi/v/pycaret-core?color=orange)](https://pypi.org/project/pycaret-core/) [![!python-versions](https://img.shields.io/pypi/pyversions/pycaret-core)](https://www.python.org/) [![!black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)  |
 | **Downloads**| [![Downloads](https://static.pepy.tech/personalized-badge/pycaret?period=week&units=international_system&left_color=grey&right_color=blue&left_text=weekly%20(pypi))](https://pepy.tech/project/pycaret) [![Downloads](https://static.pepy.tech/personalized-badge/pycaret?period=month&units=international_system&left_color=grey&right_color=blue&left_text=monthly%20(pypi))](https://pepy.tech/project/pycaret) [![Downloads](https://static.pepy.tech/personalized-badge/pycaret?period=total&units=international_system&left_color=grey&right_color=blue&left_text=cumulative%20(pypi))](https://pepy.tech/project/pycaret) |
 
@@ -243,7 +243,7 @@ PyCaret is completely free and open-source and licensed under the [MIT](https://
 | ✈️ **[Cheat sheet]**            | Community Cheat sheet            |
 | :hammer_and_wrench: **[Release Notes]**          | Release Notes          |
 
-[Tutorials]: https://py-caret.readthedocs.io/en/latest/tutorials.html
+[Tutorials]: https://www.pycaret.net/en/latest/tutorials.html
 [Documentation]: https://pycaret.gitbook.io/docs/
 [Videos]: https://pycaret.gitbook.io/docs/learn-pycaret/videos
 [Cheat sheet]: https://pycaret.gitbook.io/docs/learn-pycaret/cheat-sheet

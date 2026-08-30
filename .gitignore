@@ -23,6 +23,7 @@ venv/
 
 # Docs
 /docs/build
+/docs/source/api/generated
 
 # Runtime artifacts from running pycaret
 *.log
@@ -34,3 +35,4 @@ dask*/
 trained_models/
 *.pkl
 tmp/
+*.db

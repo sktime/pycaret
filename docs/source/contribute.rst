@@ -29,16 +29,6 @@ If you would like to help in working on open issues. Look out for
 following tags: ``good first issue`` ``help wanted``
 ``open for contribution``
 
-Medium Writers
---------------
-
-If you are interested or have already written a Medium story covering
-``PyCaret``. You can submit your story in a ``markdown`` format. Submit
-a PR to https://github.com/sktime/pycaret/tree/main/resources. To
-convert medium stories into ``markdown`` format please download this
-chrome extension:
-https://chrome.google.com/webstore/detail/export-to-markdown/dodkihcbgpjblncjahodbnlgkkflliim
-
 Major Contribution
 ------------------
 
@@ -55,7 +45,7 @@ What we currently need help on?
 
 Development setup
 -----------------
-Follow `installation instructions <https://py-caret.readthedocs.io/en/latest/installation.html#installing-the-latest-release>`_ to first create a virtual environment. Then, install development version of the package:
+Follow `installation instructions <https://www.pycaret.net/en/latest/installation.html#installing-the-latest-release>`_ to first create a virtual environment. Then, install development version of the package:
 
 .. code-block:: shell
 
@@ -93,7 +83,7 @@ To run tests, except skipped ones (search for ``@pytest.mark.skip`` decorator ov
 
 Documentation
 -------------
-We use `sphinx <https://www.sphinx-doc.org/>`_ to build our documentation and `readthedocs <https://py-caret.readthedocs.io/en/latest/index.html>`_ to host it. The source files can be found in ``docs/source/``. The main configuration file for sphinx is ``conf.py`` and the main page is ``index.rst``.
+We use `sphinx <https://www.sphinx-doc.org/>`_ to build our documentation and `readthedocs <https://www.pycaret.net/en/latest/index.html>`_ to host it. The source files can be found in ``docs/source/``. The main configuration file for sphinx is ``conf.py`` and the main page is ``index.rst``.
 
 To build the documentation locally, you need to install the documentation
 dependency set.
