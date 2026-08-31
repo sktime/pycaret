@@ -1,5 +1,4 @@
-"""Helper functions for time series tests
-"""
+"""Helper functions for time series tests"""
 
 import random
 

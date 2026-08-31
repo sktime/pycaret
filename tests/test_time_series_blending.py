@@ -117,12 +117,12 @@ def test_blend_model_predict(load_setup, load_models):
     # Prediction for some methods should not be impacted by weights
     # e.g. min, max
     # -------------------------------------------------------------------------#
-    assert np.array_equal(
-        min_blender_pred, min_blender_w_wts_pred
-    ), "min blender predictions with and without weights are not the same"
-    assert np.array_equal(
-        max_blender_pred, max_blender_w_wts_pred
-    ), "max blender predictions with and without weights are not the same"
+    assert np.array_equal(min_blender_pred, min_blender_w_wts_pred), (
+        "min blender predictions with and without weights are not the same"
+    )
+    assert np.array_equal(max_blender_pred, max_blender_w_wts_pred), (
+        "max blender predictions with and without weights are not the same"
+    )
 
 
 def test_blend_model_custom_folds(load_pos_and_neg_data):

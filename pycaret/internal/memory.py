@@ -252,8 +252,9 @@ def fast_hash(obj, hash_name="xxhash", coerce_mmap=False, protocol=None):
     valid_hash_names = ("xxhash", "md5", "sha1")
     if hash_name not in valid_hash_names:
         raise ValueError(
-            "Valid options for 'hash_name' are {}. "
-            "Got hash_name={!r} instead.".format(valid_hash_names, hash_name)
+            "Valid options for 'hash_name' are {}. Got hash_name={!r} instead.".format(
+                valid_hash_names, hash_name
+            )
         )
     if "pandas" in sys.modules:
         hasher = FastPandasHasher(
@@ -370,8 +371,7 @@ class _LegacyFastMemorizedFunc(MemorizedFunc):
             if self._verbose > 10:
                 _, name = get_func_name(self.func)
                 self.warn(
-                    "Computing func {0}, argument hash {1} "
-                    "in location {2}".format(
+                    "Computing func {0}, argument hash {1} in location {2}".format(
                         name,
                         args_id,
                         self.store_backend.get_cached_func_info([func_id])["location"],
@@ -398,8 +398,9 @@ class _LegacyFastMemorizedFunc(MemorizedFunc):
                 # XXX: Should use an exception logger
                 _, signature = format_signature(self.func, *args, **kwargs)
                 self.warn(
-                    "Exception while loading results for "
-                    "{}\n {}".format(signature, traceback.format_exc())
+                    "Exception while loading results for {}\n {}".format(
+                        signature, traceback.format_exc()
+                    )
                 )
 
                 must_call = True
