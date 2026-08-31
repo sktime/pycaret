@@ -149,7 +149,7 @@ full = [
   "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
-  "dash-bootstrap-components<2.0.0",
+  "dash-bootstrap-components<3.0.0",
   "ruff>=0.16.5",
   "setuptools>=71.1.0",
   "mypy>=1.0.0",
