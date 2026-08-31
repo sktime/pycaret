@@ -58,6 +58,8 @@ linkcheck_ignore = [
     # Read timed out
     r"https://streamlit.io/",
     r"https://www.streamlit.io/",
+    r"https://otexts.com/",
+    r"https://robjhyndman.com/",
 ]
 
 linkcheck_retries = 2
