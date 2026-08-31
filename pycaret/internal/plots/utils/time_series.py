@@ -17,6 +17,7 @@ from statsmodels.tsa.seasonal import STL, seasonal_decompose
 from statsmodels.tsa.stattools import acf, ccf, pacf
 
 from pycaret.internal.logging import get_logger
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import _resolve_dict_keys
 from pycaret.utils.time_series import TSAllowedPlotDataTypes
 
@@ -268,7 +269,12 @@ def corr_subplot(
     elif plot == "ccf":
         default_name = "CCF"
         target, exog = data
-        corr_values = ccf(target, exog, unbiased=False)
+        # statsmodels renamed `unbiased` to `adjusted` in 0.13.0 and removed
+        # the deprecated `unbiased` alias in 0.15.0
+        if _check_soft_dependencies("statsmodels>=0.13.0", severity="none"):
+            corr_values = ccf(target, exog, adjusted=False)
+        else:
+            corr_values = ccf(target, exog, unbiased=False)
         # Default, returns lags = len of data, hence limit it.
         corr_values = corr_values[: nlags + 1]
         # No upper and lower bounds available for CCF
