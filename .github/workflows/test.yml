@@ -149,48 +149,11 @@ jobs:
           python --version
           which python
           pip list
-      - name: Test with pytest
-        run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
-
-  test-plots:
-    name: Test plotting
-    needs: code-quality
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-
-    steps:
-      - uses: actions/checkout@v7
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip' # caching pip dependencies
-      - name: Install dependencies
-        # SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL required due to
-        # pyLDAvis 3.3.1 having an "sklearn" dependency
-        run: |
-          export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
-          python -m pip install --upgrade pip
-          python -m pip install uv
-          python -m uv pip install -U pytest numpy
-
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
-
-          python -m uv pip install ".[dev,test,full]"
-      - name: Python version and dependency list
-        run: |
-          echo "Python version expected: ${{ matrix.python-version }}"
-          python --version
-          which python
-          pip list
-      - name: Test with pytest
+      - name: Test plots
+        if: startsWith(matrix.os, 'ubuntu')
         run: pytest --durations=0 -m "plotting"
+      - name: Test full
+        run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
 
   test-benchmark-tuning:
     name: Benchmark and tuning tests
