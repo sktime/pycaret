@@ -145,14 +145,10 @@ full = [
   "fugue>=0.9.0",
   "flask",
   "werkzeug>=2.2,<=3.2",
-  "pytest>=8.0.0",
   "moto>=4.0.0",
   "fugue[dask]",
-  "dash[testing]",
   "dash-bootstrap-components<3.0.0",
-  "ruff>=0.16.5",
   "setuptools>=71.1.0",
-  "mypy>=1.0.0",
 ]
 
 analysis = [
@@ -212,9 +208,8 @@ prophet = [
 
 # dev - the developer dependency set, for contributors
 dev = [
-  "ruff>=0.16.5",
-  "setuptools>=71.1.0",
-  "mypy>=1.0.0",
+  "ruff<0.17",
+  "mypy>=1,<2.4",
 ]
 
 # docs - the dependency set used for doc build

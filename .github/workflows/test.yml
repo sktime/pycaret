@@ -93,7 +93,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full]"
+          python -m uv pip install ".[dev,test,full]"
           python -m ipykernel install --user --name cikernel
       - name: Python version and dependency list
         run: |
@@ -127,7 +127,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full]"
+          python -m uv pip install ".[dev,test,full]"
           python -m ipykernel install --user --name cikernel
       - name: Python version and dependency list
         run: |
@@ -173,7 +173,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
@@ -214,7 +214,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
       - name: Python version and dependency list
         run: |
           echo "Python version expected: ${{ matrix.python-version }}"
@@ -254,7 +254,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
@@ -295,7 +295,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
