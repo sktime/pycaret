@@ -13,7 +13,7 @@ matplotlib.use("Agg")
 @pytest.mark.plotting
 def test_plot():
     # loading dataset
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     # init setup

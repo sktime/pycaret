@@ -20,7 +20,7 @@ def _get_univar_noexo_data_with_index_index():
     where the index has been set to various types of indices.
     """
     # PeriodIndex
-    data1 = get_data("airline")
+    data1 = get_data("airline", save_copy=True)
 
     # DatetimeIndex
     data2 = data1.copy()
@@ -44,7 +44,7 @@ def _get_univar_noexo_data_with_index_column():
     where the index is specified through a column of different.
     """
     # PeriodIndex column
-    data1 = pd.DataFrame(get_data("airline"))
+    data1 = pd.DataFrame(get_data("airline", save_copy=True))
 
     # DatetimeIndex column
     data2 = data1.copy()

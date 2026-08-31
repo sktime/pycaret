@@ -11,7 +11,7 @@ def test_classification_predict_model():
     # It should be revised and this comment should be deleted.
 
     # loading classification dataset
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     # Check class distribution in the original dataset
@@ -65,7 +65,7 @@ def test_classification_predict_model():
 
 def test_multiclass_predict_model():
     # loading classification dataset
-    data = pycaret.datasets.get_data("iris")
+    data = pycaret.datasets.get_data("iris", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     training_data = data.sample(frac=0.90)
@@ -109,7 +109,7 @@ def test_multiclass_predict_model():
 
 def test_regression_predict_model():
     # loading classification dataset
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     training_data = data.sample(frac=0.90)

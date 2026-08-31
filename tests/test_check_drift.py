@@ -9,7 +9,7 @@ import pycaret.datasets
 
 def test_check_drift(tmpdir):
     # loading dataset
-    data = pycaret.datasets.get_data("blood")
+    data = pycaret.datasets.get_data("blood", save_copy=True)
     experiment = pycaret.classification.ClassificationExperiment()
 
     # initialize setup
@@ -27,7 +27,7 @@ def test_check_drift(tmpdir):
 
 def test_check_drift_no_setup(tmpdir):
     # loading dataset
-    data = pycaret.datasets.get_data("blood")
+    data = pycaret.datasets.get_data("blood", save_copy=True)
     reference_data, current_data = train_test_split(data, test_size=0.2, shuffle=False)
     experiment = pycaret.classification.ClassificationExperiment()
 

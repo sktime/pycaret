@@ -66,7 +66,7 @@ _SCALE_METHODS = ["zscore", "minmax", "maxabs", "robust"]
 
 def _get_all_plots():
     exp = TSForecastingExperiment()
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     exp.setup(data=data)
     all_plots = list(exp._available_plots.keys())
     all_plots = [None] + all_plots
@@ -75,7 +75,7 @@ def _get_all_plots():
 
 def _get_all_plots_data():
     exp = TSForecastingExperiment()
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     exp.setup(data=data)
     all_plots = exp._available_plots_data_keys
     all_plots = [None] + all_plots
@@ -84,7 +84,7 @@ def _get_all_plots_data():
 
 def _get_all_plots_estimator():
     exp = TSForecastingExperiment()
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     exp.setup(data=data)
     all_plots = exp._available_plots_estimator_keys
     all_plots = [None] + all_plots
@@ -110,7 +110,7 @@ def _return_all_plots_estimator_ts_results():
 
 def _get_all_metrics():
     exp = TSForecastingExperiment()
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     exp.setup(data=data)
     all_metrics = exp.get_metrics()["Name"].to_list()
     return all_metrics
@@ -144,7 +144,7 @@ def _check_windows():
 
 def _return_model_names():
     """Return all model names."""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     exp = TSForecastingExperiment()
     exp.setup(data=data, session_id=42)
     model_containers = get_all_model_containers(exp)
@@ -286,8 +286,8 @@ def _return_setup_args_raises():
 def _return_data_with_without_period_index():
     """Returns one dataset with period index and one with int index"""
     datasets = [
-        get_data("airline"),
-        get_data("10", folder="time_series/white_noise"),
+        get_data("airline", save_copy=True),
+        get_data("10", folder="time_series/white_noise", save_copy=True),
     ]
     return datasets
 
@@ -323,7 +323,7 @@ def assert_frame_not_equal(*args, **kwargs):
 
 def _return_data_big_small():
     """Returns one dataset with 144 data points and one with < 12 data points"""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     data = data - 400
     data_small = data[:11]  # 11 data points
     datasets = [data, data_small]

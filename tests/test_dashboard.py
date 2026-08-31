@@ -6,7 +6,7 @@
 
 def test_classification_dashboard():
     # loading dataset
-    # data = pycaret.datasets.get_data("blood")
+    # data = pycaret.datasets.get_data("blood", save_copy=True)
 
     # setup environment
     # pycaret.classification.setup(

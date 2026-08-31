@@ -14,7 +14,7 @@ if sys.platform == "linux":
 @pytest.mark.skip(reason="no way of currently testing this")
 def test_regression_tuning():
     # loading dataset
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     # init setup

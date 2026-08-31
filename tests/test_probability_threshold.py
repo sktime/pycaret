@@ -7,7 +7,7 @@ from pycaret.internal.meta_estimators import CustomProbabilityThresholdClassifie
 
 def test_probability_threshold():
     # loading dataset
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     # init setup

@@ -14,7 +14,7 @@ def test_coerce_period_to_datetime_index():
     """Tests coercion of PeriodIndex to DatetimeIndex"""
 
     # TODO: Get both Series and DataFrame with Period Index later
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     orig_freq = data.index.freq
 
     # Basic coercion ----
@@ -42,7 +42,7 @@ def test_coerce_period_to_datetime_index():
     assert isinstance(data_np_new, np.ndarray)
 
     # No Coercion (Pandas Int Index)
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     original_index_type = type(data.index)
     new_data = coerce_period_to_datetime_index(data=data)
     assert isinstance(new_data.index, original_index_type)
@@ -65,7 +65,7 @@ def test_coerce_datetime_to_period_index():
     represent Month.
     """
     # TODO: Get both Series and DataFrame with Period Index later
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     data.index = data.index.to_timestamp()
 
     # Basic coercion ----
@@ -90,7 +90,7 @@ def test_coerce_datetime_to_period_index():
     assert isinstance(data_np_new, np.ndarray)
 
     # No Coercion (Pandas Int Index)
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     original_index_type = type(data.index)
     new_data = coerce_datetime_to_period_index(data=data)
     assert isinstance(new_data.index, original_index_type)

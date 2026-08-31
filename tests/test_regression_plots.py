@@ -7,7 +7,7 @@ import pycaret.regression
 
 @pytest.mark.plotting
 def test_plot():
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     pycaret.regression.setup(

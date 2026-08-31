@@ -81,7 +81,7 @@ def test_metrics_with_missing_values_noexo():
     """
 
     # Load data and simulate missing values ----
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     remove_n = int(0.4 * len(data))
     np.random.seed(42)
     na_indices = np.random.choice(data.index, remove_n, replace=False)
@@ -133,7 +133,7 @@ def test_metrics_with_missing_values_exo():
     """
 
     # Load data and simulate missing values ----
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     target = "Consumption"
 
     remove_n = int(0.4 * len(data))

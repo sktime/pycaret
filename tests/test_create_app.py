@@ -5,7 +5,7 @@ import pycaret.regression
 
 def test_classification_create_app():
     # loading dataset
-    data = pycaret.datasets.get_data("blood")
+    data = pycaret.datasets.get_data("blood", save_copy=True)
 
     # initialize setup
     pycaret.classification.setup(
@@ -25,7 +25,7 @@ def test_classification_create_app():
 
 def test_regression_create_app():
     # loading dataset
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
 
     # initialize setup
     pycaret.regression.setup(

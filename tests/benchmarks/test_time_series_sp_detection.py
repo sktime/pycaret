@@ -33,7 +33,9 @@ def test_benchmark_sp_to_use_using_auto(
     """Benchmark auto detection of seasonal periods. Any future changes must
     beat this benchmark."""
 
-    properties = get_data("index", folder="time_series/seasonal", verbose=False)
+    properties = get_data(
+        "index", folder="time_series/seasonal", verbose=False, save_copy=True
+    )
 
     candidate_sps = []
 
@@ -47,7 +49,9 @@ def test_benchmark_sp_to_use_using_auto(
 
     exp = TSForecastingExperiment()
     for _, (index, _) in enumerate(properties[["index", "s"]].values):
-        y = get_data(index, folder="time_series/seasonal", verbose=False)
+        y = get_data(
+            index, folder="time_series/seasonal", verbose=False, save_copy=True
+        )
         exp.setup(data=y, harmonic_order_method=harmonic_order_method, session_id=index)
         candidate_sps.append(exp.candidate_sps)
 

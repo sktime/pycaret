@@ -188,7 +188,7 @@ def test_sp_to_use_using_index_and_user_def():
     """
 
     exp = TSForecastingExperiment()
-    data = get_data("airline", verbose=False)
+    data = get_data("airline", verbose=False, save_copy=True)
 
     # 1.1 Airline Data with seasonality of 12
     exp.setup(
@@ -226,7 +226,9 @@ def test_sp_to_use_using_index_and_user_def():
     assert exp.primary_sp_to_use == 12
 
     # 1.3 White noise Data with seasonality of 12
-    data = get_data("1", folder="time_series/white_noise", verbose=False)
+    data = get_data(
+        "1", folder="time_series/white_noise", verbose=False, save_copy=True
+    )
     exp.setup(
         data=data,
         sp_detection="index",
@@ -247,7 +249,9 @@ def test_sp_to_use_using_index_and_user_def():
     assert exp.primary_sp_to_use == 1
 
     # 1.4 White noise Data with seasonality of 12 and ignore_seasonality_test = True
-    data = get_data("1", folder="time_series/white_noise", verbose=False)
+    data = get_data(
+        "1", folder="time_series/white_noise", verbose=False, save_copy=True
+    )
     exp.setup(
         data=data,
         sp_detection="index",
@@ -275,7 +279,7 @@ def test_sp_to_use_using_auto_and_user_def():
     """
 
     exp = TSForecastingExperiment()
-    data = get_data("airline", verbose=False)
+    data = get_data("airline", verbose=False, save_copy=True)
 
     # 1.1 Auto Detection of Seasonal Period ----
     exp.setup(
@@ -377,7 +381,7 @@ def test_sp_to_use_using_auto_and_user_def():
 
 def test_sp_to_use_upto_max_sp():
     """Seasonal Period detection upto a max seasonal period provided by user."""
-    data = get_data("airline", verbose=False)
+    data = get_data("airline", verbose=False, save_copy=True)
 
     # 1.0 Max SP not specified ----
     exp = TSForecastingExperiment()
@@ -945,7 +949,7 @@ def test_hyperparameter_splits():
     """Tests the splits to use to determine the hyperparameters"""
 
     # 1.0 Recommended d, white noise, seasonal_period ----
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
 
     FOLD = 1
     FH = 60
@@ -967,7 +971,7 @@ def test_hyperparameter_splits():
     assert exp1.uppercase_d == exp2.uppercase_d
 
     # 2.0 Recommended Seasonal D
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
 
     FOLD = 1
     FH = 36
@@ -1129,7 +1133,7 @@ def test_seasonality_type_auto_with_season_strictly_pos(
     # -------------------------------------------------------------------------#
     # Test 2B: Multiplicative Seasonality (2)
     # -------------------------------------------------------------------------#
-    y = get_data("airline", verbose=False)
+    y = get_data("airline", verbose=False, save_copy=True)
 
     err_msg = "Expected multiplicative seasonality, got additive (2)"
     exp = TSForecastingExperiment()

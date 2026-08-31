@@ -11,7 +11,7 @@ def test_datasets():
 
     # # loading dataset
     # os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    # data = get_data("test_files/dummy_dataset")
+    # data = get_data("test_files/dummy_dataset", save_copy=True)
     # assert isinstance(data, pd.DataFrame)
     # rows, cols = data.shape
     # assert rows >= 1
@@ -22,14 +22,14 @@ def test_datasets():
     ##############################
 
     # loading list of datasets
-    index = get_data("index")
+    index = get_data("index", save_copy=True)
     assert isinstance(index, pd.DataFrame)
     rows, cols = index.shape
     assert rows > 1
     assert cols == 8
 
     # loading dataset
-    data = get_data("credit")
+    data = get_data("credit", save_copy=True)
     assert isinstance(data, pd.DataFrame)
     rows, cols = data.shape
     assert rows == 24000
@@ -42,14 +42,14 @@ def test_datasets():
 
     folder = "time_series/seasonal"
     # loading list of datasets
-    index = get_data("index", folder=folder)
+    index = get_data("index", folder=folder, save_copy=True)
     assert isinstance(index, pd.DataFrame)
     rows, cols = index.shape
     assert rows > 1
     assert cols == 12
 
     # loading dataset
-    data = get_data("1", folder=folder)
+    data = get_data("1", folder=folder, save_copy=True)
     assert isinstance(data, pd.DataFrame)
     rows, cols = data.shape
     assert rows >= 1
@@ -60,7 +60,7 @@ def test_datasets():
     ###########################
 
     # loading dataset
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     assert isinstance(data, pd.Series)
     rows = len(data)
     assert rows >= 1

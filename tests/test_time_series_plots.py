@@ -363,7 +363,7 @@ def test_plot_final_model_exo():
     """Tests running plot model after running finalize_model when exogenous
     variables are present. Fix for https://github.com/sktime/pycaret/issues/3565
     """
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     target = "Consumption"
     FH = 3
     train = data.iloc[: int(len(data) - FH)]

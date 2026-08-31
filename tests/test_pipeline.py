@@ -19,7 +19,7 @@ from pycaret.datasets import get_data
 @pytest.fixture
 def pipeline():
     """Get a pipeline from atom with/without final estimator."""
-    dataset = get_data("juice", verbose=False)
+    dataset = get_data("juice", verbose=False, save_copy=True)
     pc = pycaret.classification.setup(
         data=dataset,
         polynomial_features=True,
@@ -32,14 +32,14 @@ def pipeline():
 
 def test_fit(pipeline):
     """Assert that the pipeline can be fitted normally."""
-    data = get_data("juice", verbose=False)
+    data = get_data("juice", verbose=False, save_copy=True)
     assert pipeline.fit(data.iloc[:, :-1], data.iloc[:, -1])
     assert isinstance(pipeline.feature_names_in_, list)
 
 
 def test_transforms_only_y():
     """Assert that the pipeline can transform the target column only."""
-    data = get_data("bank", verbose=False)
+    data = get_data("bank", verbose=False, save_copy=True)
     pc = pycaret.classification.setup(
         data=data,
         preprocess=False,
@@ -51,7 +51,7 @@ def test_transforms_only_y():
 
 def test_transform(pipeline):
     """Assert that the pipeline uses transform normally."""
-    data = get_data("juice", verbose=False)
+    data = get_data("juice", verbose=False, save_copy=True)
     pipeline.fit(data.iloc[:, :-1], data.iloc[:, -1])
     assert isinstance(pipeline.transform(data.iloc[:, :-1]), pd.DataFrame)
     assert isinstance(pipeline.transform(data.iloc[:, :-1], data.iloc[:, -1]), tuple)
@@ -59,7 +59,7 @@ def test_transform(pipeline):
 
 def test_fit_transform(pipeline):
     """Assert that the pipeline can be fit-transformed normally."""
-    data = get_data("juice", verbose=False)
+    data = get_data("juice", verbose=False, save_copy=True)
     pipeline.steps.append(("test", "passthrough"))
     X, y = pipeline.fit_transform(data.iloc[:, :-1], data.iloc[:, -1])
     assert isinstance(X, pd.DataFrame) and isinstance(y, pd.Series)
@@ -67,6 +67,6 @@ def test_fit_transform(pipeline):
 
 def test_transform_imbalancer(pipeline):
     """Assert that the pipeline ignores FixImbalancer during predicting."""
-    data = get_data("juice", verbose=False)
+    data = get_data("juice", verbose=False, save_copy=True)
     pipeline.fit(data.iloc[:, :-1], data.iloc[:, -1])
     assert len(pipeline.transform(data.iloc[:, :-1])) == len(data)

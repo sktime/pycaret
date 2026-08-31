@@ -12,7 +12,7 @@ import pycaret.datasets
 @pytest.fixture(scope="module")
 def juice_dataframe():
     # loading dataset
-    return pycaret.datasets.get_data("juice")
+    return pycaret.datasets.get_data("juice", save_copy=True)
 
 
 @pytest.mark.parametrize("return_train_score", [True, False])
@@ -204,7 +204,7 @@ class TestClassificationExperimentCustomTags:
         with pytest.raises(Exception):
             # init setup
             _ = pycaret.classification.setup(
-                pycaret.datasets.get_data("juice"),
+                pycaret.datasets.get_data("juice", save_copy=True),
                 target="Purchase",
                 remove_multicollinearity=True,
                 multicollinearity_threshold=0.95,

@@ -8,7 +8,7 @@ import pycaret.datasets
 @pytest.fixture(scope="module")
 def iris_dataframe():
     # loading dataset
-    return pycaret.datasets.get_data("iris")
+    return pycaret.datasets.get_data("iris", save_copy=True)
 
 
 @pytest.mark.parametrize("return_train_score", [True, False])

@@ -21,7 +21,7 @@ def test_utils():
     assert isinstance(version, str)
 
     # preparation(classification)
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     train, test = sklearn.model_selection.train_test_split(
         data, train_size=0.8, random_state=1
     )
@@ -79,7 +79,7 @@ def test_utils():
     assert mcc <= 1
 
     # preparation(regression)
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
     train, test = sklearn.model_selection.train_test_split(
         data, train_size=0.8, random_state=1
     )
@@ -135,7 +135,7 @@ def test_utils():
     npt.assert_almost_equal(mape, 0.045, decimal=2)
 
     # preparation (timeseries)
-    data = pycaret.datasets.get_data("airline", verbose=False)
+    data = pycaret.datasets.get_data("airline", verbose=False, save_copy=True)
     train, test = sklearn.model_selection.train_test_split(
         data, train_size=0.8, random_state=1, shuffle=False
     )

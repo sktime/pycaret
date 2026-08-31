@@ -8,7 +8,7 @@ import pycaret.datasets
 def test_engines_setup_global_args():
     """Tests the setting of engines using global arguments in setup."""
 
-    juice_dataframe = pycaret.datasets.get_data("juice")
+    juice_dataframe = pycaret.datasets.get_data("juice", save_copy=True)
     exp = pycaret.classification.ClassificationExperiment()
 
     # init setup
@@ -36,7 +36,7 @@ def test_engines_setup_global_args():
 def test_engines_global_methods():
     """Tests the setting of engines using methods like set_engine (global changes)."""
 
-    juice_dataframe = pycaret.datasets.get_data("juice")
+    juice_dataframe = pycaret.datasets.get_data("juice", save_copy=True)
     exp = pycaret.classification.ClassificationExperiment()
 
     # init setup
@@ -64,7 +64,7 @@ def test_engines_global_methods():
 def test_create_model_engines_local_args():
     """Tests the setting of engines for create_model using local args."""
 
-    juice_dataframe = pycaret.datasets.get_data("juice")
+    juice_dataframe = pycaret.datasets.get_data("juice", save_copy=True)
     exp = pycaret.classification.ClassificationExperiment()
 
     # init setup
@@ -97,7 +97,7 @@ def test_create_model_engines_local_args():
 def test_compare_models_engines_local_args():
     """Tests the setting of engines for compare_models using local args."""
 
-    juice_dataframe = pycaret.datasets.get_data("juice")
+    juice_dataframe = pycaret.datasets.get_data("juice", save_copy=True)
     exp = pycaret.classification.ClassificationExperiment()
 
     # init setup
@@ -134,7 +134,7 @@ def test_compare_models_engines_local_args():
 
 @pytest.mark.parametrize("algo", ("lr", "knn", "rbfsvm"))
 def test_sklearnex_model(algo: str):
-    juice_dataframe = pycaret.datasets.get_data("juice")
+    juice_dataframe = pycaret.datasets.get_data("juice", save_copy=True)
     exp = pycaret.classification.ClassificationExperiment()
 
     # init setup

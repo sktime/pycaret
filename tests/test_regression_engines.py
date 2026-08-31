@@ -9,7 +9,7 @@ import pycaret.regression
 def test_engines_setup_global_args():
     """Tests the setting of engines using global arguments in setup."""
 
-    boston_dataframe = pycaret.datasets.get_data("boston")
+    boston_dataframe = pycaret.datasets.get_data("boston", save_copy=True)
     exp = pycaret.regression.RegressionExperiment()
     # init setup
     exp.setup(
@@ -37,7 +37,7 @@ def test_engines_setup_global_args():
 def test_engines_global_methods():
     """Tests the setting of engines using methods like set_engine (global changes)."""
 
-    boston_dataframe = pycaret.datasets.get_data("boston")
+    boston_dataframe = pycaret.datasets.get_data("boston", save_copy=True)
     exp = pycaret.regression.RegressionExperiment()
 
     # init setup
@@ -67,7 +67,7 @@ def test_engines_global_methods():
 def test_create_model_engines_local_args():
     """Tests the setting of engines for create_model using local args."""
 
-    boston_dataframe = pycaret.datasets.get_data("boston")
+    boston_dataframe = pycaret.datasets.get_data("boston", save_copy=True)
     exp = pycaret.regression.RegressionExperiment()
 
     exp.setup(
@@ -101,7 +101,7 @@ def test_create_model_engines_local_args():
 def test_compare_models_engines_local_args():
     """Tests the setting of engines for compare_models using local args."""
 
-    boston_dataframe = pycaret.datasets.get_data("boston")
+    boston_dataframe = pycaret.datasets.get_data("boston", save_copy=True)
     exp = pycaret.regression.RegressionExperiment()
 
     exp.setup(
@@ -140,7 +140,7 @@ def test_compare_models_engines_local_args():
 
 @pytest.mark.parametrize("algo", ("lr", "lasso", "ridge", "en", "knn", "svm"))
 def test_sklearnex_model(algo: str):
-    boston_dataframe = pycaret.datasets.get_data("boston")
+    boston_dataframe = pycaret.datasets.get_data("boston", save_copy=True)
     exp = pycaret.regression.RegressionExperiment()
 
     exp.setup(

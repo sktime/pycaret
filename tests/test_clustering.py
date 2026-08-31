@@ -14,7 +14,7 @@ if sys.platform == "win32":
 
 @pytest.fixture(scope="module")
 def data():
-    return pycaret.datasets.get_data("jewellery")
+    return pycaret.datasets.get_data("jewellery", save_copy=True)
 
 
 def test_clustering(data):

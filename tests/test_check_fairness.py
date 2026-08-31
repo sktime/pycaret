@@ -7,7 +7,7 @@ import pycaret.regression
 
 def test_check_fairness_binary_classification():
     # loading dataset
-    data = pycaret.datasets.get_data("income")
+    data = pycaret.datasets.get_data("income", save_copy=True)
 
     # initialize setup
     pycaret.classification.setup(
@@ -27,7 +27,7 @@ def test_check_fairness_binary_classification():
 
 def test_check_fairness_multiclass_classification():
     # loading dataset
-    data = pycaret.datasets.get_data("iris")
+    data = pycaret.datasets.get_data("iris", save_copy=True)
 
     # initialize setup
     pycaret.classification.setup(
@@ -50,7 +50,7 @@ def test_check_fairness_multiclass_classification():
 
 def test_check_fairness_regression():
     # loading dataset
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
 
     # initialize setup
     pycaret.regression.setup(

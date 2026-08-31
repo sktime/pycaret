@@ -10,7 +10,7 @@ import pycaret.datasets
 def test_engines_setup_global_args():
     """Tests the setting of engines using global arguments in setup."""
 
-    jewellery_dataframe = pycaret.datasets.get_data("jewellery")
+    jewellery_dataframe = pycaret.datasets.get_data("jewellery", save_copy=True)
     exp = pycaret.clustering.ClusteringExperiment()
 
     # init setup
@@ -38,7 +38,7 @@ def test_engines_setup_global_args():
 def test_engines_global_methods():
     """Tests the setting of engines using methods like set_engine (global changes)."""
 
-    jewellery_dataframe = pycaret.datasets.get_data("jewellery")
+    jewellery_dataframe = pycaret.datasets.get_data("jewellery", save_copy=True)
     exp = pycaret.clustering.ClusteringExperiment()
 
     # init setup
@@ -66,7 +66,7 @@ def test_engines_global_methods():
 def test_create_model_engines_local_args():
     """Tests the setting of engines for create_model using local args."""
 
-    jewellery_dataframe = pycaret.datasets.get_data("jewellery")
+    jewellery_dataframe = pycaret.datasets.get_data("jewellery", save_copy=True)
     exp = pycaret.clustering.ClusteringExperiment()
 
     # init setup
@@ -98,7 +98,7 @@ def test_create_model_engines_local_args():
 
 @pytest.mark.parametrize("algo", ("kmeans", "dbscan"))
 def test_all_sklearnex_models(algo: str):
-    jewellery_dataframe = pycaret.datasets.get_data("jewellery")
+    jewellery_dataframe = pycaret.datasets.get_data("jewellery", save_copy=True)
     exp = pycaret.clustering.ClusteringExperiment()
 
     # init setup

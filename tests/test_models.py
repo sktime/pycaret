@@ -53,7 +53,7 @@ def check_exp(exp, **kwargs):
 def test_model_equality_classification():
     exp = ClassificationExperiment()
     exp.setup(
-        pycaret.datasets.get_data("juice"),
+        pycaret.datasets.get_data("juice", save_copy=True),
         target="Purchase",
     )
     check_exp(exp, cross_validation=False)
@@ -62,7 +62,7 @@ def test_model_equality_classification():
 def test_model_equality_regression():
     exp = RegressionExperiment()
     exp.setup(
-        pycaret.datasets.get_data("boston"),
+        pycaret.datasets.get_data("boston", save_copy=True),
         target="medv",
     )
     check_exp(exp, cross_validation=False)
@@ -71,7 +71,7 @@ def test_model_equality_regression():
 def test_model_equality_time_series():
     exp = TSForecastingExperiment()
     exp.setup(
-        pycaret.datasets.get_data("airline"),
+        pycaret.datasets.get_data("airline", save_copy=True),
         fh=12,
     )
     check_exp(exp, cross_validation=False)
@@ -80,7 +80,7 @@ def test_model_equality_time_series():
 def test_model_equality_clustering():
     exp = ClusteringExperiment()
     exp.setup(
-        pycaret.datasets.get_data("jewellery"),
+        pycaret.datasets.get_data("jewellery", save_copy=True),
     )
     check_exp(exp)
 
@@ -88,7 +88,7 @@ def test_model_equality_clustering():
 def test_model_equality_anomaly(disable_numba):
     exp = AnomalyExperiment()
     exp.setup(
-        pycaret.datasets.get_data("anomaly"),
+        pycaret.datasets.get_data("anomaly", save_copy=True),
     )
     check_exp(exp)
 

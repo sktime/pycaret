@@ -8,7 +8,7 @@ from pycaret.regression import RegressionExperiment
 @pytest.mark.parametrize("usecase", ("classification", "regression"))
 def test_tunable_voting_estimator(usecase):
     # load dataset
-    diabetes = get_data("diabetes")
+    diabetes = get_data("diabetes", save_copy=True)
 
     # init setup
     if usecase == "classification":
@@ -39,7 +39,7 @@ def test_tunable_voting_estimator(usecase):
 @pytest.mark.parametrize("usecase", ("classification", "regression"))
 def test_tunable_mlp(usecase):
     # load dataset
-    diabetes = get_data("diabetes")
+    diabetes = get_data("diabetes", save_copy=True)
 
     # init setup
     if usecase == "classification":

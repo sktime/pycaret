@@ -33,14 +33,14 @@ def reset_experiments():
 @pytest.fixture(scope="session", name="load_pos_data")
 def load_pos_data():
     """Load Pycaret Airline dataset."""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     return data
 
 
 @pytest.fixture(scope="session", name="load_pos_and_neg_data")
 def load_pos_and_neg_data():
     """Load Pycaret Airline dataset (with some negative values)."""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     data = data - 400  # simulate negative values
     return data
 
@@ -48,7 +48,7 @@ def load_pos_and_neg_data():
 @pytest.fixture(scope="session", name="load_uni_exo_data_target")
 def load_uni_exo_data_target():
     """Load Pycaret Univariate data with exogenous variables."""
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     target = "Consumption"
     return data, target
 
@@ -56,7 +56,7 @@ def load_uni_exo_data_target():
 @pytest.fixture(scope="session", name="load_uni_exo_data_target_positive")
 def load_uni_exo_data_target_positive():
     """Load Pycaret Univariate data with exogenous variables (strictly positive)."""
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     data = data.clip(lower=0.1)
     target = "Consumption"
     return data, target
@@ -65,7 +65,7 @@ def load_uni_exo_data_target_positive():
 @pytest.fixture(scope="session", name="load_pos_data_missing")
 def load_pos_data_missing():
     """Load Pycaret Airline dataset (with missing values)."""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     remove_n = int(0.4 * len(data))
     np.random.seed(42)
     na_indices = np.random.choice(data.index, remove_n, replace=False)
@@ -76,7 +76,7 @@ def load_pos_data_missing():
 @pytest.fixture(scope="session", name="load_pos_and_neg_data_missing")
 def load_pos_and_neg_data_missing():
     """Load Pycaret Airline dataset (with some negative & missing values)."""
-    data = get_data("airline")
+    data = get_data("airline", save_copy=True)
     data = data - 400  # simulate negative values
     data[10:20] = np.nan  # In train with FH = 12
     data[-5:-2] = np.nan  # In test with FH = 12
@@ -86,7 +86,7 @@ def load_pos_and_neg_data_missing():
 @pytest.fixture(scope="session", name="load_uni_exo_data_target_missing")
 def load_uni_exo_data_target_missing():
     """Load Pycaret Univariate data with exogenous variables & missing values."""
-    data = get_data("uschange")
+    data = get_data("uschange", save_copy=True)
     data[10:20] = np.nan  # In train with FH = 12
     data[-5:-2] = np.nan  # In test with FH = 12
     target = "Consumption"

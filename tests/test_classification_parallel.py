@@ -29,7 +29,7 @@ def test_remote_compare_models_allows_missing_report_callback(monkeypatch):
 
 def test_classification_parallel():
     pc.setup(
-        data_func=lambda: get_data("juice", verbose=False),
+        data_func=lambda: get_data("juice", verbose=False, save_copy=True),
         target="Purchase",
         session_id=0,
         n_jobs=1,
@@ -69,7 +69,7 @@ def test_classification_parallel():
 
 def test_classification_parallel_returns_empty_models_list_when_no_model_is_trained():
     pc.setup(
-        data_func=lambda: get_data("juice", verbose=False),
+        data_func=lambda: get_data("juice", verbose=False, save_copy=True),
         target="Purchase",
         session_id=0,
         n_jobs=1,

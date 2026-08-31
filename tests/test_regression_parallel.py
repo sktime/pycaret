@@ -6,7 +6,7 @@ def test_regression_parallel():
     from pycaret.parallel import FugueBackend
 
     pr.setup(
-        data=get_data("insurance", verbose=False),
+        data=get_data("insurance", verbose=False, save_copy=True),
         target="charges",
         session_id=0,
         n_jobs=1,

@@ -387,7 +387,7 @@ class MyOwnModel(BaseEstimator):
 
 
 def test_using_custom_model():
-    insurance = get_data("insurance")
+    insurance = get_data("insurance", save_copy=True)
 
     # init setup
     reg1 = RegressionExperiment()

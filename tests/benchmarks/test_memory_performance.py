@@ -23,7 +23,7 @@ pytestmark = [
 ]
 
 
-data_df = get_data(verbose=False)
+data_df = get_data("index", verbose=False, save_copy=True)
 supervised_datasets_df = data_df.copy()
 supervised_datasets_df["Items"] = (
     supervised_datasets_df["# Instances"] * supervised_datasets_df["# Attributes"]
@@ -68,7 +68,7 @@ def _test_synthetic_data(data, repeats: int = 100):
 
 
 def _test_real_data(data_name: str, repeats: int = 20):
-    data = get_data(data_name, verbose=False)
+    data = get_data(data_name, verbose=False, save_copy=True)
     globals_with_data = globals().copy()
     globals_with_data["data"] = data
     pycaret_joblib_time = min(
@@ -131,9 +131,9 @@ def _test_e2e_timeit(
     data_name: pd.DataFrame, task: str, target: str, memory_dir: str, repeats: int = 3
 ):
     globals_with_data = globals().copy()
-    globals_with_data["data"] = get_data(data_name, verbose=False).dropna(
-        subset=[target]
-    )
+    globals_with_data["data"] = get_data(
+        data_name, verbose=False, save_copy=True
+    ).dropna(subset=[target])
     globals_with_data["task"] = task
     globals_with_data["target"] = target
     globals_with_data["memory_dir"] = os.path.join(memory_dir, "joblib")

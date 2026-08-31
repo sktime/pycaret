@@ -18,7 +18,7 @@ if "CI" in os.environ:
 @pytest.mark.skip(reason="no way of currently testing this")
 def test_classification_tuning():
     # loading dataset
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     assert isinstance(data, pd.DataFrame)
 
     # init setup

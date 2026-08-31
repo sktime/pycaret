@@ -45,7 +45,7 @@ def test_blend_model_basic(load_setup, load_models, method):
 
 def test_blend_models_tuning():
     """Test the tuning of blended models."""
-    data = get_data("airline", verbose=False)
+    data = get_data("airline", verbose=False, save_copy=True)
     assert isinstance(data, (pd.Series, pd.DataFrame))
 
     exp = TSForecastingExperiment()
@@ -157,7 +157,7 @@ def test_blend_with_larger_predict_fh():
     used in predictions is larger than the one used for training
     Ref: https://github.com/sktime/pycaret/issues/2329
     """
-    data = get_data("airline", verbose=False)
+    data = get_data("airline", verbose=False, save_copy=True)
     assert isinstance(data, (pd.Series, pd.DataFrame))
 
     exp = TSForecastingExperiment()

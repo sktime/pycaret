@@ -10,7 +10,7 @@ import pycaret.datasets
 
 @pytest.fixture(scope="module")
 def data():
-    return pycaret.datasets.get_data("anomaly")
+    return pycaret.datasets.get_data("anomaly", save_copy=True)
 
 
 def test_anomaly(data):

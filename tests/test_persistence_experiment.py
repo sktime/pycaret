@@ -33,7 +33,7 @@ def check_experiment_equality(exp, new_exp):
 
 @pytest.mark.parametrize("preprocess_data", (True, False))
 def test_anomaly_persistence(tmpdir, preprocess_data):
-    data = pycaret.datasets.get_data("anomaly")
+    data = pycaret.datasets.get_data("anomaly", save_copy=True)
     exp = AnomalyExperiment()
     exp.setup(
         data,
@@ -56,7 +56,7 @@ def test_anomaly_persistence(tmpdir, preprocess_data):
 
 @pytest.mark.parametrize("preprocess_data", (True, False))
 def test_clustering_persistence(tmpdir, preprocess_data):
-    data = pycaret.datasets.get_data("jewellery")
+    data = pycaret.datasets.get_data("jewellery", save_copy=True)
     exp = ClusteringExperiment()
     exp.setup(
         data,
@@ -79,7 +79,7 @@ def test_clustering_persistence(tmpdir, preprocess_data):
 
 @pytest.mark.parametrize("preprocess_data", (True, False))
 def test_classification_persistence(tmpdir, preprocess_data):
-    data = pycaret.datasets.get_data("juice")
+    data = pycaret.datasets.get_data("juice", save_copy=True)
     exp = ClassificationExperiment()
     exp.setup(
         data,
@@ -103,7 +103,7 @@ def test_classification_persistence(tmpdir, preprocess_data):
 
 @pytest.mark.parametrize("preprocess_data", (True, False))
 def test_regression_persistence(tmpdir, preprocess_data):
-    data = pycaret.datasets.get_data("boston")
+    data = pycaret.datasets.get_data("boston", save_copy=True)
     exp = RegressionExperiment()
     exp.setup(
         data,

@@ -7,7 +7,7 @@ def test_ts_parallel():
     exp = pt.TSForecastingExperiment()
 
     exp.setup(
-        data_func=lambda: get_data("airline", verbose=False),
+        data_func=lambda: get_data("airline", verbose=False, save_copy=True),
         fh=12,
         fold=3,
         fig_kwargs={"renderer": "notebook"},
@@ -34,7 +34,7 @@ def test_ts_parallel():
 
 def test_ts_parallel_singleton():
     pt.setup(
-        data_func=lambda: get_data("airline", verbose=False),
+        data_func=lambda: get_data("airline", verbose=False, save_copy=True),
         fh=12,
         fold=3,
         fig_kwargs={"renderer": "notebook"},

@@ -11,7 +11,7 @@ import pycaret.regression
 
 @pytest.fixture(scope="module")
 def boston_dataframe():
-    return pycaret.datasets.get_data("boston")
+    return pycaret.datasets.get_data("boston", save_copy=True)
 
 
 @pytest.mark.parametrize("return_train_score", [True, False])
@@ -196,7 +196,7 @@ class TestRegressionExperimentCustomTags:
         with pytest.raises(Exception):
             # init setup
             _ = pycaret.regression.setup(
-                pycaret.datasets.get_data("boston"),
+                pycaret.datasets.get_data("boston", save_copy=True),
                 target="medv",
                 log_experiment=True,
                 html=False,
