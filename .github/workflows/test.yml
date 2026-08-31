@@ -149,7 +149,7 @@ jobs:
           python --version
           which python
           pip list
-      - name: Test with pytest
+      - name: Test full
         run: pytest --durations=0 -m "not (benchmark or plotting or tuning_random or tuning_grid)"
 
   test-plots:
@@ -189,7 +189,7 @@ jobs:
           python --version
           which python
           pip list
-      - name: Test with pytest
+      - name: Test plotting
         run: pytest --durations=0 -m "plotting"
 
   test-benchmark-tuning:
