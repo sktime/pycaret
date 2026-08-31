@@ -1,5 +1,4 @@
-"""Module to benchmark performance of PyCaret joblib.Memory tweaks
-"""
+"""Module to benchmark performance of PyCaret joblib.Memory tweaks"""
 
 import gc
 import os

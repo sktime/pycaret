@@ -66,7 +66,7 @@ dependencies = [
   "lightgbm>=3.0.0,<4.7.0; python_version < '3.13'",
   "lightgbm>=3.0.0; python_version >= '3.13'",
   "numba>=0.55.0; python_version<'3.13'",
-  "numba>=0.60.0,<0.67; python_version>='3.13'",
+  "numba>=0.60.0,<0.68; python_version>='3.13'",
   "requests>=2.27.1",
   "psutil>=5.9.0",
   "cloudpickle",
@@ -124,7 +124,7 @@ full = [
   "catboost>=1.2.5",
   "kmodes>=0.11.1",
   "mlxtend>=0.19.0",
-  "statsforecast>=1.6.0,<=2.0.1",
+  "statsforecast>=1.6.0,<=2.1.1",
   "scikit-learn-intelex==2024.2.0; python_version < '3.13' and platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
   "scikit-learn-intelex>=2024.0.0; (python_version >= '3.13' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
   "tune-sklearn; python_version<'3.13'",
@@ -150,9 +150,7 @@ full = [
   "fugue[dask]",
   "dash[testing]",
   "dash-bootstrap-components<3.0.0",
-  "black>=24.8.0",
-  "isort>=5.13.2",
-  "flake8>=7.1.1",
+  "ruff>=0.16.5",
   "setuptools>=71.1.0",
   "mypy>=1.0.0",
 ]
@@ -176,7 +174,7 @@ models = [
   "catboost>=1.2.5",
   "kmodes>=0.11.1",
   "mlxtend>=0.19.0",
-  "statsforecast>=1.6.0,<=2.0.1",
+  "statsforecast>=1.6.0,<=2.1.1",
   "scikit-learn-intelex==2024.2.0; python_version == '3.10' and platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
   "scikit-learn-intelex>=2024.0.0; (python_version != '3.10' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
 ]
@@ -214,9 +212,7 @@ prophet = [
 
 # dev - the developer dependency set, for contributors
 dev = [
-  "black>=24.8.0",
-  "isort>=5.13.2",
-  "flake8>=7.1.1",
+  "ruff>=0.16.5",
   "setuptools>=71.1.0",
   "mypy>=1.0.0",
 ]
@@ -258,3 +254,33 @@ requires = [
 
 [tool.setuptools.packages.find]
 include = ["pycaret", "pycaret.*"]
+
+[tool.ruff]
+line-length = 88
+# tutorial notebooks use `import *` by design and need their own rule set;
+# see https://github.com/sktime/pycaret/issues/99
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+# default rule set (pycodestyle errors, pyflakes) plus isort
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = [
+  # Assign a lambda expression
+  "E731",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Imported but unused
+"__init__.py" = ["F401"]
+"pycaret/distributions.py" = ["F401"]
+"pycaret/internal/preprocess/iterative_imputer.py" = ["F401"]
+"pycaret/internal/display/display_backend.py" = ["F401"]
+# Redefinition of unused imports
+"pycaret/containers/models/classification.py" = ["F811"]
+"pycaret/containers/models/clustering.py" = ["F811"]
+"pycaret/containers/models/regression.py" = ["F811"]
+"pycaret/containers/models/time_series.py" = ["F811"]
+# Local variable is assigned to but never used
+"tests/test_time_series_mlflow.py" = ["F841"]
+# Module level import not at top of file (intentional - after pytest.importorskip)
+"tests/test_clustering_engines.py" = ["E402"]

@@ -303,8 +303,8 @@ class NaiveContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is NaiveForecaster
+        eq_function = lambda x: (
+            type(x) is NaiveForecaster
             and x.sp == 1
             and (x.strategy == "last" or x.strategy == "drift")
         )
@@ -364,10 +364,8 @@ class GrandMeansContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is NaiveForecaster
-            and x.sp == 1
-            and (x.strategy == "mean")
+        eq_function = lambda x: (
+            type(x) is NaiveForecaster and x.sp == 1 and (x.strategy == "mean")
         )
 
         super().__init__(
@@ -1432,9 +1430,8 @@ class CdsDtContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is BaseCdsDtForecaster
-            and type(x.regressor) is regressor_class
+        eq_function = lambda x: (
+            type(x) is BaseCdsDtForecaster and type(x.regressor) is regressor_class
         )
 
         super().__init__(

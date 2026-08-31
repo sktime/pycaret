@@ -1,5 +1,4 @@
-"""Module to test time_series "setup" functionality
-"""
+"""Module to test time_series "setup" functionality"""
 
 import math
 
