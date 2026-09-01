@@ -144,7 +144,7 @@ full = [
   "distributed>=2024.1.0",
   "fugue>=0.9.0",
   "flask",
-  "Werkzeug>=2.2,<=3.0.6",
+  "Werkzeug>=2.2,<=3.1.8",
   "pytest>=8.0.0",
   "moto>=4.0.0",
   "fugue[dask]",
@@ -203,7 +203,7 @@ parallel = [
   "distributed>=2024.1.0",
   "fugue>=0.9.0",
   "flask",
-  "Werkzeug>=2.2,<=3.0.6",
+  "Werkzeug>=2.2,<=3.1.8",
 ]
 
 prophet = [
