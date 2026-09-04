@@ -9,7 +9,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-import plotly.express as px  # type: ignore
 import scikitplot as skplt  # type: ignore
 from IPython.display import display as ipython_display
 from joblib.memory import Memory
@@ -605,6 +604,11 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def cluster():
+
+            # Import required libraries ----
+            _check_soft_dependencies("plotly", extra=None, severity="error")
+            import plotly.express as px
+
             self.logger.info(
                 "SubProcess assign_model() called =================================="
             )
@@ -697,6 +701,19 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def umap():
+
+            # Import required libraries ----
+            _check_soft_dependencies("plotly", extra=None, severity="error")
+            import plotly.express as px
+
+            _check_soft_dependencies(
+                "umap",
+                extra="analysis",
+                severity="error",
+                install_name="umap-learn",
+            )
+            import umap
+
             self.logger.info(
                 "SubProcess assign_model() called =================================="
             )
@@ -711,20 +728,10 @@ class _TabularExperiment(_PyCaretExperiment):
             b.dropna(axis=0, inplace=True)  # dropping rows with NA's
             b.drop(["Anomaly"], axis=1, inplace=True)
 
-            _check_soft_dependencies(
-                "umap",
-                extra="analysis",
-                severity="error",
-                install_name="umap-learn",
-            )
-            import umap
-
             reducer = umap.UMAP()
             self.logger.info("Fitting UMAP()")
             embedding = reducer.fit_transform(b)
             X = pd.DataFrame(embedding)
-
-            import plotly.express as px
 
             df = X
             df["Anomaly"] = label
@@ -775,6 +782,13 @@ class _TabularExperiment(_PyCaretExperiment):
                 return _tsne_anomaly()
 
         def _tsne_anomaly():
+
+            # Import required libraries ----
+            from sklearn.manifold import TSNE
+
+            _check_soft_dependencies("plotly", extra=None, severity="error")
+            import plotly.express as px
+
             self.logger.info(
                 "SubProcess assign_model() called =================================="
             )
@@ -789,8 +803,6 @@ class _TabularExperiment(_PyCaretExperiment):
             b.drop("Anomaly", axis=1, inplace=True)
 
             self.logger.info("Getting dummies to cast categorical variables")
-
-            from sklearn.manifold import TSNE
 
             self.logger.info("Fitting TSNE()")
             X_embedded = TSNE(n_components=3).fit_transform(b)
@@ -854,6 +866,12 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def _tsne_clustering():
+
+            # Import required libraries ----
+            from sklearn.manifold import TSNE
+            _check_soft_dependencies("plotly", extra=None, severity="error")
+            import plotly.express as px
+
             self.logger.info(
                 "SubProcess assign_model() called =================================="
             )
@@ -869,8 +887,6 @@ class _TabularExperiment(_PyCaretExperiment):
 
             cluster = b["Cluster"].values
             b.drop("Cluster", axis=1, inplace=True)
-
-            from sklearn.manifold import TSNE
 
             self.logger.info("Fitting TSNE()")
             X_embedded = TSNE(n_components=3, random_state=self.seed).fit_transform(b)
@@ -952,6 +968,11 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def distribution():
+
+            # Import required libraries ----
+            _check_soft_dependencies("plotly", extra=None, severity="error")
+            import plotly.express as px
+
             self.logger.info(
                 "SubProcess assign_model() called =================================="
             )
