@@ -1193,7 +1193,7 @@ class RandomForestRegressorContainer(RegressorContainer):
             gpu_imported = True
         elif experiment.gpu_param:
             if _check_soft_dependencies("cuml", extra=None, severity="warning"):
-                import cuml.ensemble
+                import cuml.ensemble  # noqa: F401
 
                 logger.info("Imported cuml.ensemble")
                 gpu_imported = True
