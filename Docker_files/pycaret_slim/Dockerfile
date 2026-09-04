@@ -1,6 +1,6 @@
 # author Fahad Akbar , fahadakbar@gmail.com
 # Choose base image
-FROM jupyter/base-notebook:latest
+FROM quay.io/jupyter/base-notebook:latest
 
 # name your environment and choose python 3.x version
 ARG conda_env=pycaret
@@ -17,11 +17,11 @@ RUN "${CONDA_DIR}/envs/${conda_env}/bin/python" -m ipykernel install --user --na
     fix-permissions "/home/${NB_USER}"
 
 # install pycaret light version
-RUN "${CONDA_DIR}/envs/${conda_env}/bin/pip" install pycaret>=3.3.2
+RUN "${CONDA_DIR}/envs/${conda_env}/bin/pip" install "pycaret-core>=3.5.0"
 
 
 # prepend conda environment to path
-ENV PATH "${CONDA_DIR}/envs/${conda_env}/bin:${PATH}"
+ENV PATH="${CONDA_DIR}/envs/${conda_env}/bin:${PATH}"
 
 # make this environment to be the default one
-ENV CONDA_DEFAULT_ENV ${conda_env}
+ENV CONDA_DEFAULT_ENV=${conda_env}
