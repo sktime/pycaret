@@ -21,7 +21,6 @@ import sklearn
 from cycler import cycler
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
-from packaging import version
 from sklearn.feature_selection import RFECV
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.linear_model import LinearRegression
@@ -44,6 +43,7 @@ from sklearn.model_selection import (
 )
 from sklearn.preprocessing import label_binarize
 from sklearn.utils.multiclass import type_of_target
+from verlib2.packaging import version
 
 from pycaret.internal.logging import get_logger
 

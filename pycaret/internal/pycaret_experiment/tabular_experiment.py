@@ -13,10 +13,10 @@ import plotly.express as px  # type: ignore
 import scikitplot as skplt  # type: ignore
 from IPython.display import display as ipython_display
 from joblib.memory import Memory
-from packaging import version
 from pandas.io.formats.style import Styler
 from sklearn.model_selection import BaseCrossValidator  # type: ignore
 from sklearn.pipeline import Pipeline
+from verlib2.packaging import version
 
 import pycaret.internal.patches.sklearn
 import pycaret.internal.persistence

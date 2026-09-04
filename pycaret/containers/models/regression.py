@@ -11,7 +11,7 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from packaging import version
+from verlib2.packaging import version
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (

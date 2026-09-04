@@ -17,7 +17,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-from packaging import version
 from sktime.forecasting.base import BaseForecaster  # type: ignore
 from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
@@ -29,6 +28,7 @@ from sktime.transformations.series.detrend import (  # type: ignore
     Detrender,
 )
 from sktime.transformations.series.summarize import WindowSummarizer
+from verlib2.packaging import version
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (
