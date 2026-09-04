@@ -48,7 +48,6 @@ dependencies = [
   # Base
   "scikit-base>=0.6.1",
   "ipython>=5.5.0",
-  "ipywidgets>=7.6.5",
   "tqdm>=4.62.0",
   "numpy>=1.21,<2.0; python_version<'3.13'",
   "numpy>=2.0,<3; python_version>='3.13'",
@@ -71,14 +70,6 @@ dependencies = [
   "psutil>=5.9.0",
   "cloudpickle",
   "xxhash",
-  # Plotting
-  "matplotlib>=3.5.0,<3.12.0; python_version<'3.13'",
-  "matplotlib>=3.8.0,<3.12.0; python_version>='3.13'",
-  "mljar-scikit-plot",
-  "plotly>=5.14.0",
-  "kaleido>=0.2.1",
-  "schemdraw",
-  "plotly-resampler>=0.8.3.1",
   # Time-series
   "statsmodels>=0.12.1,<0.15.0",
   "sktime>=0.31.0",
@@ -107,6 +98,7 @@ dependencies = [
 # users can install via "pip install pycaret-core[full]"
 #
 full = [
+  "pycaret-core[plotting]",
   "shap>=0.49.1,<0.50.0; python_version < '3.13'",
   "shap>=0.50.0; python_version >= '3.13'",
   "interpret>=0.2.7",
@@ -195,6 +187,17 @@ parallel = [
   "fugue>=0.9.0",
   "flask",
   "Werkzeug>=2.2,<=3.2",
+]
+
+plotting = [
+  "ipywidgets>=7.6.5",
+  "matplotlib>=3.5.0,<3.12.0; python_version<'3.13'",
+  "matplotlib>=3.8.0,<3.12.0; python_version>='3.13'",
+  "mljar-scikit-plot",
+  "plotly>=5.14.0",
+  "kaleido>=0.2.1",
+  "schemdraw==0.15",
+  "plotly-resampler>=0.8.3.1",
 ]
 
 prophet = [
