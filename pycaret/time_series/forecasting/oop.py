@@ -1086,8 +1086,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                 # Even if there are no explicit exogenous variables, we can create
                 # them using index. Hence, we do not include the exogenous_present
                 # check here.
-                self.fe_exogenous
-                is not None
+                self.fe_exogenous is not None
             )
         ):
             self.preprocess = True

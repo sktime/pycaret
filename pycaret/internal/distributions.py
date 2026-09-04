@@ -195,12 +195,12 @@ class IntUniformDistribution(Distribution):
         class LogUniformInteger(Integer):
             class _LogUniform(LogUniform):
                 def sample(self, domain: "Integer", spec=None, size: int = 1):
-                    assert (
-                        domain.lower > 0
-                    ), "LogUniform needs a lower bound greater than 0"
-                    assert (
-                        0 < domain.upper < float("inf")
-                    ), "LogUniform needs a upper bound greater than 0"
+                    assert domain.lower > 0, (
+                        "LogUniform needs a lower bound greater than 0"
+                    )
+                    assert 0 < domain.upper < float("inf"), (
+                        "LogUniform needs a upper bound greater than 0"
+                    )
                     logmin = np.log(domain.lower) / np.log(self.base)
                     logmax = np.log(domain.upper) / np.log(self.base)
 

@@ -18,22 +18,17 @@ jobs:
     name: Code quality checks
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v4
-      - name: Run black
-        uses: psf/black@stable
+        uses: actions/checkout@v7
+      - name: Run ruff lint and import checks
+        uses: astral-sh/ruff-action@v3
         with:
-          src: pycaret tests
-          version: 24.8.0
-      - name: Check imports
-        uses: jamescurtin/isort-action@master
+          version: 0.16.5
+          args: check --output-format=github
+      - name: Run ruff format check
+        uses: astral-sh/ruff-action@v3
         with:
-          sort-paths: pycaret tests
-          isort-version: 5.13.2
-      - name: Run flake8
-        uses: py-actions/flake8@v2
-        with:
-          path: pycaret tests
-          flake8-version: 7.1.1
+          version: 0.16.5
+          args: format --check --diff
 
   # JOBS MUST START WITH test !!!!
   test-docs-build:
@@ -42,9 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: 'pip' # caching pip dependencies
@@ -61,9 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: 'pip' # caching pip dependencies
@@ -82,9 +77,9 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: 'pip' # caching pip dependencies
@@ -98,7 +93,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full]"
+          python -m uv pip install ".[dev,test,full]"
           python -m ipykernel install --user --name cikernel
       - name: Python version and dependency list
         run: |
@@ -116,9 +111,9 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: 'pip' # caching pip dependencies
@@ -132,7 +127,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full]"
+          python -m uv pip install ".[dev,test,full]"
           python -m ipykernel install --user --name cikernel
       - name: Python version and dependency list
         run: |
@@ -159,9 +154,9 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip' # caching pip dependencies
@@ -178,7 +173,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
@@ -200,9 +195,9 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip' # caching pip dependencies
@@ -219,7 +214,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
       - name: Python version and dependency list
         run: |
           echo "Python version expected: ${{ matrix.python-version }}"
@@ -240,9 +235,9 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip' # caching pip dependencies
@@ -259,7 +254,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |
@@ -281,9 +276,9 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip' # caching pip dependencies
@@ -300,7 +295,7 @@ jobs:
           echo 'Cython < 3.0' > /tmp/constraint.txt
           PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
-          python -m uv pip install ".[full, test]"
+          python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
         run: |

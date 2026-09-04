@@ -1,5 +1,4 @@
-"""Module to test time_series models
-"""
+"""Module to test time_series models"""
 
 from types import SimpleNamespace
 

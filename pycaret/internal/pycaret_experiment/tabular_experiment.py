@@ -2479,9 +2479,7 @@ EXPOSE {PORT}
 
 CMD ["uvicorn", "{API_NAME}:app", "--host", "0.0.0.0", "--port", "{PORT}"]
 
-""".format(
-            BASE_IMAGE=base_image, PORT=expose_port, API_NAME=api_name
-        )
+""".format(BASE_IMAGE=base_image, PORT=expose_port, API_NAME=api_name)
 
         with open("Dockerfile", "w") as f:
             f.write(docker)
