@@ -2415,7 +2415,7 @@ if __name__ == "__main__":
     def create_docker(
         self,
         api_name: str,
-        base_image: str = "python:3.8-slim",
+        base_image: str = "python:3.11-slim",
         expose_port: int = 8000,
     ):
         """
@@ -2438,7 +2438,7 @@ if __name__ == "__main__":
             Name of API. Must be saved as a .py file in the same folder.
 
 
-        base_image: str, default = "python:3.8-slim"
+        base_image: str, default = "python:3.11-slim"
             Name of the base image for Dockerfile.
 
 
@@ -2451,11 +2451,9 @@ if __name__ == "__main__":
         """
 
         requirements = """
-pycaret
+pycaret-core
 fastapi
 uvicorn
-pydantic<2.0.0. # required for airflow
-
 """
         print("Writing requirements.txt")
         f = open("requirements.txt", "w")
