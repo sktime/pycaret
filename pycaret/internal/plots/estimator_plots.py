@@ -43,9 +43,9 @@ from sklearn.model_selection import (
 )
 from sklearn.preprocessing import label_binarize
 from sklearn.utils.multiclass import type_of_target
-from verlib2.packaging import version
 
 from pycaret.internal.logging import get_logger
+from pycaret.utils._dependencies import _check_soft_dependencies
 
 # Default look of all plots in this module. The values mirror the style and
 # context that yellowbrick applied, so that plots look as they did before
@@ -234,7 +234,7 @@ def _fit_params(fit_kwargs: Optional[dict]) -> dict:
     """
     if not fit_kwargs:
         return {}
-    if version.parse(sklearn.__version__) >= version.parse("1.6"):
+    if _check_soft_dependencies("sklearn>=1.6", severity="none"):
         return {"params": fit_kwargs}
     return {"fit_params": fit_kwargs}
 

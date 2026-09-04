@@ -16,7 +16,6 @@ from joblib.memory import Memory
 from pandas.io.formats.style import Styler
 from sklearn.model_selection import BaseCrossValidator  # type: ignore
 from sklearn.pipeline import Pipeline
-from verlib2.packaging import version
 
 import pycaret.internal.patches.sklearn
 import pycaret.internal.persistence
@@ -351,9 +350,7 @@ class _TabularExperiment(_PyCaretExperiment):
                 except Exception:
                     self.logger.exception("Couldn't set cuML global output type")
 
-            if cuml_version is None or not version.parse(cuml_version) >= version.parse(
-                "23.08"
-            ):
+            if _check_soft_dependencies("cuml<23.08", severity="none"):
                 message = """cuML is outdated or not found. Required version is >=23.08.
                 Please visit https://rapids.ai/install for installation instructions."""
                 if use_gpu == "force":

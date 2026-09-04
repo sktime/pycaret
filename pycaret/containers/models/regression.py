@@ -11,7 +11,6 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from verlib2.packaging import version
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (
@@ -1212,7 +1211,7 @@ class RandomForestRegressorContainer(RegressorContainer):
         else:
             import cuml
 
-            if version.parse(cuml.__version__) >= version.parse("0.19"):
+            if _check_soft_dependencies("cuml>=0.19", severity="none"):
                 args = {"random_state": experiment.seed}
             else:
                 args = {"seed": experiment.seed}
@@ -1522,7 +1521,7 @@ class XGBRegressorContainer(RegressorContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -1539,7 +1538,7 @@ class XGBRegressorContainer(RegressorContainer):
         }
 
         # If using XGBoost version 2.0 or higher
-        if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+        if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
             args["tree_method"] = "hist" if experiment.gpu_param else "auto"
             args["device"] = "gpu" if experiment.gpu_param else "cpu"
         else:
@@ -1807,7 +1806,7 @@ class CatBoostRegressorContainer(RegressorContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )

@@ -28,7 +28,6 @@ from sktime.transformations.series.detrend import (  # type: ignore
     Detrender,
 )
 from sktime.transformations.series.summarize import WindowSummarizer
-from verlib2.packaging import version
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (
@@ -2405,7 +2404,7 @@ class XGBCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             self.logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -2425,7 +2424,7 @@ class XGBCdsDtContainer(CdsDtContainer):
         if self.active:
             import xgboost
 
-            if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+            if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
                 regressor_args["tree_method"] = "hist" if self.gpu_param else "auto"
                 regressor_args["device"] = "gpu" if self.gpu_param else "cpu"
             else:
@@ -2578,7 +2577,7 @@ class CatBoostCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             self.logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )
