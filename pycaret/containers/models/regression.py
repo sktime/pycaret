@@ -1209,8 +1209,6 @@ class RandomForestRegressorContainer(RegressorContainer):
                 "n_jobs": experiment.n_jobs_param,
             }
         else:
-            import cuml
-
             if _check_soft_dependencies("cuml>=0.19", severity="none"):
                 args = {"random_state": experiment.seed}
             else:

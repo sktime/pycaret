@@ -17,7 +17,6 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import sklearn
 from cycler import cycler
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
