@@ -2080,10 +2080,9 @@ class _SupervisedExperiment(_TabularExperiment):
 
         if search_library == "scikit-optimize":
             _check_soft_dependencies(
-                "skopt",
+                "scikit-optimize",
                 extra="tuners",
                 severity="error",
-                install_name="scikit-optimize",
             )
             import skopt
 
@@ -2098,10 +2097,9 @@ class _SupervisedExperiment(_TabularExperiment):
 
         elif search_library == "tune-sklearn":
             _check_soft_dependencies(
-                "tune_sklearn",
+                "tune-sklearn",
                 extra="tuners",
                 severity="error",
-                install_name="tune-sklearn ray[tune]",
             )
 
             if not search_algorithm:
@@ -2123,22 +2121,17 @@ class _SupervisedExperiment(_TabularExperiment):
             if search_algorithm == "bohb":
                 _check_soft_dependencies("ConfigSpace", extra=None, severity="error")
                 _check_soft_dependencies("hpbandster", extra=None, severity="error")
-                _check_soft_dependencies(
-                    "ray", extra="tuners", severity="error", install_name="ray[tune]"
-                )
+                _check_soft_dependencies("ray[tune]", extra="tuners", severity="error")
 
             elif search_algorithm == "hyperopt":
                 _check_soft_dependencies("hyperopt", extra="tuners", severity="error")
-                _check_soft_dependencies(
-                    "ray", extra="tuners", severity="error", install_name="ray[tune]"
-                )
+                _check_soft_dependencies("ray[tune]", extra="tuners", severity="error")
 
             elif search_algorithm == "bayesian":
                 _check_soft_dependencies(
-                    "skopt",
+                    "scikit-optimize",
                     extra="tuners",
                     severity="error",
-                    install_name="scikit-optimize",
                 )
                 import skopt
 
@@ -4096,10 +4089,9 @@ class _SupervisedExperiment(_TabularExperiment):
         # checking interpret-community is available
         if plot == "pfi":
             _check_soft_dependencies(
-                "interpret_community",
+                "interpret-community",
                 extra=None,
                 severity="error",
-                install_name="interpret-community",
             )
 
         # get estimator from meta estimator

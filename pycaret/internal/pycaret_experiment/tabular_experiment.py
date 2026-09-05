@@ -706,10 +706,9 @@ class _TabularExperiment(_PyCaretExperiment):
             import plotly.express as px
 
             _check_soft_dependencies(
-                "umap",
+                "umap-learn",
                 extra="analysis",
                 severity="error",
-                install_name="umap-learn",
             )
             import umap
 
