@@ -53,7 +53,7 @@ optional_deps = [
     "shap",
     "interpret",
     "umap",
-    "ydata_profiling",
+    "data_profiling",
     "explainerdashboard",
     "autoviz",
     "fairlearn",
