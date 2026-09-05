@@ -22,8 +22,6 @@ from pycaret.internal.display import CommonDisplay
 from pycaret.internal.logging import create_logger, get_logger, redirect_output
 from pycaret.internal.memory import get_memory
 from pycaret.internal.pipeline import Pipeline as InternalPipeline
-from pycaret.internal.plots import estimator_plots
-from pycaret.internal.plots.estimator_plots import show_matplotlib_figure
 from pycaret.internal.plots.helper import MatplotlibDefaultDPI
 from pycaret.internal.pycaret_experiment.pycaret_experiment import _PyCaretExperiment
 from pycaret.internal.validation import is_sklearn_cv_generator
@@ -522,6 +520,7 @@ class _TabularExperiment(_PyCaretExperiment):
         _base_dpi = 100
 
         def _show(fig):
+            from pycaret.internal.plots.estimator_plots import show_matplotlib_figure
             return show_matplotlib_figure(
                 fig,
                 name=plot_name,
@@ -1048,6 +1047,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def elbow():
+            from pycaret.internal.plots import estimator_plots
             try:
                 fig = estimator_plots.plot_elbow(
                     estimator,
@@ -1062,6 +1062,7 @@ class _TabularExperiment(_PyCaretExperiment):
                 raise TypeError("Plot Type not supported for this model.")
 
         def silhouette():
+            from pycaret.internal.plots import estimator_plots
             try:
                 fig = estimator_plots.plot_silhouette(
                     estimator, self.X_train_transformed, **plot_kwargs
@@ -1073,6 +1074,7 @@ class _TabularExperiment(_PyCaretExperiment):
                 raise TypeError("Plot Type not supported for this model.")
 
         def distance():
+            from pycaret.internal.plots import estimator_plots
             try:
                 fig = estimator_plots.plot_intercluster_distance(
                     estimator,
@@ -1087,6 +1089,7 @@ class _TabularExperiment(_PyCaretExperiment):
                 raise TypeError("Plot Type not supported for this model.")
 
         def residuals():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_residuals(
                 estimator,
                 self.X_train_transformed,
@@ -1098,6 +1101,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def auc():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_roc_auc(
                 estimator,
                 self.X_test_transformed,
@@ -1107,6 +1111,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def threshold():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_discrimination_threshold(
                 estimator,
                 self.X_train_transformed,
@@ -1118,6 +1123,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def pr():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_precision_recall(
                 estimator,
                 self.X_test_transformed,
@@ -1127,6 +1133,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def confusion_matrix():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_confusion_matrix(
                 estimator,
                 self.X_test_transformed,
@@ -1136,6 +1143,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def error():
+            from pycaret.internal.plots import estimator_plots
             if self._ml_usecase == MLUsecase.CLASSIFICATION:
                 fig = estimator_plots.plot_class_prediction_error(
                     estimator,
@@ -1153,12 +1161,14 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def cooks():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_cooks_distance(
                 self.X_train_transformed, self.y_train_transformed, **plot_kwargs
             )
             return _show(fig)
 
         def class_report():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_classification_report(
                 estimator,
                 self.X_test_transformed,
@@ -1168,6 +1178,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def boundary():
+            from pycaret.internal.plots import estimator_plots
             from sklearn.decomposition import PCA
             from sklearn.preprocessing import StandardScaler
 
@@ -1196,6 +1207,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def rfe():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_rfecv(
                 estimator,
                 self.X_train_transformed,
@@ -1207,6 +1219,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def learning():
+            from pycaret.internal.plots import estimator_plots
             fig = estimator_plots.plot_learning_curve(
                 estimator,
                 self.X_train_transformed,
@@ -1278,6 +1291,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def manifold():
+            from pycaret.internal.plots import estimator_plots
             data_X_transformed = self.X_train_transformed.select_dtypes(
                 include="number"
             )
@@ -1458,6 +1472,8 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def vc():
+            from pycaret.internal.plots import estimator_plots
+
             self.logger.info("Determining param_name")
 
             try:
@@ -1613,6 +1629,7 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def dimension():
+            from pycaret.internal.plots import estimator_plots
             from sklearn.decomposition import PCA
             from sklearn.preprocessing import StandardScaler
 
