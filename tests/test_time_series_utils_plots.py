@@ -7,11 +7,15 @@ import pytest
 from plotly.subplots import make_subplots
 from time_series_test_utils import _ALL_PLOTS
 
+from pycaret.internal.plots.utils.data import (
+    ALLOWED_PLOT_DATA_TYPES,
+    MULTIPLE_PLOT_TYPES_ALLOWED_AT_ONCE,
+    _get_data_types_to_plot,
+    _reformat_dataframes_for_plots,
+)
 from pycaret.internal.plots.utils.time_series import (
     _plot_fig_update,
 )
-from pycaret.internal.plots.utils.data import _reformat_dataframes_for_plots, _get_data_types_to_plot, \
-    ALLOWED_PLOT_DATA_TYPES, MULTIPLE_PLOT_TYPES_ALLOWED_AT_ONCE
 
 pytestmark = [
     pytest.mark.filterwarnings("ignore::UserWarning"),

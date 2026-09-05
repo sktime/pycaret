@@ -3954,7 +3954,10 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                         convert_traces_kwargs=dict(limit_to_views=True),
                     ).show_dash(**show_dash_kwargs)
                 else:  # just a plain plotly-figure
-                    from pycaret.internal.plots.utils.time_series import _resolve_renderer
+                    from pycaret.internal.plots.utils.time_series import (
+                        _resolve_renderer,
+                    )
+
                     try:
                         big_data_threshold = _resolve_dict_keys(
                             dict_=fig_kwargs,
