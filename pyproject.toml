@@ -213,6 +213,9 @@ requires = [
 [tool.setuptools.packages.find]
 include = ["pycaret", "pycaret.*"]
 
+[tool.uv.extra-build-dependencies]
+htmlmin = ["cgi"]
+
 [tool.ruff]
 line-length = 88
 # tutorial notebooks use `import *` by design and need their own rule set;
