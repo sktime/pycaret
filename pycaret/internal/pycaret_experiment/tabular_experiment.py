@@ -9,8 +9,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-import scikitplot as skplt  # type: ignore
-from IPython.display import display as ipython_display
 from joblib.memory import Memory
 from pandas.io.formats.style import Styler
 from sklearn.model_selection import BaseCrossValidator  # type: ignore
@@ -1222,6 +1220,11 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def lift():
+
+            # Import required libraries ----
+            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            import scikitplot as skplt
+
             self.logger.info("Generating predictions / predict_proba on X_test")
             y_test__ = self.y_test_transformed
             predict_proba__ = estimator.predict_proba(self.X_test_transformed)
@@ -1246,6 +1249,11 @@ class _TabularExperiment(_PyCaretExperiment):
             return plot_filename
 
         def gain():
+
+            # Import required libraries ----
+            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            import scikitplot as skplt
+
             self.logger.info("Generating predictions / predict_proba on X_test")
             y_test__ = self.y_test_transformed
             predict_proba__ = estimator.predict_proba(self.X_test_transformed)
@@ -1702,10 +1710,16 @@ class _TabularExperiment(_PyCaretExperiment):
                 columns=["Parameters"],
             )
             # use ipython directly to show it in the widget
+            from IPython.display import display as ipython_display
             ipython_display(param_df)
             self.logger.info("Visual Rendered Successfully")
 
         def ks():
+
+            # Import required libraries ----
+            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            import scikitplot as skplt
+
             self.logger.info("Generating predictions / predict_proba on X_test")
             predict_proba__ = estimator.predict_proba(self.X_train_transformed)
             # display.clear_output()
