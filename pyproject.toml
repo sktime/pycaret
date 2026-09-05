@@ -100,44 +100,7 @@ dependencies = [
 # users can install via "pip install pycaret-core[full]"
 #
 full = [
-  "pycaret-core[plotting]",
-  "shap>=0.49.1,<0.50.0; python_version < '3.13'",
-  "shap>=0.50.0; python_version >= '3.13'",
-  "interpret>=0.2.7",
-  "umap-learn>=0.5.2",
-  "pyyaml",
-  "standard-imghdr; python_version>='3.13'",
-  "explainerdashboard>=0.3.8",
-  "fairlearn>=0.7.0",
-  "xgboost>=2.0.0,<3.1.0; python_version < '3.13'",
-  "xgboost>=3.1.1; python_version >= '3.13'",
-  "catboost>=1.2.5",
-  "kmodes>=0.11.1",
-  "mlxtend>=0.19.0",
-  "statsforecast>=1.6.0,<=2.1.1",
-  "scikit-learn-intelex==2024.2.0; python_version < '3.13' and platform_system == 'Windows' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
-  "scikit-learn-intelex>=2024.0.0; (python_version >= '3.13' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
-  "tune-sklearn; python_version<'3.13'",
-  "ray[tune]; python_version<'3.13'",
-  "hyperopt>=0.2.7",
-  "optuna>=3.0.0",
-  "optuna-integration",
-  "scikit-optimize>=0.9.0; python_version<'3.12'",
-  "mlflow>=2.0.0",
-  "gradio>=3.50.2",
-  "boto3>=1.24.56",
-  "fastapi",
-  "uvicorn>=0.17.6",
-  "m2cgen>=0.9.0",
-  "evidently>=0.7.0,<0.8.0",
-  "dask>=2024.1.0",
-  "distributed>=2024.1.0",
-  "fugue>=0.9.0",
-  "flask",
-  "werkzeug>=2.2,<=3.2",
-  "moto>=4.0.0",
-  "fugue[dask]",
-  "dash-bootstrap-components<3.0.0",
+  "pycaret-core[analysis,mlops,models,parallel,plotting,tuners]",
 ]
 
 analysis = [
@@ -186,7 +149,7 @@ mlops = [
 parallel = [
   "dask>=2024.1.0",
   "distributed>=2024.1.0",
-  "fugue>=0.9.0",
+  "fugue[dask]>=0.9.0",
   "flask",
   "Werkzeug>=2.2,<=3.2",
 ]
@@ -200,6 +163,7 @@ plotting = [
   "kaleido>=0.2.1",
   "schemdraw==0.15",
   "plotly-resampler>=0.8.3.1",
+  "dash-bootstrap-components<3.0.0",
 ]
 
 prophet = [
