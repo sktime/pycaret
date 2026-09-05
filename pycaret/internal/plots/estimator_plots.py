@@ -233,7 +233,7 @@ def _fit_params(fit_kwargs: Optional[dict]) -> dict:
     """
     if not fit_kwargs:
         return {}
-    if _check_soft_dependencies("sklearn>=1.6", severity="none"):
+    if _check_soft_dependencies("scikit-learn>=1.6", severity="none"):
         return {"params": fit_kwargs}
     return {"fit_params": fit_kwargs}
 
