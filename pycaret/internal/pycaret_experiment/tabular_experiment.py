@@ -604,7 +604,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def cluster():
 
             # Import required libraries ----
-            _check_soft_dependencies("plotly", extra="plotting", severity="error")
+            _check_soft_dependencies("plotly", extra="plots", severity="error")
             import plotly.express as px
 
             self.logger.info(
@@ -701,7 +701,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def umap():
 
             # Import required libraries ----
-            _check_soft_dependencies("plotly", extra="plotting", severity="error")
+            _check_soft_dependencies("plotly", extra="plots", severity="error")
             import plotly.express as px
 
             _check_soft_dependencies(
@@ -783,7 +783,7 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             from sklearn.manifold import TSNE
 
-            _check_soft_dependencies("plotly", extra="plotting", severity="error")
+            _check_soft_dependencies("plotly", extra="plots", severity="error")
             import plotly.express as px
 
             self.logger.info(
@@ -867,7 +867,7 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             from sklearn.manifold import TSNE
 
-            _check_soft_dependencies("plotly", extra="plotting", severity="error")
+            _check_soft_dependencies("plotly", extra="plots", severity="error")
             import plotly.express as px
 
             self.logger.info(
@@ -968,7 +968,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def distribution():
 
             # Import required libraries ----
-            _check_soft_dependencies("plotly", extra="plotting", severity="error")
+            _check_soft_dependencies("plotly", extra="plots", severity="error")
             import plotly.express as px
 
             self.logger.info(
@@ -1250,7 +1250,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def lift():
 
             # Import required libraries ----
-            _check_soft_dependencies("mljar-scikit-plot", extra="plotting")
+            _check_soft_dependencies("mljar-scikit-plot", extra="plots")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1279,7 +1279,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def gain():
 
             # Import required libraries ----
-            _check_soft_dependencies("mljar-scikit-plot", extra="plotting")
+            _check_soft_dependencies("mljar-scikit-plot", extra="plots")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1752,7 +1752,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def ks():
 
             # Import required libraries ----
-            _check_soft_dependencies("mljar-scikit-plot", extra="plotting")
+            _check_soft_dependencies("mljar-scikit-plot", extra="plots")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")

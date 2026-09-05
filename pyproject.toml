@@ -86,7 +86,7 @@ dependencies = [
 # - tuners
 # - mlops
 # - parallel
-# - plotting
+# - plots
 # - dev
 # - test
 
@@ -99,7 +99,7 @@ dependencies = [
 # users can install via "pip install pycaret-core[full]"
 #
 full = [
-  "pycaret-core[plotting]",
+  "pycaret-core[plots]",
   "shap>=0.49.1,<0.50.0; python_version < '3.13'",
   "shap>=0.50.0; python_version >= '3.13'",
   "interpret>=0.2.7",
@@ -190,7 +190,7 @@ parallel = [
   "Werkzeug>=2.2,<=3.2",
 ]
 
-plotting = [
+plots = [
   "ipywidgets>=7.6.5",
   "matplotlib>=3.5.0,<3.12.0; python_version<'3.13'",
   "matplotlib>=3.8.0,<3.12.0; python_version>='3.13'",
