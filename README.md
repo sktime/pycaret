@@ -67,8 +67,8 @@ pip install pycaret-core[mlops]
 # install parallel extras
 pip install pycaret-core[parallel]
 
-# install plotting extras
-pip install pycaret-core[plotting]
+# install plots extras
+pip install pycaret-core[plots]
 
 # install test extras
 pip install pycaret-core[test]

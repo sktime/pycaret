@@ -3687,8 +3687,8 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
             st = importlib.import_module("streamlit")
 
-        _check_soft_dependencies("matplotlib", extra="plotting", severity="error")
-        _check_soft_dependencies("plotly", extra="plotting", severity="error")
+        _check_soft_dependencies("matplotlib", extra="plots", severity="error")
+        _check_soft_dependencies("plotly", extra="plots", severity="error")
         from pycaret.internal.plots.time_series import _get_plot
 
         # Add sp value (used in decomp plots)
