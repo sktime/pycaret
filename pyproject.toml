@@ -86,6 +86,7 @@ dependencies = [
 # - tuners
 # - mlops
 # - parallel
+# - plotting
 # - dev
 # - test
 
