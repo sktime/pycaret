@@ -1251,12 +1251,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def lift():
 
             # Import required libraries ----
-            _check_soft_dependencies(
-                "scikitplot",
-                extra=None,
-                severity="error",
-                install_name="mljar-scikit-plot",
-            )
+            _check_soft_dependencies("mljar-scikit-plot")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1285,12 +1280,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def gain():
 
             # Import required libraries ----
-            _check_soft_dependencies(
-                "scikitplot",
-                extra=None,
-                severity="error",
-                install_name="mljar-scikit-plot",
-            )
+            _check_soft_dependencies("mljar-scikit-plot")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1763,12 +1753,7 @@ class _TabularExperiment(_PyCaretExperiment):
         def ks():
 
             # Import required libraries ----
-            _check_soft_dependencies(
-                "scikitplot",
-                extra=None,
-                severity="error",
-                install_name="mljar-scikit-plot",
-            )
+            _check_soft_dependencies("mljar-scikit-plot")
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")

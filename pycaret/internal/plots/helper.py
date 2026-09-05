@@ -118,9 +118,7 @@ def cooks_distance(
 
 class MatplotlibDefaultDPI(object):
     def __init__(self, base_dpi: float = 100, scale_to_set: float = 1):
-        _check_soft_dependencies(
-            "scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot"
-        )
+        _check_soft_dependencies("mljar-scikit-plot")
         import scikitplot as skplt
 
         try:
@@ -133,9 +131,7 @@ class MatplotlibDefaultDPI(object):
         return None
 
     def __exit__(self, type, value, traceback):
-        _check_soft_dependencies(
-            "scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot"
-        )
+        _check_soft_dependencies("mljar-scikit-plot")
         import scikitplot as skplt
 
         try:
