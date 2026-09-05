@@ -17,7 +17,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-from packaging import version
 from sktime.forecasting.base import BaseForecaster  # type: ignore
 from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
@@ -2405,7 +2404,7 @@ class XGBCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             self.logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -2423,9 +2422,7 @@ class XGBCdsDtContainer(CdsDtContainer):
         regressor_args["booster"] = "gbtree"
         # If using XGBoost version 2.0 or higher
         if self.active:
-            import xgboost
-
-            if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+            if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
                 regressor_args["tree_method"] = "hist" if self.gpu_param else "auto"
                 regressor_args["device"] = "gpu" if self.gpu_param else "cpu"
             else:
@@ -2578,7 +2575,7 @@ class CatBoostCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             self.logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )
