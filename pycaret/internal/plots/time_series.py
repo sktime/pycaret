@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sktime.split import ExpandingWindowSplitter, SlidingWindowSplitter
 
+from pycaret.internal.plots.utils.data import _clean_model_results_labels
 from pycaret.internal.plots.utils.time_series import (
     PlotReturnType,
     _get_subplot_rows_cols,
@@ -20,7 +21,6 @@ from pycaret.internal.plots.utils.time_series import (
     qq_subplot,
     time_series_subplot,
 )
-from pycaret.internal.plots.utils.data import _clean_model_results_labels
 from pycaret.utils.generic import _resolve_dict_keys
 from pycaret.utils.time_series import get_diffs
 

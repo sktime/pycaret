@@ -524,6 +524,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def _show(fig):
             from pycaret.internal.plots.estimator_plots import show_matplotlib_figure
+
             return show_matplotlib_figure(
                 fig,
                 name=plot_name,
@@ -867,6 +868,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
             # Import required libraries ----
             from sklearn.manifold import TSNE
+
             _check_soft_dependencies("plotly", extra=None, severity="error")
             import plotly.express as px
 
@@ -1049,6 +1051,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def elbow():
             from pycaret.internal.plots import estimator_plots
+
             try:
                 fig = estimator_plots.plot_elbow(
                     estimator,
@@ -1064,6 +1067,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def silhouette():
             from pycaret.internal.plots import estimator_plots
+
             try:
                 fig = estimator_plots.plot_silhouette(
                     estimator, self.X_train_transformed, **plot_kwargs
@@ -1076,6 +1080,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def distance():
             from pycaret.internal.plots import estimator_plots
+
             try:
                 fig = estimator_plots.plot_intercluster_distance(
                     estimator,
@@ -1091,6 +1096,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def residuals():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_residuals(
                 estimator,
                 self.X_train_transformed,
@@ -1103,6 +1109,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def auc():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_roc_auc(
                 estimator,
                 self.X_test_transformed,
@@ -1113,6 +1120,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def threshold():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_discrimination_threshold(
                 estimator,
                 self.X_train_transformed,
@@ -1125,6 +1133,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def pr():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_precision_recall(
                 estimator,
                 self.X_test_transformed,
@@ -1135,6 +1144,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def confusion_matrix():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_confusion_matrix(
                 estimator,
                 self.X_test_transformed,
@@ -1145,6 +1155,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def error():
             from pycaret.internal.plots import estimator_plots
+
             if self._ml_usecase == MLUsecase.CLASSIFICATION:
                 fig = estimator_plots.plot_class_prediction_error(
                     estimator,
@@ -1163,6 +1174,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def cooks():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_cooks_distance(
                 self.X_train_transformed, self.y_train_transformed, **plot_kwargs
             )
@@ -1170,6 +1182,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def class_report():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_classification_report(
                 estimator,
                 self.X_test_transformed,
@@ -1179,9 +1192,10 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def boundary():
-            from pycaret.internal.plots import estimator_plots
             from sklearn.decomposition import PCA
             from sklearn.preprocessing import StandardScaler
+
+            from pycaret.internal.plots import estimator_plots
 
             data_X_transformed = self.X_train_transformed.select_dtypes(
                 include="number"
@@ -1209,6 +1223,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def rfe():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_rfecv(
                 estimator,
                 self.X_train_transformed,
@@ -1221,6 +1236,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def learning():
             from pycaret.internal.plots import estimator_plots
+
             fig = estimator_plots.plot_learning_curve(
                 estimator,
                 self.X_train_transformed,
@@ -1236,7 +1252,12 @@ class _TabularExperiment(_PyCaretExperiment):
         def lift():
 
             # Import required libraries ----
-            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            _check_soft_dependencies(
+                "scikitplot",
+                extra=None,
+                severity="error",
+                install_name="mljar-scikit-plot",
+            )
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1265,7 +1286,12 @@ class _TabularExperiment(_PyCaretExperiment):
         def gain():
 
             # Import required libraries ----
-            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            _check_soft_dependencies(
+                "scikitplot",
+                extra=None,
+                severity="error",
+                install_name="mljar-scikit-plot",
+            )
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")
@@ -1293,6 +1319,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         def manifold():
             from pycaret.internal.plots import estimator_plots
+
             data_X_transformed = self.X_train_transformed.select_dtypes(
                 include="number"
             )
@@ -1630,9 +1657,10 @@ class _TabularExperiment(_PyCaretExperiment):
             return _show(fig)
 
         def dimension():
-            from pycaret.internal.plots import estimator_plots
             from sklearn.decomposition import PCA
             from sklearn.preprocessing import StandardScaler
+
+            from pycaret.internal.plots import estimator_plots
 
             data_X_transformed = self.X_train_transformed.select_dtypes(
                 include="number"
@@ -1729,13 +1757,19 @@ class _TabularExperiment(_PyCaretExperiment):
             )
             # use ipython directly to show it in the widget
             from IPython.display import display as ipython_display
+
             ipython_display(param_df)
             self.logger.info("Visual Rendered Successfully")
 
         def ks():
 
             # Import required libraries ----
-            _check_soft_dependencies("scikitplot", extra=None, severity="error", install_name="mljar-scikit-plot")
+            _check_soft_dependencies(
+                "scikitplot",
+                extra=None,
+                severity="error",
+                install_name="mljar-scikit-plot",
+            )
             import scikitplot as skplt
 
             self.logger.info("Generating predictions / predict_proba on X_test")

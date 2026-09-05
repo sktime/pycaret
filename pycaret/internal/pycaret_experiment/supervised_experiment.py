@@ -4244,6 +4244,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 shap_plot = shap.summary_plot(shap_values, test_X, show=show, **kwargs)
             if save:
                 import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)
@@ -4294,6 +4295,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 )
             if save:
                 import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)
