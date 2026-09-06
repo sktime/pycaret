@@ -211,9 +211,9 @@ class _TabularExperiment(_PyCaretExperiment):
             if self.verbose:
                 print("Loading profile... Please Wait!")
             try:
-                import ydata_profiling
+                from data_profiling import ProfileReport
 
-                self.report = ydata_profiling.ProfileReport(self.data, **profile_kwargs)
+                self.report = ProfileReport(self.data, **profile_kwargs)
             except Exception as ex:
                 print("Profiler Failed. No output to show, continue with modeling.")
                 self.logger.error(
