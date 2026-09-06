@@ -13,7 +13,6 @@ from unittest.mock import patch
 
 import numpy as np  # type: ignore
 import pandas as pd
-import plotly.express as px
 import sklearn
 from joblib.memory import Memory
 from scipy.optimize import shgo
@@ -2611,6 +2610,7 @@ class ClassificationExperiment(_NonTSSupervisedExperiment, Preprocessor):
         self.logger.info("Importing libraries")
 
         # import libraries
+        import plotly.express as px
 
         np.random.seed(self.seed)
 
