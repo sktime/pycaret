@@ -89,10 +89,6 @@ jobs:
           python -m pip install uv
           python -m uv pip install -U pytest pytest-xdist nbmake
 
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
-
           python -m uv pip install ".[dev,test,full]"
           python -m ipykernel install --user --name cikernel
       - name: Python version and dependency list
@@ -137,10 +133,6 @@ jobs:
           python -m pip install -U uv
           python -m uv pip install -U pytest numpy
 
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
-
           python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
       - name: Python version and dependency list
@@ -178,10 +170,6 @@ jobs:
           python -m pip install uv
           python -m uv pip install -U pytest numpy
 
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
-
           python -m uv pip install ".[dev,test,full]"
       - name: Python version and dependency list
         run: |
@@ -217,10 +205,6 @@ jobs:
           python -m pip install -U pip
           python -m pip install -U uv
           python -m uv pip install -U pytest numpy
-
-          # https://github.com/yaml/pyyaml/issues/736
-          echo 'Cython < 3.0' > /tmp/constraint.txt
-          PIP_BUILD_CONSTRAINT=/tmp/constraint.txt pip wheel PyYAML==5.4.1
 
           python -m uv pip install ".[dev,test,full]"
           if [ -f requirements-prophet.txt ]; then pip install -r requirements-prophet.txt; fi
