@@ -556,8 +556,10 @@ class _TabularExperiment(_PyCaretExperiment):
 
             with MatplotlibDefaultDPI(base_dpi=_base_dpi, scale_to_set=scale):
                 fig, ax = plt.subplots(figsize=((2 + len(self.pipeline) * 5), 6))
-
-                d.draw(ax=ax, showframe=False, show=False)
+                if _check_soft_dependencies("schemdraw<0.16", severity="none"):
+                    d.draw(ax=ax, show=False)
+                else:
+                    d.draw(canvas=ax, show=False)
                 ax.set_aspect("equal")
                 plt.axis("off")
                 plt.tight_layout()
