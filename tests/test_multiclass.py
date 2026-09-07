@@ -127,8 +127,3 @@ def test_multiclass_predict_on_unseen(iris_dataframe):
     # load model
     model = exp.load_model("best_model_23122019")
     exp.predict_model(model, iris_dataframe)
-
-
-if __name__ == "__main__":
-    test_multiclass()
-    test_multiclass_predict_on_unseen()

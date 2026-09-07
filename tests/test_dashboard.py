@@ -23,7 +23,3 @@ def test_classification_dashboard():
     # pycaret.classification.dashboard(lr, display_format="dash")
 
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_classification_dashboard()

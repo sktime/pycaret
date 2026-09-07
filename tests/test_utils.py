@@ -173,7 +173,3 @@ def test_utils():
         check_metric(actual, prediction, "INEXISTENTMETRIC")
 
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_utils()

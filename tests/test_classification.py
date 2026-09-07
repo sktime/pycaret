@@ -250,9 +250,3 @@ class TestClassificationExperimentCustomTags:
         assert "testing" == run_data.to_dictionary().get("data").get("tags").get(
             "pytest"
         )
-
-
-if __name__ == "__main__":
-    test_classification()
-    test_classification_predict_on_unseen()
-    TestClassificationExperimentCustomTags()
