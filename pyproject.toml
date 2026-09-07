@@ -224,6 +224,7 @@ test = [
   "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
+  "pytest-cov",
   "pytest-timeout",
 ]
 
