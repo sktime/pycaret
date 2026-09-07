@@ -6,9 +6,7 @@ configuration or mlflow logging.
 """
 
 import sys
-import uuid
 
-import mlflow
 import pandas as pd
 import pytest
 from mlflow_test_utils import mlflow_run_tags
@@ -24,23 +22,6 @@ if sys.platform == "win32":
 def data():
     """Dataset that the experiment is set up on."""
     return get_data("jewellery")
-
-
-@pytest.fixture(scope="module")
-def experiment_name(tmp_path_factory):
-    """Name of an mlflow experiment with its own temporary storage.
-
-    Runs and artifacts logged during the tests go there instead of into the
-    repository.
-    """
-    root = tmp_path_factory.mktemp("mlflow")
-    previous = mlflow.get_tracking_uri() if mlflow.is_tracking_uri_set() else None
-    mlflow.set_tracking_uri(f"sqlite:///{root / 'mlflow.db'}")
-
-    name = uuid.uuid4().hex
-    mlflow.create_experiment(name, artifact_location=str(root / "artifacts"))
-    yield name
-    mlflow.set_tracking_uri(previous)
 
 
 @pytest.fixture(scope="module")
