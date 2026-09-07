@@ -12,6 +12,9 @@ venv/
 # Tool caches
 .mypy_cache/
 .pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
 .ipynb_checkpoints/
 
 # IDE and editor
