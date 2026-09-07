@@ -26,7 +26,3 @@ def test_optimize_threshold():
     )
     assert isinstance(optimized_data, pd.core.frame.DataFrame)
     assert isinstance(optimized_model, CustomProbabilityThresholdClassifier)
-
-
-if __name__ == "__main__":
-    test_optimize_threshold()

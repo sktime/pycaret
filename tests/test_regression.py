@@ -236,9 +236,3 @@ class TestRegressionExperimentCustomTags:
         assert "testing" == run_data.to_dictionary().get("data").get("tags").get(
             "pytest"
         )
-
-
-if __name__ == "__main__":
-    test_regression()
-    test_regression_predict_on_unseen()
-    TestRegressionExperimentCustomTags()

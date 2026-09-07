@@ -66,9 +66,3 @@ def test_check_fairness_regression():
     # check fairness
     lightgbm_fairness = pycaret.regression.check_fairness(lightgbm, ["chas"])
     assert isinstance(lightgbm_fairness, pd.DataFrame)
-
-
-if __name__ == "__main__":
-    test_check_fairness_binary_classification()
-    test_check_fairness_multiclass_classification()
-    test_check_fairness_regression()

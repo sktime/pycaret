@@ -119,7 +119,3 @@ def test_classification_tuning():
             )
 
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_classification_tuning()
