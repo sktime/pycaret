@@ -148,10 +148,9 @@ def get_data(
     else:
         if profile:
             _check_soft_dependencies(
-                "ydata_profiling",
+                "ydata-profiling",
                 extra="analysis",
                 severity="error",
-                install_name="ydata-profiling",
             )
             import ydata_profiling
 

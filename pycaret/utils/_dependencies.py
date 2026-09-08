@@ -20,8 +20,7 @@ def get_module_version_str(modname: str) -> str:
 def _check_soft_dependencies(
     package: str,
     severity: str = "error",
-    extra: Optional[str] = "all_extras",
-    install_name: Optional[str] = None,
+    extra: Optional[str] = "full",
 ) -> bool:
     """Check if all soft dependencies are installed and raise appropriate error message
     when not.
@@ -49,8 +48,6 @@ def _check_soft_dependencies(
         If None, it means that the dependency is not available in optional
         requirements file and must be installed by the user on their own.
 
-    install_name : ignored, present only for backwards compatibility
-
     Returns
     -------
     bool
@@ -67,7 +64,7 @@ def _check_soft_dependencies(
     """
     msg = (
         f"\n'{package}' is a soft dependency and not included in the "
-        f"pycaret installation. Please run: `pip install {package}` to install. "
+        f"pycaret installation. Please run: `pip install '{package}'` to install. "
     )
     if extra is not None:
         msg += (
