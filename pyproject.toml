@@ -80,8 +80,8 @@ dependencies = [
   "schemdraw",
   "plotly-resampler>=0.8.3.1",
   # Time-series
-  "statsmodels>=0.12.1,<0.15.0",
-  "sktime>=0.31.0",
+  "statsmodels>=0.12.1,<0.16",
+  "sktime @ git+https://github.com/aryamanDutta/sktime@fix-10968-statsmodels-random-state",
   "tbats>=1.1.3",
   "pmdarima>=2.0.4; python_version<'3.13'",
   "pmdarima>=2.1.0; python_version>='3.13'",
