@@ -122,7 +122,6 @@ full = [
   "optuna>=3.0.0",
   "optuna-integration",
   "scikit-optimize>=0.9.0; python_version<'3.12'",
-  "moto>=4.0.0",
   "dash-bootstrap-components<3.0.0",
 ]
 
