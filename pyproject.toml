@@ -209,7 +209,6 @@ docs = [
 # CI related soft dependency sets - not for users of pycaret
 # they are stable and subject to deprecation policies
 test = [
-  "anywidget>=0.9.13",
   "pytest>=8.0.0",
   "moto>=4.0.0",
   "fugue[dask]",
