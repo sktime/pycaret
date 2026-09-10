@@ -53,7 +53,7 @@ class ModelContainer(BaseContainer):
         self,
         id: str,
         name: str,
-        class_def: type,
+        class_def: Optional[type] = None,
         eq_function: Optional[type] = None,
         args: Dict[str, Any] = None,
         is_special: bool = False,

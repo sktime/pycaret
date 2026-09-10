@@ -10,12 +10,12 @@
 from typing import Any, Dict, List, Optional
 
 import numpy as np
+from skbase.utils.dependencies import _safe_import
 
 import pycaret.containers.base_container
-import pycaret.internal.cuml_wrappers
 from pycaret.containers.models.base_model import ModelContainer
-from pycaret.internal.cuml_wrappers import get_dbscan, get_kmeans
-from pycaret.internal.distributions import Distribution
+
+# from pycaret.internal.cuml_wrappers import get_dbscan, get_kmeans
 from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import get_logger, param_grid_to_lists
 
@@ -53,21 +53,11 @@ class ClusterContainer(ModelContainer):
         ID used as index.
     name : str
         Full display name.
-    class_def : type
-        The class used for the model, eg. LogisticRegression.
     eq_function : type, default = None
         Function to use to check whether an object (model) can be considered equal to the model
         in the container. If None, will be ``is_instance(x, class_def)`` where x is the object.
-    args : dict, default = {} (empty dict)
-        The arguments to always pass to constructor when initializing object of class_def class.
     is_special : bool, default = False
         Is the model special (not intended to be used on its own, eg. VotingClassifier).
-    tune_grid : dict of str : list, default = {} (empty dict)
-        The hyperparameters tuning grid for random and grid search.
-    tune_distribution : dict of str : Distribution, default = {} (empty dict)
-        The hyperparameters tuning grid for other types of searches.
-    tune_args : dict, default = {} (empty dict)
-        The arguments to always pass to the tuner.
     is_gpu_enabled : bool, default = None
         If None, will try to automatically determine.
 
@@ -82,62 +72,68 @@ class ClusterContainer(ModelContainer):
     eq_function : type
         Function to use to check whether an object (model) can be considered equal to the model
         in the container. If None, will be ``is_instance(x, class_def)`` where x is the object.
-    args : dict
+    args : dict, default = {} (empty dict)
         The arguments to always pass to constructor when initializing object of class_def class.
-    is_special : bool
+    is_special : bool, default = False
         Is the model special (not intended to be used on its own, eg. VotingClassifier).
-    tune_grid : dict of str : list
+    tune_grid : dict of str : list, default = {} (empty dict)
         The hyperparameters tuning grid for random and grid search.
-    tune_distribution : dict of str : Distribution
+    tune_distribution : dict of str : Distribution, default = {} (empty dict)
         The hyperparameters tuning grid for other types of searches.
-    tune_args : dict
+    tune_args : dict, default = {} (empty dict)
         The arguments to always pass to the tuner.
     is_gpu_enabled : bool
         If None, will try to automatically determine.
-
     """
 
     def __init__(
         self,
         id: str,
         name: str,
-        class_def: type,
         eq_function: Optional[type] = None,
-        args: Dict[str, Any] = None,
         is_special: bool = False,
-        tune_grid: Dict[str, list] = None,
-        tune_distribution: Dict[str, Distribution] = None,
-        tune_args: Dict[str, Any] = None,
         is_gpu_enabled: Optional[bool] = None,
     ) -> None:
-        if not args:
-            args = {}
-
-        if not tune_grid:
-            tune_grid = {}
-
-        if not tune_distribution:
-            tune_distribution = {}
-
-        if not tune_args:
-            tune_args = {}
 
         super().__init__(
             id=id,
             name=name,
-            class_def=class_def,
             eq_function=eq_function,
-            args=args,
             is_special=is_special,
         )
-        self.tune_grid = param_grid_to_lists(tune_grid)
-        self.tune_distribution = tune_distribution
-        self.tune_args = tune_args
 
         if is_gpu_enabled is not None:
             self.is_gpu_enabled = is_gpu_enabled
         else:
             self.is_gpu_enabled = bool(self.get_package_name() == "cuml")
+
+    @property
+    def args(self):
+        return self._args()
+
+    def _args(self):
+        return {}
+
+    @property
+    def tune_grid(self):
+        return param_grid_to_lists(self._tune_grid())
+
+    def _tune_grid(self):
+        return {}
+
+    @property
+    def tune_distribution(self):
+        return self._tune_distribution()
+
+    def _tune_distribution(self):
+        return {}
+
+    @property
+    def tune_args(self):
+        return self._tune_args()
+
+    def _tune_args(self):
+        return {}
 
     def get_dict(self, internal: bool = True) -> Dict[str, Any]:
         """
@@ -175,9 +171,52 @@ class ClusterContainer(ModelContainer):
 
         return dict(d)
 
+    def _class_def(self):
+        pth, pkg_name = self._get_cls_path()
+        return _safe_import(pth, pkg_name=pkg_name)
 
-class KMeansClusterContainer(ClusterContainer):
+    def _get_cls_path(self):
+        pth = self.get_tag("cls_path")
+        pkg_name = pth.split(".")[0]
+        if pkg_name == "sklearn":
+            pkg_name = "scikit-learn"
+        return pth, pkg_name
+
+
+class _SklearnMixin:
+
+    def _get_cls_path(self):
+        pth = self.get_tag("cls_path")
+        pkg_name = "scikit-learn"
+        check_sd = False
+
+        if not hasattr(self, "engine"):
+            return pth, pkg_name
+
+        if self.engine == "sklearnex":
+            pth = pth.replace("sklearn.", "sklearnex.", 1)
+            pkg_name = "scikit-learn-intelex"
+            check_sd = True
+
+        if self.experiment.gpu_param == "force" or self.experiment.gpu_param:
+            pth = pth.replace("sklearn.", "cuml.", 1)
+            pkg_name = "cuml"
+            if self.experiment.gpu_param:
+                check_sd = True
+
+        if check_sd:
+            _check_soft_dependencies(pkg_name, extra=None, severity="warning")
+
+        return pth, pkg_name
+
+
+class KMeansClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.KMeans"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         logger = get_logger()
         np.random.seed(experiment.seed)
         gpu_imported = False
@@ -187,149 +226,117 @@ class KMeansClusterContainer(ClusterContainer):
             id=id, all_allowed_engines=ALL_ALLOWED_ENGINES, experiment=experiment
         )
 
-        if self.engine == "sklearn":
-            from sklearn.cluster import KMeans
-        elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
-                from sklearnex.cluster import KMeans
+        if experiment.gpu_param == "force" or experiment.gpu_param:
+            if experiment.gpu_param == "force":
+                severity = "error"
             else:
-                from sklearn.cluster import KMeans
+                severity = "warning"
 
-        if experiment.gpu_param == "force":
-            from cuml.cluster import KMeans
+            _check_soft_dependencies("cuml", extra=None, severity=severity)
 
             logger.info("Imported cuml.cluster.KMeans")
             gpu_imported = True
-        elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
-                from cuml.cluster import KMeans
 
-                logger.info("Imported cuml.cluster.KMeans")
-                gpu_imported = True
-
-        args = {
-            "n_clusters": _DEFAULT_N_CLUSTERS,
-            "random_state": experiment.seed,
-        }
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
-
-        if gpu_imported:
-            KMeans = get_kmeans()
+        # if gpu_imported:
+        #     KMeans = get_kmeans()
 
         super().__init__(
             id=id,
             name="K-Means Clustering",
-            class_def=KMeans,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
             is_gpu_enabled=gpu_imported,
         )
 
+    def _args(self):
+        return {
+            "n_clusters": _DEFAULT_N_CLUSTERS,
+            "random_state": self.experiment.seed,
+        }
 
-class AffinityPropagationClusterContainer(ClusterContainer):
+
+class AffinityPropagationClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.AffinityPropagation"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import AffinityPropagation
-
-        args = {}
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="ap",
             name="Affinity Propagation",
-            class_def=AffinityPropagation,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
 
 
-class MeanShiftClusterContainer(ClusterContainer):
+class MeanShiftClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.MeanShift"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import MeanShift
-
-        args = {
-            "n_jobs": experiment.n_jobs_param,
-        }
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="meanshift",
             name="Mean Shift Clustering",
-            class_def=MeanShift,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
 
+    def _args(self):
+        return {"n_jobs": self.experiment.n_jobs_param}
 
-class SpectralClusteringClusterContainer(ClusterContainer):
+
+class SpectralClusteringClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.SpectralClustering"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import SpectralClustering
-
-        args = {
-            "n_clusters": _DEFAULT_N_CLUSTERS,
-            "random_state": experiment.seed,
-            "n_jobs": experiment.n_jobs_param,
-        }
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="sc",
             name="Spectral Clustering",
-            class_def=SpectralClustering,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
 
+    def _args(self):
+        return {
+            "n_clusters": _DEFAULT_N_CLUSTERS,
+            "random_state": self.experiment.seed,
+            "n_jobs": self.experiment.n_jobs_param,
+        }
 
-class AgglomerativeClusteringClusterContainer(ClusterContainer):
+
+class AgglomerativeClusteringClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.AgglomerativeClustering"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import AgglomerativeClustering
-
-        args = {
-            "n_clusters": _DEFAULT_N_CLUSTERS,
-        }
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="hclust",
             name="Agglomerative Clustering",
-            class_def=AgglomerativeClustering,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
 
+    def _args(self):
+        return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
-class DBSCANClusterContainer(ClusterContainer):
+
+class DBSCANClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.DBSCAN"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         logger = get_logger()
         np.random.seed(experiment.seed)
         gpu_imported = False
@@ -338,96 +345,80 @@ class DBSCANClusterContainer(ClusterContainer):
             id=id, all_allowed_engines=ALL_ALLOWED_ENGINES, experiment=experiment
         )
 
-        if self.engine == "sklearn":
-            from sklearn.cluster import DBSCAN
-        elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
-                from sklearnex.cluster import DBSCAN
+        if experiment.gpu_param == "force" or experiment.gpu_param:
+            if experiment.gpu_param == "force":
+                severity = "error"
             else:
-                from sklearn.cluster import DBSCAN
+                severity = "warning"
 
-        if experiment.gpu_param == "force":
-            from cuml.cluster import DBSCAN
+            _check_soft_dependencies("cuml", extra=None, severity=severity)
 
-            logger.info("Imported cuml.cluster.DBSCAN")
+            logger.info("Imported cuml.cluster.KMeans")
             gpu_imported = True
-        elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
-                from cuml.cluster import DBSCAN
 
-                logger.info("Imported cuml.cluster.DBSCAN")
-                gpu_imported = True
-
-        args = {}
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
-
-        if not gpu_imported:
-            args["n_jobs"] = experiment.n_jobs_param
-        else:
-            DBSCAN = get_dbscan()
+        # if not gpu_imported:
+        #     args["n_jobs"] = experiment.n_jobs_param
+        # else:
+        #     DBSCAN = get_dbscan()
 
         super().__init__(
             id=id,
             name="Density-Based Spatial Clustering",
-            class_def=DBSCAN,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
             is_gpu_enabled=gpu_imported,
         )
 
+    def _args(self):
+        if self.is_gpu_enabled:
+            return {}
+        else:
+            return {"n_jobs": self.experiment.n_jobs_param}
 
-class OPTICSClusterContainer(ClusterContainer):
+
+class OPTICSClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.OPTICS"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import OPTICS
-
-        args = {"n_jobs": experiment.n_jobs_param}
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="optics",
             name="OPTICS Clustering",
-            class_def=OPTICS,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
 
+    def _args(self):
+        return {"n_jobs": self.experiment.n_jobs_param}
 
-class BirchClusterContainer(ClusterContainer):
+
+class BirchClusterContainer(_SklearnMixin, ClusterContainer):
+
+    _tags = {"cls_path": "sklearn.cluster.Birch"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
-        from sklearn.cluster import Birch
-
-        args = {"n_clusters": _DEFAULT_N_CLUSTERS}
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
 
         super().__init__(
             id="birch",
             name="Birch Clustering",
-            class_def=Birch,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
+
+    def _args(self):
+        return {"n_clusters": _DEFAULT_N_CLUSTERS}
 
 
 class KModesClusterContainer(ClusterContainer):
+
+    _tags = {"cls_path": "kmodes.kmodes.KModes"}
+
     def __init__(self, experiment):
+        self.experiment = experiment
+
         get_logger()
         np.random.seed(experiment.seed)
 
@@ -435,26 +426,17 @@ class KModesClusterContainer(ClusterContainer):
             self.active = False
             return
 
-        from kmodes.kmodes import KModes
-
-        args = {
-            "n_clusters": _DEFAULT_N_CLUSTERS,
-            "random_state": experiment.seed,
-            "n_jobs": experiment.n_jobs_param,
-        }
-        tune_args = {}
-        tune_grid = {}
-        tune_distributions = {}
-
         super().__init__(
             id="kmodes",
             name="K-Modes Clustering",
-            class_def=KModes,
-            args=args,
-            tune_grid=tune_grid,
-            tune_distribution=tune_distributions,
-            tune_args=tune_args,
         )
+
+    def _args(self):
+        return {
+            "n_clusters": _DEFAULT_N_CLUSTERS,
+            "random_state": self.experiment.seed,
+            "n_jobs": self.experiment.n_jobs_param,
+        }
 
 
 def get_all_model_containers(
