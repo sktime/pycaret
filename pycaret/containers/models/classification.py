@@ -11,6 +11,7 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
+from skbase.utils.dependencies import _check_soft_dependencies
 
 import pycaret.containers.base_container
 import pycaret.internal.cuml_wrappers
@@ -24,7 +25,6 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
-from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import (
     get_class_name,
     get_logger,
@@ -261,9 +261,7 @@ class LogisticRegressionClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LogisticRegression
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.linear_model import LogisticRegression
             else:
                 from sklearn.linear_model import LogisticRegression
@@ -274,7 +272,7 @@ class LogisticRegressionClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.linear_model.LogisticRegression")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import LogisticRegression
 
                 logger.info("Imported cuml.linear_model.LogisticRegression")
@@ -324,9 +322,7 @@ class KNeighborsClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsClassifier
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.neighbors import KNeighborsClassifier
             else:
                 from sklearn.neighbors import KNeighborsClassifier
@@ -337,7 +333,7 @@ class KNeighborsClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.neighbors.KNeighborsClassifier")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.neighbors import KNeighborsClassifier
 
                 logger.info("Imported cuml.neighbors.KNeighborsClassifier")
@@ -496,7 +492,7 @@ class SGDClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.MBSGDClassifier")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml import MBSGDClassifier as SGDClassifier
 
                 logger.info("Imported cuml.MBSGDClassifier")
@@ -582,9 +578,7 @@ class SVCClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.svm import SVC
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.svm import SVC
             else:
                 from sklearn.svm import SVC
@@ -595,7 +589,7 @@ class SVCClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.svm.SVC")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.svm import SVC
 
                 logger.info("Imported cuml.svm.SVC")
@@ -737,7 +731,7 @@ class RidgeClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.linear_model")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 import cuml.linear_model
 
                 logger.info("Imported cuml.linear_model")
@@ -789,7 +783,7 @@ class RandomForestClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.ensemble")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 import cuml.ensemble
 
                 logger.info("Imported cuml.ensemble")
@@ -1131,7 +1125,11 @@ class XGBClassifierContainer(ClassifierContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies("xgboost", extra="models", severity="warning"):
+        if _check_soft_dependencies(
+            "xgboost",
+            severity="warning",
+            msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternately, you can install xgboost by running `pip install pycaret-core[models]`",
+        ):
             import xgboost
         else:
             self.active = False
@@ -1416,7 +1414,11 @@ class CatBoostClassifierContainer(ClassifierContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies("catboost", extra="models", severity="warning"):
+        if _check_soft_dependencies(
+            "catboost",
+            severity="warning",
+            msg="catboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'catboost'` to install. Alternately, you can install catboost by running `pip install pycaret-core[models]`",
+        ):
             import catboost
         else:
             self.active = False

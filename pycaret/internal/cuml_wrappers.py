@@ -1,9 +1,8 @@
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.linear_model._ridge import _RidgeClassifierMixin
 from sklearn.preprocessing import LabelEncoder
 
-from pycaret.utils._dependencies import _check_soft_dependencies
-
-if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+if _check_soft_dependencies("cuml", severity="warning"):
     from cuml.cluster import DBSCAN as cuMLDBSCAN
 
     class DBSCAN(cuMLDBSCAN):
@@ -21,7 +20,7 @@ def get_dbscan():
     return DBSCAN
 
 
-if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+if _check_soft_dependencies("cuml", severity="warning"):
     from cuml.cluster import KMeans as cuMLKMeans
 
     class KMeans(cuMLKMeans):
@@ -39,7 +38,7 @@ def get_kmeans():
     return KMeans
 
 
-if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+if _check_soft_dependencies("cuml", severity="warning"):
     from cuml.svm import SVC
 else:
     SVC = None
@@ -49,7 +48,7 @@ def get_svc_classifier():
     return SVC
 
 
-if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+if _check_soft_dependencies("cuml", severity="warning"):
     from cuml.linear_model import Ridge
 
     class RidgeClassifier(Ridge, _RidgeClassifierMixin):

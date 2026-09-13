@@ -11,6 +11,7 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
+from skbase.utils.dependencies import _check_soft_dependencies
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (
@@ -22,7 +23,6 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
-from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import get_logger, np_list_arange, param_grid_to_lists
 
 # First one in the list is the default ----
@@ -231,9 +231,7 @@ class LinearRegressionContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.linear_model import LinearRegression
             else:
                 from sklearn.linear_model import LinearRegression
@@ -244,7 +242,7 @@ class LinearRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.LinearRegression")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import LinearRegression
 
                 logger.info("Imported cuml.linear_model.LinearRegression")
@@ -287,9 +285,7 @@ class LassoRegressionContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.linear_model import Lasso
             else:
                 from sklearn.linear_model import Lasso
@@ -300,7 +296,7 @@ class LassoRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.Lasso")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Lasso
 
                 logger.info("Imported cuml.linear_model.Lasso")
@@ -346,9 +342,7 @@ class RidgeRegressionContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.linear_model import Ridge
             else:
                 from sklearn.linear_model import Ridge
@@ -359,7 +353,7 @@ class RidgeRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.Ridge")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Ridge
 
                 logger.info("Imported cuml.linear_model.Ridge")
@@ -405,9 +399,7 @@ class ElasticNetContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.linear_model import ElasticNet
             else:
                 from sklearn.linear_model import ElasticNet
@@ -418,7 +410,7 @@ class ElasticNetContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.ElasticNet")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import ElasticNet
 
                 logger.info("Imported cuml.linear_model.ElasticNet")
@@ -1010,9 +1002,7 @@ class SVRContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.svm import SVR
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.svm import SVR
             else:
                 from sklearn.svm import SVR
@@ -1023,7 +1013,7 @@ class SVRContainer(RegressorContainer):
             logger.info("Imported cuml.svm.SVR")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.svm import SVR
 
                 logger.info("Imported cuml.svm.SVR")
@@ -1073,9 +1063,7 @@ class KNeighborsRegressorContainer(RegressorContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
-            ):
+            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
                 from sklearnex.neighbors import KNeighborsRegressor
             else:
                 from sklearn.neighbors import KNeighborsRegressor
@@ -1086,7 +1074,7 @@ class KNeighborsRegressorContainer(RegressorContainer):
             logger.info("Imported cuml.neighbors.KNeighborsRegressor")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.neighbors import KNeighborsRegressor
 
                 logger.info("Imported cuml.neighbors.KNeighborsRegressor")
@@ -1192,7 +1180,7 @@ class RandomForestRegressorContainer(RegressorContainer):
             logger.info("Imported cuml.ensemble")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 import cuml.ensemble  # noqa: F401
 
                 logger.info("Imported cuml.ensemble")
@@ -1513,7 +1501,11 @@ class XGBRegressorContainer(RegressorContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies("xgboost", extra="models", severity="warning"):
+        if _check_soft_dependencies(
+            "xgboost",
+            severity="warning",
+            msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternately, you can install xgboost by running `pip install pycaret-core[models]`",
+        ):
             import xgboost
         else:
             self.active = False
@@ -1798,7 +1790,11 @@ class CatBoostRegressorContainer(RegressorContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies("catboost", extra="models", severity="warning"):
+        if _check_soft_dependencies(
+            "catboost",
+            severity="warning",
+            msg="catboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'catboost'` to install. Alternately, you can install catboost by running `pip install pycaret-core[models]`",
+        ):
             import catboost
         else:
             self.active = False

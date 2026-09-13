@@ -3,8 +3,7 @@
 from typing import Optional
 
 import requests
-
-from pycaret.utils._dependencies import _check_soft_dependencies
+from skbase.utils.dependencies import _check_soft_dependencies
 
 
 def get_data(
@@ -148,10 +147,9 @@ def get_data(
     else:
         if profile:
             _check_soft_dependencies(
-                "ydata_profiling",
-                extra="analysis",
+                "ydata-profiling",
                 severity="error",
-                install_name="ydata-profiling",
+                msg="ydata-profiling is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ydata-profiling'` to install. Alternately, you can install ydata-profiling by running `pip install pycaret-core[analysis]`",
             )
             import ydata_profiling
 

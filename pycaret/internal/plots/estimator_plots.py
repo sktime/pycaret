@@ -20,6 +20,7 @@ import pandas as pd
 from cycler import cycler
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.feature_selection import RFECV
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.linear_model import LinearRegression
@@ -44,7 +45,6 @@ from sklearn.preprocessing import label_binarize
 from sklearn.utils.multiclass import type_of_target
 
 from pycaret.internal.logging import get_logger
-from pycaret.utils._dependencies import _check_soft_dependencies
 
 # Default look of all plots in this module. The values mirror the style and
 # context that yellowbrick applied, so that plots look as they did before

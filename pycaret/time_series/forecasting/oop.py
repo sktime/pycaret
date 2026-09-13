@@ -19,6 +19,7 @@ import pandas as pd
 from IPython.display import display as ipython_display
 from pandas.api.types import is_string_dtype
 from plotly_resampler import FigureResampler, FigureWidgetResampler
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.base import clone
 from sktime.forecasting.base import BaseForecaster, ForecastingHorizon
 from sktime.forecasting.compose import ForecastingPipeline, TransformedTargetForecaster
@@ -63,7 +64,6 @@ from pycaret.internal.tests.time_series import (
 from pycaret.internal.tunable import TunableMixin
 from pycaret.internal.validation import is_sklearn_cv_generator
 from pycaret.loggers.base_logger import BaseLogger
-from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.datetime import coerce_datetime_to_period_index
 from pycaret.utils.generic import MLUsecase, _resolve_dict_keys, highlight_setup
 from pycaret.utils.time_series import (
@@ -3685,7 +3685,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
         # Import required libraries ----
         if display_format == "streamlit":
-            _check_soft_dependencies("streamlit", extra=None, severity="error")
+            _check_soft_dependencies("streamlit", severity="error")
             import importlib
 
             st = importlib.import_module("streamlit")
