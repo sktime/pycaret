@@ -5,9 +5,9 @@ import os
 from typing import Dict, Optional
 
 import joblib
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.pipeline import Pipeline
 
-from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import MLUsecase, get_logger
 
 
@@ -132,7 +132,7 @@ def deploy_model(
         logger.info("Platform : AWS S3")
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", extra=None, severity="error")
+        _check_soft_dependencies("boto3", severity="error")
         import boto3
 
         # initialize s3
@@ -176,7 +176,9 @@ def deploy_model(
         logger.info("Platform : GCP")
 
         _check_soft_dependencies(
-            "google", extra=None, severity="error", install_name="google-cloud-storage"
+            "google-cloud-storage",
+            severity="error",
+            msg="google-cloud-storage is a soft dependency and not included in the pycaret installation. Please run: `pip install 'google-cloud-storage'` to install.",
         )
 
         # initialize deployment
@@ -209,7 +211,9 @@ def deploy_model(
         logger.info("Platform : Azure Blob Storage")
 
         _check_soft_dependencies(
-            "azure", extra=None, severity="error", install_name="azure-storage-blob"
+            "azure-storage-blob",
+            severity="error",
+            msg="azure-storage-blob is a soft dependency and not included in the pycaret installation. Please run: `pip install 'azure-storage-blob'` to install.",
         )
 
         # initialize deployment
@@ -398,7 +402,7 @@ def load_model(
         import os
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", extra=None, severity="error")
+        _check_soft_dependencies("boto3", severity="error")
         import boto3
 
         bucketname = authentication.get("bucket")
