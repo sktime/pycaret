@@ -688,7 +688,7 @@ class AutoArimaContainer(TimeSeriesContainer):
             _check_soft_dependencies(
                 "statsforecast",
                 severity="error",
-                msg="statsforecast is a soft dependency and not included in the pycaret installation. Please run: `pip install 'statsforecast'` to install. Alternately, you can install statsforecast by running `pip install pycaret-core[models]`",
+                msg="statsforecast is a soft dependency and not included in the pycaret installation. Please run: `pip install 'statsforecast'` to install. Alternatively, you can install statsforecast by running `pip install pycaret-core[models]`",
             )
             from sktime.forecasting.statsforecast import (
                 StatsForecastAutoARIMA as AutoARIMA,
@@ -2395,7 +2395,7 @@ class XGBCdsDtContainer(CdsDtContainer):
         if _check_soft_dependencies(
             "xgboost",
             severity="warning",
-            msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternately, you can install xgboost by running `pip install pycaret-core[models]`",
+            msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternatively, you can install xgboost by running `pip install pycaret-core[models]`",
         ):
             import xgboost
         else:
@@ -2570,7 +2570,7 @@ class CatBoostCdsDtContainer(CdsDtContainer):
         if _check_soft_dependencies(
             "catboost",
             severity="warning",
-            msg="catboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'catboost'` to install. Alternately, you can install catboost by running `pip install pycaret-core[models]`",
+            msg="catboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'catboost'` to install. Alternatively, you can install catboost by running `pip install pycaret-core[models]`",
         ):
             import catboost
         else:

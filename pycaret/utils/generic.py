@@ -915,7 +915,7 @@ def can_early_stop(
     if _check_soft_dependencies(
         "xgboost",
         severity="warning",
-        msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternately, you can install xgboost by running `pip install pycaret-core[models]`",
+        msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternatively, you can install xgboost by running `pip install pycaret-core[models]`",
     ):
         if consider_xgboost:
             from xgboost.sklearn import XGBModel

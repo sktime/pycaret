@@ -149,7 +149,7 @@ def get_data(
             _check_soft_dependencies(
                 "ydata-profiling",
                 severity="error",
-                msg="ydata-profiling is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ydata-profiling'` to install. Alternately, you can install ydata-profiling by running `pip install pycaret-core[analysis]`",
+                msg="ydata-profiling is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ydata-profiling'` to install. Alternatively, you can install ydata-profiling by running `pip install pycaret-core[analysis]`",
             )
             import ydata_profiling
 

@@ -2083,7 +2083,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "scikit-optimize",
                 severity="error",
-                msg="scikit-optimize is a soft dependency and not included in the pycaret installation. Please run: `pip install 'scikit-optimize'` to install. Alternately, you can install scikit-optimize by running `pip install pycaret-core[tuners]`",
+                msg="scikit-optimize is a soft dependency and not included in the pycaret installation. Please run: `pip install 'scikit-optimize'` to install. Alternatively, you can install scikit-optimize by running `pip install pycaret-core[tuners]`",
             )
             import skopt
 
@@ -2100,7 +2100,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "tune-sklearn",
                 severity="error",
-                msg="tune-sklearn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'tune-sklearn'` to install. Alternately, you can install tune-sklearn by running `pip install pycaret-core[tuners]`",
+                msg="tune-sklearn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'tune-sklearn'` to install. Alternatively, you can install tune-sklearn by running `pip install pycaret-core[tuners]`",
             )
 
             if not search_algorithm:
@@ -2125,26 +2125,26 @@ class _SupervisedExperiment(_TabularExperiment):
                 _check_soft_dependencies(
                     "ray[tune]",
                     severity="error",
-                    msg="ray[tune] is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ray[tune]'` to install. Alternately, you can install ray[tune] by running `pip install pycaret-core[tuners]`",
+                    msg="ray[tune] is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ray[tune]'` to install. Alternatively, you can install ray[tune] by running `pip install pycaret-core[tuners]`",
                 )
 
             elif search_algorithm == "hyperopt":
                 _check_soft_dependencies(
                     "hyperopt",
                     severity="error",
-                    msg="hyperopt is a soft dependency and not included in the pycaret installation. Please run: `pip install 'hyperopt'` to install. Alternately, you can install hyperopt by running `pip install pycaret-core[tuners]`",
+                    msg="hyperopt is a soft dependency and not included in the pycaret installation. Please run: `pip install 'hyperopt'` to install. Alternatively, you can install hyperopt by running `pip install pycaret-core[tuners]`",
                 )
                 _check_soft_dependencies(
                     "ray[tune]",
                     severity="error",
-                    msg="ray[tune] is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ray[tune]'` to install. Alternately, you can install ray[tune] by running `pip install pycaret-core[tuners]`",
+                    msg="ray[tune] is a soft dependency and not included in the pycaret installation. Please run: `pip install 'ray[tune]'` to install. Alternatively, you can install ray[tune] by running `pip install pycaret-core[tuners]`",
                 )
 
             elif search_algorithm == "bayesian":
                 _check_soft_dependencies(
                     "scikit-optimize",
                     severity="error",
-                    msg="scikit-optimize is a soft dependency and not included in the pycaret installation. Please run: `pip install 'scikit-optimize'` to install. Alternately, you can install scikit-optimize by running `pip install pycaret-core[tuners]`",
+                    msg="scikit-optimize is a soft dependency and not included in the pycaret installation. Please run: `pip install 'scikit-optimize'` to install. Alternatively, you can install scikit-optimize by running `pip install pycaret-core[tuners]`",
                 )
                 import skopt
 
@@ -2152,7 +2152,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 _check_soft_dependencies(
                     "optuna",
                     severity="error",
-                    msg="optuna is a soft dependency and not included in the pycaret installation. Please run: `pip install 'optuna'` to install. Alternately, you can install optuna by running `pip install pycaret-core[tuners]`",
+                    msg="optuna is a soft dependency and not included in the pycaret installation. Please run: `pip install 'optuna'` to install. Alternatively, you can install optuna by running `pip install pycaret-core[tuners]`",
                 )
                 import optuna
 
@@ -2160,7 +2160,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "optuna",
                 severity="error",
-                msg="optuna is a soft dependency and not included in the pycaret installation. Please run: `pip install 'optuna'` to install. Alternately, you can install optuna by running `pip install pycaret-core[tuners]`",
+                msg="optuna is a soft dependency and not included in the pycaret installation. Please run: `pip install 'optuna'` to install. Alternatively, you can install optuna by running `pip install pycaret-core[tuners]`",
             )
             import optuna
 
@@ -4099,7 +4099,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "shap",
                 severity="error",
-                msg="shap is a soft dependency and not included in the pycaret installation. Please run: `pip install 'shap'` to install. Alternately, you can install shap by running `pip install pycaret-core[analysis]`",
+                msg="shap is a soft dependency and not included in the pycaret installation. Please run: `pip install 'shap'` to install. Alternatively, you can install shap by running `pip install pycaret-core[analysis]`",
             )
             import shap
 
@@ -4108,7 +4108,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "interpret",
                 severity="error",
-                msg="interpret is a soft dependency and not included in the pycaret installation. Please run: `pip install 'interpret'` to install. Alternately, you can install interpret by running `pip install pycaret-core[analysis]`",
+                msg="interpret is a soft dependency and not included in the pycaret installation. Please run: `pip install 'interpret'` to install. Alternatively, you can install interpret by running `pip install pycaret-core[analysis]`",
             )
 
         # checking interpret is available
@@ -4116,7 +4116,7 @@ class _SupervisedExperiment(_TabularExperiment):
             _check_soft_dependencies(
                 "interpret",
                 severity="error",
-                msg="interpret is a soft dependency and not included in the pycaret installation. Please run: `pip install 'interpret'` to install. Alternately, you can install interpret by running `pip install pycaret-core[analysis]`",
+                msg="interpret is a soft dependency and not included in the pycaret installation. Please run: `pip install 'interpret'` to install. Alternatively, you can install interpret by running `pip install pycaret-core[analysis]`",
             )
 
         # checking interpret-community is available
@@ -5381,7 +5381,7 @@ class _SupervisedExperiment(_TabularExperiment):
         _check_soft_dependencies(
             "fairlearn",
             severity="error",
-            msg="fairlearn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'fairlearn'` to install. Alternately, you can install fairlearn by running `pip install pycaret-core[analysis]`",
+            msg="fairlearn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'fairlearn'` to install. Alternatively, you can install fairlearn by running `pip install pycaret-core[analysis]`",
         )
         from fairlearn.metrics import MetricFrame, count, selection_rate
 
@@ -5609,7 +5609,7 @@ class _SupervisedExperiment(_TabularExperiment):
         _check_soft_dependencies(
             "gradio",
             severity="error",
-            msg="gradio is a soft dependency and not included in the pycaret installation. Please run: `pip install 'gradio'` to install. Alternately, you can install gradio by running `pip install pycaret-core[mlops]`",
+            msg="gradio is a soft dependency and not included in the pycaret installation. Please run: `pip install 'gradio'` to install. Alternatively, you can install gradio by running `pip install pycaret-core[mlops]`",
         )
         import gradio as gr
 
@@ -5698,7 +5698,7 @@ class _SupervisedExperiment(_TabularExperiment):
         _check_soft_dependencies(
             "explainerdashboard",
             severity="error",
-            msg="explainerdashboard is a soft dependency and not included in the pycaret installation. Please run: `pip install 'explainerdashboard'` to install. Alternately, you can install explainerdashboard by running `pip install pycaret-core[analysis]`",
+            msg="explainerdashboard is a soft dependency and not included in the pycaret installation. Please run: `pip install 'explainerdashboard'` to install. Alternatively, you can install explainerdashboard by running `pip install pycaret-core[analysis]`",
         )
 
     def check_drift(
@@ -5768,7 +5768,7 @@ class _SupervisedExperiment(_TabularExperiment):
         _check_soft_dependencies(
             "evidently",
             severity="error",
-            msg="evidently is a soft dependency and not included in the pycaret installation. Please run: `pip install 'evidently'` to install. Alternately, you can install evidently by running `pip install pycaret-core[mlops]`",
+            msg="evidently is a soft dependency and not included in the pycaret installation. Please run: `pip install 'evidently'` to install. Alternatively, you can install evidently by running `pip install pycaret-core[mlops]`",
         )
 
         if self._setup_ran:
