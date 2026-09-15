@@ -28,6 +28,7 @@ from pycaret.internal.validation import (
     is_sklearn_pipeline,
     supports_partial_fit,
 )
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 
 if TYPE_CHECKING:
     from pycaret.internal.pycaret_experiment.pycaret_experiment import (
@@ -915,7 +916,7 @@ def can_early_stop(
     if _check_soft_dependencies(
         "xgboost",
         severity="warning",
-        msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternatively, you can install xgboost by running `pip install pycaret-core[models]`",
+        msg=_install_pycaret_extra_msg("xgboost", "models"),
     ):
         if consider_xgboost:
             from xgboost.sklearn import XGBModel

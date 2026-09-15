@@ -23,6 +23,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.generic import get_logger, np_list_arange, param_grid_to_lists
 
 # First one in the list is the default ----
@@ -1504,7 +1505,7 @@ class XGBRegressorContainer(RegressorContainer):
         if _check_soft_dependencies(
             "xgboost",
             severity="warning",
-            msg="xgboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'xgboost'` to install. Alternatively, you can install xgboost by running `pip install pycaret-core[models]`",
+            msg=_install_pycaret_extra_msg("xgboost", "models"),
         ):
             import xgboost
         else:
@@ -1793,7 +1794,7 @@ class CatBoostRegressorContainer(RegressorContainer):
         if _check_soft_dependencies(
             "catboost",
             severity="warning",
-            msg="catboost is a soft dependency and not included in the pycaret installation. Please run: `pip install 'catboost'` to install. Alternatively, you can install catboost by running `pip install pycaret-core[models]`",
+            msg=_install_pycaret_extra_msg("catboost", "models"),
         ):
             import catboost
         else:

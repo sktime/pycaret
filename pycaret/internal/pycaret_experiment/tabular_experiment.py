@@ -36,6 +36,7 @@ from pycaret.loggers.comet_logger import CometLogger
 from pycaret.loggers.dagshub_logger import DagshubLogger
 from pycaret.loggers.mlflow_logger import MlflowLogger
 from pycaret.loggers.wandb_logger import WandbLogger
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.generic import (
     MLUsecase,
     get_allowed_engines,
@@ -714,7 +715,7 @@ class _TabularExperiment(_PyCaretExperiment):
             _check_soft_dependencies(
                 "umap-learn",
                 severity="error",
-                msg="umap-learn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'umap-learn'` to install. Alternatively, you can install umap-learn by running `pip install pycaret-core[analysis]`",
+                msg=_install_pycaret_extra_msg("umap-learn", "analysis"),
             )
             import umap
 
@@ -2364,17 +2365,17 @@ class _TabularExperiment(_PyCaretExperiment):
         _check_soft_dependencies(
             "fastapi",
             severity="error",
-            msg="fastapi is a soft dependency and not included in the pycaret installation. Please run: `pip install 'fastapi'` to install. Alternatively, you can install fastapi by running `pip install pycaret-core[mlops]`",
+            msg=_install_pycaret_extra_msg("fastapi", "mlops"),
         )
         _check_soft_dependencies(
             "uvicorn",
             severity="error",
-            msg="uvicorn is a soft dependency and not included in the pycaret installation. Please run: `pip install 'uvicorn'` to install. Alternatively, you can install uvicorn by running `pip install pycaret-core[mlops]`",
+            msg=_install_pycaret_extra_msg("uvicorn", "mlops"),
         )
         _check_soft_dependencies(
             "pydantic",
             severity="error",
-            msg="pydantic is a soft dependency and not included in the pycaret installation. Please run: `pip install 'pydantic'` to install. Alternatively, you can install pydantic by running `pip install pycaret-core[mlops]`",
+            msg=_install_pycaret_extra_msg("pydantic", "mlops"),
         )
 
         self.save_model(estimator, model_name=api_name, verbose=False)

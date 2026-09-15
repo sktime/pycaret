@@ -17,6 +17,7 @@ import pycaret.internal.cuml_wrappers
 from pycaret.containers.models.base_model import ModelContainer
 from pycaret.internal.cuml_wrappers import get_dbscan, get_kmeans
 from pycaret.internal.distributions import Distribution
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.generic import get_logger, param_grid_to_lists
 
 _DEFAULT_N_CLUSTERS = 4
@@ -430,7 +431,7 @@ class KModesClusterContainer(ClusterContainer):
         if not _check_soft_dependencies(
             "kmodes",
             severity="warning",
-            msg="kmodes is a soft dependency and not included in the pycaret installation. Please run: `pip install 'kmodes'` to install. Alternatively, you can install kmodes by running `pip install pycaret-core[models]`",
+            msg=_install_pycaret_extra_msg("kmodes", "models"),
         ):
             self.active = False
             return

@@ -8,6 +8,7 @@ import joblib
 from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.pipeline import Pipeline
 
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.generic import MLUsecase, get_logger
 
 
@@ -178,7 +179,7 @@ def deploy_model(
         _check_soft_dependencies(
             "google-cloud-storage",
             severity="error",
-            msg="google-cloud-storage is a soft dependency and not included in the pycaret installation. Please run: `pip install 'google-cloud-storage'` to install.",
+            msg=_install_pycaret_extra_msg("google-cloud-storage", ""),
         )
 
         # initialize deployment
@@ -213,7 +214,7 @@ def deploy_model(
         _check_soft_dependencies(
             "azure-storage-blob",
             severity="error",
-            msg="azure-storage-blob is a soft dependency and not included in the pycaret installation. Please run: `pip install 'azure-storage-blob'` to install.",
+            msg=_install_pycaret_extra_msg("azure-storage-blob", ""),
         )
 
         # initialize deployment
