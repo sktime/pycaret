@@ -175,9 +175,7 @@ def deploy_model(
     elif platform == "gcp":
         logger.info("Platform : GCP")
 
-        _check_soft_dependencies(
-            "google", extra=None, severity="error", install_name="google-cloud-storage"
-        )
+        _check_soft_dependencies("google-cloud-storage", extra=None, severity="error")
 
         # initialize deployment
         filename = f"{model_name}.pkl"
@@ -208,9 +206,7 @@ def deploy_model(
     elif platform == "azure":
         logger.info("Platform : Azure Blob Storage")
 
-        _check_soft_dependencies(
-            "azure", extra=None, severity="error", install_name="azure-storage-blob"
-        )
+        _check_soft_dependencies("azure-storage-blob", extra=None, severity="error")
 
         # initialize deployment
         filename = f"{model_name}.pkl"
