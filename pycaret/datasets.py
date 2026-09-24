@@ -149,16 +149,16 @@ def get_data(
     else:
         if profile:
             _check_soft_dependencies(
-                "ydata-profiling",
+                "fg-data-profiling",
                 severity="error",
-                msg=_install_pycaret_extra_msg("ydata-profiling", "analysis"),
+                msg=_install_pycaret_extra_msg("fg-data-profiling", "analysis"),
             )
-            import ydata_profiling
+            from data_profiling import ProfileReport
 
             # create a copy for pandas profiler
             data_for_profiling = data.copy()
 
-            pf = ydata_profiling.ProfileReport(data_for_profiling)
+            pf = ProfileReport(data_for_profiling)
             display.display(pf)
 
         else:
