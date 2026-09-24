@@ -102,8 +102,6 @@ jobs:
       - name: Run notebooks (regression)
         run: pytest --nbmake --nbmake-kernel=cikernel --nbmake-timeout=3000 "tutorials/Tutorial - Regression.ipynb"
 
-  # Validate the oldest and newest supported Python versions before the
-  # intermediate-version matrix is allowed to start.
   test-fast:
     name: Full tests (py-${{ matrix.python-version }}, ${{ matrix.os }})
     needs: code-quality
