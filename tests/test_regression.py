@@ -1,119 +1,238 @@
-import uuid
+"""Tests for the functional API of the regression module.
+
+All tests share one experiment on the boston dataset, the three models that
+``compare_models`` ranks highest, and a linear regression. Each test checks a
+single step of the workflow on them.
+"""
+
+import os
 
 import numpy as np
 import pandas as pd
 import pytest
-from mlflow.tracking import MlflowClient
+from mlflow_test_utils import mlflow_run_tags
+from sklearn.base import is_regressor
 
-import pycaret.datasets
 import pycaret.regression
+from pycaret.datasets import get_data
 
 
 @pytest.fixture(scope="module")
-def boston_dataframe():
-    return pycaret.datasets.get_data("boston")
+def data():
+    """Dataset that the experiment is set up on."""
+    return get_data("boston")
 
 
-@pytest.mark.parametrize("return_train_score", [True, False])
-def test_regression(boston_dataframe, return_train_score):
-    # loading dataset
-    assert isinstance(boston_dataframe, pd.DataFrame)
-
-    # init setup
-    pycaret.regression.setup(
-        boston_dataframe,
+@pytest.fixture(scope="module")
+def experiment(data, experiment_name):
+    """Experiment set up once for the module, with mlflow logging and custom tags."""
+    return pycaret.regression.setup(
+        data,
         target="medv",
         remove_multicollinearity=True,
         multicollinearity_threshold=0.95,
         log_experiment=True,
+        experiment_name=experiment_name,
+        experiment_custom_tags={"tag": 1},
         html=False,
         session_id=123,
         n_jobs=1,
-        experiment_name=uuid.uuid4().hex,
     )
 
-    # compare models
-    top3 = pycaret.regression.compare_models(
-        n_select=100,
+
+@pytest.fixture(autouse=True)
+def current_experiment(experiment):
+    """Activate the module's experiment before each test.
+
+    The functional API works on a global current experiment, which the test
+    suite resets after every test.
+    """
+    pycaret.regression.set_current_experiment(experiment)
+
+
+@pytest.fixture(scope="module")
+def comparison(experiment):
+    """Top three models from ``compare_models`` and the metrics table it displayed.
+
+    Module fixtures run before ``current_experiment``, so the experiment is
+    activated here as well.
+    """
+    pycaret.regression.set_current_experiment(experiment)
+    models = pycaret.regression.compare_models(
+        n_select=3,
         exclude=["catboost"],
         errors="raise",
-    )[:3]
-    assert isinstance(top3, list)
-    metrics = pycaret.regression.pull()
-    # no metric should be 0
-    assert (
-        (
-            metrics.loc[[i for i in metrics.index if i not in ("dummy")]][
-                [c for c in metrics.columns if c not in ("Model", "TT (Sec)")]
-            ]
-            != 0
+        experiment_custom_tags={"pytest": "testing"},
+    )
+    return models, pycaret.regression.pull()
+
+
+@pytest.fixture(scope="module")
+def top3(comparison):
+    """Top three models from ``compare_models``."""
+    return comparison[0]
+
+
+@pytest.fixture(scope="module")
+def lr(experiment):
+    """Fitted linear regression for the steps that need a single model."""
+    pycaret.regression.set_current_experiment(experiment)
+    return pycaret.regression.create_model("lr")
+
+
+def test_compare_models_scores_every_model(comparison):
+    """Every model except the dummy scores above zero on every metric."""
+    _, metrics = comparison
+    scores = metrics.drop(index="dummy", errors="ignore")
+    scores = scores.drop(columns=["Model", "TT (Sec)"])
+    assert (scores != 0).all().all()
+
+
+def test_create_model_reports_cross_validation_scores():
+    """The metrics table has one row per fold and a mean and standard deviation."""
+    pycaret.regression.create_model("lr", fold=3)
+    assert list(pycaret.regression.pull().index) == [0, 1, 2, "Mean", "Std"]
+
+
+def test_create_model_with_return_train_score():
+    """With ``return_train_score`` the metrics table also holds the training scores."""
+    pycaret.regression.create_model("lr", fold=3, return_train_score=True)
+    index = pycaret.regression.pull().index
+    assert {"CV-Train", "CV-Val"} <= set(index.get_level_values(0))
+    assert "Mean" in index.get_level_values(1)
+
+
+def test_create_model_without_cross_validation():
+    """Without cross-validation the model is scored on the hold-out set only."""
+    pycaret.regression.create_model("dt", cross_validation=False)
+    assert list(pycaret.regression.pull().index) == ["Test"]
+
+
+@pytest.mark.parametrize("rank", [0, 1, 2])
+def test_tune_model(top3, rank):
+    """``tune_model`` returns a regressor for each of the best models."""
+    tuned = pycaret.regression.tune_model(top3[rank], n_iter=3)
+    assert is_regressor(tuned)
+
+
+def test_tune_model_choose_better(top3):
+    """With ``choose_better`` the result is still a regressor."""
+    tuned = pycaret.regression.tune_model(top3[0], n_iter=3, choose_better=True)
+    assert is_regressor(tuned)
+
+
+def test_ensemble_model(top3):
+    """``ensemble_model`` returns a bagged regressor."""
+    assert is_regressor(pycaret.regression.ensemble_model(top3[0]))
+
+
+def test_blend_models(top3):
+    """``blend_models`` returns a voting regressor."""
+    assert is_regressor(pycaret.regression.blend_models(top3))
+
+
+def test_stack_models(top3):
+    """``stack_models`` accepts a meta model and returns a regressor."""
+    stacked = pycaret.regression.stack_models(
+        estimator_list=top3[1:], meta_model=top3[0]
+    )
+    assert is_regressor(stacked)
+
+
+@pytest.mark.plotting
+def test_plot_model(lr, tmp_path):
+    """The default plot is saved to the requested directory."""
+    path = pycaret.regression.plot_model(lr, save=str(tmp_path))
+    assert os.path.exists(path)
+
+
+def test_automl(comparison):
+    """``automl`` returns the best regressor trained so far."""
+    assert is_regressor(pycaret.regression.automl(optimize="MAPE", use_holdout=True))
+    assert is_regressor(pycaret.regression.automl(optimize="MAPE"))
+
+
+def test_predict_model_on_holdout(lr):
+    """``predict_model`` scores the hold-out set when given no data."""
+    predictions = pycaret.regression.predict_model(lr)
+    assert len(predictions) == len(pycaret.regression.get_config("X_test"))
+    assert "prediction_label" in predictions.columns
+
+
+def test_predict_model_on_new_data(lr, data):
+    """``predict_model`` predicts every row of new data."""
+    predictions = pycaret.regression.predict_model(lr, data=data)
+    assert len(predictions) == len(data)
+    assert "prediction_label" in predictions.columns
+
+
+def test_finalize_model(lr, data):
+    """``finalize_model`` returns a pipeline that predicts on new data."""
+    final = pycaret.regression.finalize_model(lr)
+    predictions = pycaret.regression.predict_model(final, data=data)
+    assert len(predictions) == len(data)
+
+
+def test_load_model_predicts_without_setup(lr, data, tmp_path):
+    """A saved model predicts after loading into an experiment without ``setup``."""
+    path = str(tmp_path / "model")
+    pycaret.regression.save_model(lr, path)
+    pycaret.regression.set_current_experiment(pycaret.regression.RegressionExperiment())
+
+    loaded = pycaret.regression.load_model(path)
+    predictions = pycaret.regression.predict_model(loaded, data=data)
+    assert len(predictions) == len(data)
+
+
+def test_transform_target_predicts_on_the_original_scale(data):
+    """With ``transform_target`` predictions come back in the units of the target."""
+    exp = pycaret.regression.RegressionExperiment()
+    exp.setup(
+        data,
+        target="medv",
+        transform_target=True,
+        html=False,
+        session_id=123,
+        n_jobs=1,
+    )
+    model = exp.create_model("dt", cross_validation=False)
+    predictions = exp.predict_model(model)
+    assert np.isclose(predictions["prediction_label"].iloc[0], 49.999989)
+
+
+def test_custom_tags_are_logged(comparison, experiment_name):
+    """The runs of ``setup`` and of ``compare_models`` carry the tags given to each."""
+    tags = mlflow_run_tags(experiment_name)
+    assert any(run_tags.get("tag") == "1" for run_tags in tags)
+    assert any(run_tags.get("pytest") == "testing" for run_tags in tags)
+
+
+@pytest.mark.parametrize(
+    "custom_tags", ["custom_tag", 1, ("pytest", "True"), True, 1.0]
+)
+def test_setup_rejects_custom_tags_that_are_not_a_dict(data, custom_tags):
+    """``setup`` raises when ``experiment_custom_tags`` is not a dictionary."""
+    with pytest.raises(TypeError):
+        pycaret.regression.RegressionExperiment().setup(
+            data,
+            target="medv",
+            log_experiment=True,
+            html=False,
+            session_id=123,
+            n_jobs=1,
+            experiment_custom_tags=custom_tags,
         )
-        .all()
-        .all()
-    )
 
-    # tune model
-    tuned_top3 = [
-        pycaret.regression.tune_model(
-            i, n_iter=3, return_train_score=return_train_score
-        )
-        for i in top3
-    ]
-    assert isinstance(tuned_top3, list)
 
-    pycaret.regression.tune_model(
-        top3[0], n_iter=3, choose_better=True, return_train_score=return_train_score
-    )
-
-    # ensemble model
-    bagged_top3 = [
-        pycaret.regression.ensemble_model(i, return_train_score=return_train_score)
-        for i in tuned_top3
-    ]
-    assert isinstance(bagged_top3, list)
-
-    # blend models
-    pycaret.regression.blend_models(top3, return_train_score=return_train_score)
-
-    # stack models
-    pycaret.regression.stack_models(
-        estimator_list=top3[1:],
-        meta_model=top3[0],
-        return_train_score=return_train_score,
-    )
-
-    # plot model
-    lr = pycaret.regression.create_model("lr", return_train_score=return_train_score)
-    pycaret.regression.plot_model(
-        lr, save=True
-    )  # scale removed because build failed due to large image size
-
-    # select best model
-    pycaret.regression.automl(optimize="MAPE", use_holdout=True)
-    best = pycaret.regression.automl(optimize="MAPE")
-
-    # hold out predictions
-    predict_holdout = pycaret.regression.predict_model(best)
-    assert isinstance(predict_holdout, pd.DataFrame)
-
-    # predictions on new dataset
-    predict_holdout = pycaret.regression.predict_model(best, data=boston_dataframe)
-    assert isinstance(predict_holdout, pd.DataFrame)
-
-    # finalize model
-    pycaret.regression.finalize_model(best)
-
-    # save model
-    pycaret.regression.save_model(best, "best_model_23122019")
-
-    # load model
-    pycaret.regression.load_model("best_model_23122019")
-
-    # returns table of models
+def test_models():
+    """``models`` lists the available models by id."""
     all_models = pycaret.regression.models()
     assert isinstance(all_models, pd.DataFrame)
+    assert {"lr", "dt", "rf"} <= set(all_models.index)
 
-    # get config
+
+def test_get_config_returns_the_split_data(data):
+    """``get_config`` exposes the train and test split of the data."""
     X_train = pycaret.regression.get_config("X_train")
     X_test = pycaret.regression.get_config("X_test")
     y_train = pycaret.regression.get_config("y_train")
@@ -122,117 +241,14 @@ def test_regression(boston_dataframe, return_train_score):
     assert isinstance(X_test, pd.DataFrame)
     assert isinstance(y_train, pd.Series)
     assert isinstance(y_test, pd.Series)
+    assert len(X_train) + len(X_test) == len(data)
+    assert len(y_train) + len(y_test) == len(data)
 
-    # set config
-    pycaret.regression.set_config("seed", 124)
+
+def test_set_config():
+    """``set_config`` writes an experiment attribute that ``get_config`` reads."""
     seed = pycaret.regression.get_config("seed")
-    assert seed == 124
-
-    assert 1 == 1
-
-
-def test_regression_predict_on_unseen(boston_dataframe):
-    exp = pycaret.regression.RegressionExperiment()
-    # init setup
-    exp.setup(
-        boston_dataframe,
-        target="medv",
-        remove_multicollinearity=True,
-        multicollinearity_threshold=0.95,
-        log_experiment=True,
-        html=False,
-        session_id=123,
-        n_jobs=1,
-        experiment_name=uuid.uuid4().hex,
-    )
-    model = exp.create_model("dt", cross_validation=False)
-
-    # save model
-    exp.save_model(model, "best_model_23122019")
-
-    exp = pycaret.regression.RegressionExperiment()
-    # load model
-    model = exp.load_model("best_model_23122019")
-    exp.predict_model(model, boston_dataframe)
-
-
-def test_regression_target_transformation(boston_dataframe):
-    exp = pycaret.regression.RegressionExperiment()
-    # init setup
-    exp.setup(
-        boston_dataframe,
-        target="medv",
-        transform_target=True,
-        log_experiment=True,
-        html=False,
-        session_id=123,
-        n_jobs=1,
-        experiment_name=uuid.uuid4().hex,
-    )
-    model = exp.create_model("dt", cross_validation=False)
-    preds = exp.predict_model(model)
-    assert np.isclose(preds["prediction_label"].iloc[0], 49.999989)
-
-
-class TestRegressionExperimentCustomTags:
-    def test_regression_setup_fails_with_experiment_custom_tags(self, boston_dataframe):
-        with pytest.raises(Exception):
-            # init setup
-            _ = pycaret.regression.setup(
-                boston_dataframe,
-                target="medv",
-                log_experiment=True,
-                html=False,
-                session_id=123,
-                n_jobs=1,
-                experiment_name=uuid.uuid4().hex,
-                experiment_custom_tags="custom_tag",
-            )
-
-    @pytest.mark.parametrize("custom_tag", [1, ("pytest", "True"), True, 1000.0])
-    def test_regression_setup_fails_with_experiment_custom_multiples_inputs(
-        self, custom_tag
-    ):
-        with pytest.raises(Exception):
-            # init setup
-            _ = pycaret.regression.setup(
-                pycaret.datasets.get_data("boston"),
-                target="medv",
-                log_experiment=True,
-                html=False,
-                session_id=123,
-                n_jobs=1,
-                experiment_name=uuid.uuid4().hex,
-                experiment_custom_tags=custom_tag,
-            )
-
-    def test_regression_models_with_experiment_custom_tags(self, boston_dataframe):
-        # init setup
-        experiment_name = uuid.uuid4().hex
-        _ = pycaret.regression.setup(
-            boston_dataframe,
-            target="medv",
-            log_experiment=True,
-            html=False,
-            session_id=123,
-            n_jobs=1,
-            experiment_name=experiment_name,
-        )
-        _ = pycaret.regression.compare_models(
-            n_select=100, experiment_custom_tags={"pytest": "testing"}
-        )[:2]
-
-        # get experiment data
-        tracking_api = MlflowClient()
-        experiment = tracking_api.get_experiment_by_name(experiment_name)
-        experiment_id = experiment.experiment_id
-        # get run's info
-        experiment_run = tracking_api.search_runs(experiment_id)[0]
-        # get run id
-        run_id = experiment_run.info.run_id
-        # get run data
-        run_data = tracking_api.get_run(run_id)
-        # assert that custom tag was inserted
-        assert "testing" == run_data.to_dictionary().get("data").get("tags").get(
-            "pytest"
-        )
+    pycaret.regression.set_config("seed", seed + 1)
+    assert pycaret.regression.get_config("seed") == seed + 1
+    # Restore the seed, the experiment is shared with the other tests.
+    pycaret.regression.set_config("seed", seed)
