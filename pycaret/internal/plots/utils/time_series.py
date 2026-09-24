@@ -12,12 +12,12 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS
 from plotly.subplots import make_subplots
 from scipy.fft import fft, fftfreq
 from scipy.signal import periodogram
+from skbase.utils.dependencies import _check_soft_dependencies
 from statsmodels.graphics.gofplots import qqplot
 from statsmodels.tsa.seasonal import STL, seasonal_decompose
 from statsmodels.tsa.stattools import acf, ccf, pacf
 
 from pycaret.internal.logging import get_logger
-from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import _resolve_dict_keys
 from pycaret.utils.time_series import TSAllowedPlotDataTypes
 

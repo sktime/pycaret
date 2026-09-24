@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import pandas.io.formats.style
 from scipy import sparse
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.metrics import get_scorer
 from sklearn.metrics._scorer import _Scorer
 from sklearn.model_selection import BaseCrossValidator, KFold, StratifiedKFold
@@ -27,7 +28,7 @@ from pycaret.internal.validation import (
     is_sklearn_pipeline,
     supports_partial_fit,
 )
-from pycaret.utils._dependencies import _check_soft_dependencies
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 
 if TYPE_CHECKING:
     from pycaret.internal.pycaret_experiment.pycaret_experiment import (
@@ -912,7 +913,11 @@ def can_early_stop(
 
     is_xgboost = False
 
-    if _check_soft_dependencies("xgboost", extra="models", severity="warning"):
+    if _check_soft_dependencies(
+        "xgboost",
+        severity="warning",
+        msg=_install_pycaret_extra_msg("xgboost", "models"),
+    ):
         if consider_xgboost:
             from xgboost.sklearn import XGBModel
 

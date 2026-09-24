@@ -14,6 +14,7 @@ import scikitplot as skplt  # type: ignore
 from IPython.display import display as ipython_display
 from joblib.memory import Memory
 from pandas.io.formats.style import Styler
+from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.model_selection import BaseCrossValidator  # type: ignore
 from sklearn.pipeline import Pipeline
 
@@ -35,7 +36,7 @@ from pycaret.loggers.comet_logger import CometLogger
 from pycaret.loggers.dagshub_logger import DagshubLogger
 from pycaret.loggers.mlflow_logger import MlflowLogger
 from pycaret.loggers.wandb_logger import WandbLogger
-from pycaret.utils._dependencies import _check_soft_dependencies
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.generic import (
     MLUsecase,
     get_allowed_engines,
@@ -337,7 +338,7 @@ class _TabularExperiment(_PyCaretExperiment):
         if self.gpu_param:
             self.logger.info("Set up GPU usage.")
 
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml import __version__
 
                 cuml_version = __version__
@@ -413,7 +414,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         # Import required libraries ----
         if display_format == "streamlit":
-            _check_soft_dependencies("streamlit", extra=None, severity="error")
+            _check_soft_dependencies("streamlit", severity="error")
             import streamlit as st
 
         # multiclass plot exceptions:
@@ -712,13 +713,13 @@ class _TabularExperiment(_PyCaretExperiment):
             b.drop(["Anomaly"], axis=1, inplace=True)
 
             _check_soft_dependencies(
-                "umap",
-                extra="analysis",
+                "umap-learn",
                 severity="error",
-                install_name="umap-learn",
+                msg=_install_pycaret_extra_msg("umap-learn", "analysis"),
             )
             import umap
 
+            # umap-learn uses 'umap' as the import name
             reducer = umap.UMAP()
             self.logger.info("Fitting UMAP()")
             embedding = reducer.fit_transform(b)
@@ -2287,7 +2288,7 @@ class _TabularExperiment(_PyCaretExperiment):
 
         """
 
-        _check_soft_dependencies("m2cgen", extra=None, severity="error")
+        _check_soft_dependencies("m2cgen", severity="error")
         import m2cgen as m2c
 
         if language == "python":
@@ -2361,9 +2362,21 @@ class _TabularExperiment(_PyCaretExperiment):
         Returns:
             None
         """
-        _check_soft_dependencies("fastapi", extra="mlops", severity="error")
-        _check_soft_dependencies("uvicorn", extra="mlops", severity="error")
-        _check_soft_dependencies("pydantic", extra="mlops", severity="error")
+        _check_soft_dependencies(
+            "fastapi",
+            severity="error",
+            msg=_install_pycaret_extra_msg("fastapi", "mlops"),
+        )
+        _check_soft_dependencies(
+            "uvicorn",
+            severity="error",
+            msg=_install_pycaret_extra_msg("uvicorn", "mlops"),
+        )
+        _check_soft_dependencies(
+            "pydantic",
+            severity="error",
+            msg=_install_pycaret_extra_msg("pydantic", "mlops"),
+        )
 
         self.save_model(estimator, model_name=api_name, verbose=False)
         target = "prediction"

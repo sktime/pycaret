@@ -9,6 +9,7 @@ import pycaret.classification
 import pycaret.datasets
 import pycaret.regression
 import pycaret.utils
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.constants import LABEL_COLUMN
 from pycaret.utils.generic import check_metric
 
@@ -173,3 +174,19 @@ def test_utils():
         check_metric(actual, prediction, "INEXISTENTMETRIC")
 
     assert 1 == 1
+
+
+def test_install_pycaret_extra_msg():
+    # Test with extra - scikit-base will append its own installation instruction
+    msg = _install_pycaret_extra_msg("xgboost", "models")
+    expected = (
+        "xgboost is a soft dependency and not included in the pycaret "
+        "installation. Alternatively, you can install xgboost by running "
+        "`pip install pycaret-core[models]` "
+    )
+    assert msg == expected
+
+    # Test without extra - scikit-base will append its own installation instruction
+    msg = _install_pycaret_extra_msg("interpret-community", "")
+    expected = "interpret-community is a soft dependency and not included in the pycaret installation. "
+    assert msg == expected
