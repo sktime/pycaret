@@ -61,6 +61,7 @@ from pycaret.internal.tests.time_series import (
 from pycaret.internal.tunable import TunableMixin
 from pycaret.internal.validation import is_sklearn_cv_generator
 from pycaret.loggers.base_logger import BaseLogger
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 from pycaret.utils.datetime import coerce_datetime_to_period_index
 from pycaret.utils.generic import MLUsecase, _resolve_dict_keys, highlight_setup
 from pycaret.utils.time_series import (
@@ -3687,8 +3688,16 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
             st = importlib.import_module("streamlit")
 
-        _check_soft_dependencies("matplotlib", extra="plots", severity="error")
-        _check_soft_dependencies("plotly", extra="plots", severity="error")
+        _check_soft_dependencies(
+            "matplotlib",
+            severity="error",
+            msg=_install_pycaret_extra_msg("matplotlib", "plots"),
+        )
+        _check_soft_dependencies(
+            "plotly",
+            severity="error",
+            msg=_install_pycaret_extra_msg("plotly", "plots"),
+        )
         from pycaret.internal.plots.time_series import _get_plot
 
         # Add sp value (used in decomp plots)
