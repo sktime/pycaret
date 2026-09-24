@@ -1,3 +1,6 @@
+import uuid
+
+import mlflow
 import numpy as np
 import pytest
 
@@ -28,6 +31,23 @@ def reset_experiments():
     pycaret.anomaly.functional._CURRENT_EXPERIMENT = None
     pycaret.clustering.functional._CURRENT_EXPERIMENT = None
     pycaret.time_series.forecasting.functional._CURRENT_EXPERIMENT = None
+
+
+@pytest.fixture(scope="module")
+def experiment_name(tmp_path_factory):
+    """Name of an mlflow experiment with its own temporary storage.
+
+    Runs and artifacts logged during the tests go there instead of into the
+    repository.
+    """
+    root = tmp_path_factory.mktemp("mlflow")
+    previous = mlflow.get_tracking_uri() if mlflow.is_tracking_uri_set() else None
+    mlflow.set_tracking_uri(f"sqlite:///{root / 'mlflow.db'}")
+
+    name = uuid.uuid4().hex
+    mlflow.create_experiment(name, artifact_location=str(root / "artifacts"))
+    yield name
+    mlflow.set_tracking_uri(previous)
 
 
 @pytest.fixture(scope="session", name="load_pos_data")
