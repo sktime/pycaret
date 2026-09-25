@@ -72,7 +72,7 @@ dependencies = [
   "xxhash",
   # Time-series
   "statsmodels>=0.12.1,<0.15.0",
-  "sktime>=0.31.0,<1.2",
+  "sktime>=0.31.0,<1.3",
   "tbats>=1.1.3",
   "pmdarima>=2.0.4; python_version<'3.13'",
   "pmdarima>=2.1.0; python_version>='3.13'",
