@@ -94,7 +94,9 @@ def _get_all_plots_estimator():
 _ALL_PLOTS = _get_all_plots()
 _ALL_PLOTS_DATA = _get_all_plots_data()
 _ALL_PLOTS_ESTIMATOR = _get_all_plots_estimator()
-_ALL_PLOTS_ESTIMATOR_NOT_DATA = list(set(_ALL_PLOTS_ESTIMATOR) - set(_ALL_PLOTS_DATA))
+_ALL_PLOTS_ESTIMATOR_NOT_DATA = [
+    plot for plot in _ALL_PLOTS_ESTIMATOR if plot not in _ALL_PLOTS_DATA
+]
 
 
 def _return_all_plots_estimator_ts_results():
