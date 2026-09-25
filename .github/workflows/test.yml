@@ -150,6 +150,8 @@ jobs:
   test-remaining:
     name: Full tests (py-${{ matrix.python-version }}, ${{ matrix.os }})
     needs: test-fast
+    environment:
+      name: additional-python-versions
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
     strategy:
