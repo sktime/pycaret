@@ -15,7 +15,6 @@ from functools import partial
 from typing import Any, BinaryIO, Dict, List, Optional, Set, Tuple, Union
 from unittest.mock import patch
 
-import matplotlib.pyplot as plt
 import numpy as np  # type: ignore
 import pandas as pd  # type ignore
 import pandas.io.formats.style
@@ -4269,6 +4268,8 @@ class _SupervisedExperiment(_TabularExperiment):
             except Exception:
                 shap_plot = shap.summary_plot(shap_values, test_X, show=show, **kwargs)
             if save:
+                import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)
@@ -4318,6 +4319,8 @@ class _SupervisedExperiment(_TabularExperiment):
                     dependence, shap_values, test_X, show=show, **kwargs
                 )
             if save:
+                import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)

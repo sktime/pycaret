@@ -3,7 +3,9 @@ This module contains methods that can be used in various plot modules and don't 
 """
 
 import numpy as np
-import scikitplot as skplt
+from skbase.utils.dependencies import _check_soft_dependencies
+
+from pycaret.utils._dependencies import _install_pycaret_extra_msg
 
 
 def leverage_statistic(x: np.ndarray):
@@ -117,6 +119,13 @@ def cooks_distance(
 
 class MatplotlibDefaultDPI(object):
     def __init__(self, base_dpi: float = 100, scale_to_set: float = 1):
+        _check_soft_dependencies(
+            "mljar-scikit-plot",
+            severity="error",
+            msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
+        )
+        import scikitplot as skplt
+
         try:
             self.default_skplt_dpit = skplt.metrics.plt.rcParams["figure.dpi"]
             skplt.metrics.plt.rcParams["figure.dpi"] = base_dpi * scale_to_set
@@ -127,6 +136,13 @@ class MatplotlibDefaultDPI(object):
         return None
 
     def __exit__(self, type, value, traceback):
+        _check_soft_dependencies(
+            "mljar-scikit-plot",
+            severity="error",
+            msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
+        )
+        import scikitplot as skplt
+
         try:
             skplt.metrics.plt.rcParams["figure.dpi"] = self.default_skplt_dpit
         except Exception:
