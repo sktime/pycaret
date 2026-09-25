@@ -220,6 +220,7 @@ docs = [
 test = [
   "anywidget>=0.9.13",
   "pytest>=8.0.0",
+  "pytest-xdist>=3.0.0",
   "moto>=4.0.0",
   "fugue[dask]",
   "dash[testing]",
