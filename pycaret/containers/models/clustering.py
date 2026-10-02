@@ -10,14 +10,13 @@
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from skbase.utils.dependencies import _check_soft_dependencies
 
 import pycaret.containers.base_container
 import pycaret.internal.cuml_wrappers
 from pycaret.containers.models.base_model import ModelContainer
 from pycaret.internal.cuml_wrappers import get_dbscan, get_kmeans
 from pycaret.internal.distributions import Distribution
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import get_logger, param_grid_to_lists
 
 _DEFAULT_N_CLUSTERS = 4
@@ -191,7 +190,9 @@ class KMeansClusterContainer(ClusterContainer):
         if self.engine == "sklearn":
             from sklearn.cluster import KMeans
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
+            if _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="warning"
+            ):
                 from sklearnex.cluster import KMeans
             else:
                 from sklearn.cluster import KMeans
@@ -340,7 +341,9 @@ class DBSCANClusterContainer(ClusterContainer):
         if self.engine == "sklearn":
             from sklearn.cluster import DBSCAN
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
+            if _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="warning"
+            ):
                 from sklearnex.cluster import DBSCAN
             else:
                 from sklearn.cluster import DBSCAN
@@ -428,11 +431,7 @@ class KModesClusterContainer(ClusterContainer):
         get_logger()
         np.random.seed(experiment.seed)
 
-        if not _check_soft_dependencies(
-            "kmodes",
-            severity="warning",
-            msg=_install_pycaret_extra_msg("kmodes", "models"),
-        ):
+        if not _check_soft_dependencies("kmodes", extra="models", severity="warning"):
             self.active = False
             return
 

@@ -11,7 +11,6 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from skbase.utils.dependencies import _check_soft_dependencies
 
 import pycaret.containers.base_container
 import pycaret.internal.cuml_wrappers
@@ -25,7 +24,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import (
     get_class_name,
     get_logger,
@@ -262,7 +261,9 @@ class LogisticRegressionClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LogisticRegression
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
+            if _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="warning"
+            ):
                 from sklearnex.linear_model import LogisticRegression
             else:
                 from sklearn.linear_model import LogisticRegression
@@ -323,7 +324,9 @@ class KNeighborsClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsClassifier
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
+            if _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="warning"
+            ):
                 from sklearnex.neighbors import KNeighborsClassifier
             else:
                 from sklearn.neighbors import KNeighborsClassifier
@@ -579,7 +582,9 @@ class SVCClassifierContainer(ClassifierContainer):
         if self.engine == "sklearn":
             from sklearn.svm import SVC
         elif self.engine == "sklearnex":
-            if _check_soft_dependencies("scikit-learn-intelex", severity="warning"):
+            if _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="warning"
+            ):
                 from sklearnex.svm import SVC
             else:
                 from sklearn.svm import SVC
@@ -1126,11 +1131,7 @@ class XGBClassifierContainer(ClassifierContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies(
-            "xgboost",
-            severity="warning",
-            msg=_install_pycaret_extra_msg("xgboost", "models"),
-        ):
+        if _check_soft_dependencies("xgboost", extra="models", severity="warning"):
             import xgboost
         else:
             self.active = False
@@ -1415,11 +1416,7 @@ class CatBoostClassifierContainer(ClassifierContainer):
     def __init__(self, experiment):
         logger = get_logger()
         np.random.seed(experiment.seed)
-        if _check_soft_dependencies(
-            "catboost",
-            severity="warning",
-            msg=_install_pycaret_extra_msg("catboost", "models"),
-        ):
+        if _check_soft_dependencies("catboost", extra="models", severity="warning"):
             import catboost
         else:
             self.active = False

@@ -11,7 +11,6 @@ import numpy as np  # type: ignore
 import pandas as pd
 from joblib.memory import Memory
 from pandas.io.formats.style import Styler
-from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.model_selection import BaseCrossValidator  # type: ignore
 from sklearn.pipeline import Pipeline
 
@@ -31,7 +30,7 @@ from pycaret.loggers.comet_logger import CometLogger
 from pycaret.loggers.dagshub_logger import DagshubLogger
 from pycaret.loggers.mlflow_logger import MlflowLogger
 from pycaret.loggers.wandb_logger import WandbLogger
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import (
     MLUsecase,
     get_allowed_engines,
@@ -607,8 +606,8 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "plotly",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("plotly", "plots"),
             )
             import plotly.express as px
 
@@ -708,16 +707,16 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "plotly",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("plotly", "plots"),
             )
             import plotly.express as px
 
             # umap-learn uses 'umap' as the import name
             _check_soft_dependencies(
                 "umap-learn",
+                extra="analysis",
                 severity="error",
-                msg=_install_pycaret_extra_msg("umap-learn", "analysis"),
             )
             import umap
 
@@ -795,8 +794,8 @@ class _TabularExperiment(_PyCaretExperiment):
 
             _check_soft_dependencies(
                 "plotly",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("plotly", "plots"),
             )
             import plotly.express as px
 
@@ -883,8 +882,8 @@ class _TabularExperiment(_PyCaretExperiment):
 
             _check_soft_dependencies(
                 "plotly",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("plotly", "plots"),
             )
             import plotly.express as px
 
@@ -988,8 +987,8 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "plotly",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("plotly", "plots"),
             )
             import plotly.express as px
 
@@ -1274,8 +1273,8 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "mljar-scikit-plot",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
             )
             import scikitplot as skplt
 
@@ -1307,8 +1306,8 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "mljar-scikit-plot",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
             )
             import scikitplot as skplt
 
@@ -1784,8 +1783,8 @@ class _TabularExperiment(_PyCaretExperiment):
             # Import required libraries ----
             _check_soft_dependencies(
                 "mljar-scikit-plot",
+                extra="plots",
                 severity="error",
-                msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
             )
             import scikitplot as skplt
 
@@ -2393,8 +2392,8 @@ class _TabularExperiment(_PyCaretExperiment):
 
         _check_soft_dependencies(
             "m2cgen",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("m2cgen", "mlops"),
         )
         import m2cgen as m2c
 
@@ -2471,18 +2470,18 @@ class _TabularExperiment(_PyCaretExperiment):
         """
         _check_soft_dependencies(
             "fastapi",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("fastapi", "mlops"),
         )
         _check_soft_dependencies(
             "uvicorn",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("uvicorn", "mlops"),
         )
         _check_soft_dependencies(
             "pydantic",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("pydantic", "mlops"),
         )
 
         self.save_model(estimator, model_name=api_name, verbose=False)

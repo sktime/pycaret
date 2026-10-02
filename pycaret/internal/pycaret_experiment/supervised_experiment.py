@@ -18,7 +18,6 @@ from unittest.mock import patch
 import numpy as np  # type: ignore
 import pandas as pd  # type ignore
 import pandas.io.formats.style
-from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.base import clone  # type: ignore
 from sklearn.pipeline import Pipeline as skPipeline
 from sklearn.utils.validation import check_is_fitted as check_fitted
@@ -61,7 +60,7 @@ from pycaret.internal.pipeline import (
 from pycaret.internal.pycaret_experiment.tabular_experiment import _TabularExperiment
 from pycaret.internal.tunable import TunableMixin
 from pycaret.internal.validation import is_fitted, is_sklearn_cv_generator
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.constants import DATAFRAME_LIKE, LABEL_COLUMN, SCORE_COLUMN
 from pycaret.utils.generic import (
     MLUsecase,
@@ -2082,8 +2081,8 @@ class _SupervisedExperiment(_TabularExperiment):
         if search_library == "scikit-optimize":
             _check_soft_dependencies(
                 "scikit-optimize",
+                extra="tuners",
                 severity="error",
-                msg=_install_pycaret_extra_msg("scikit-optimize", "tuners"),
             )
             import skopt
 
@@ -2099,8 +2098,8 @@ class _SupervisedExperiment(_TabularExperiment):
         elif search_library == "tune-sklearn":
             _check_soft_dependencies(
                 "tune-sklearn",
+                extra="tuners",
                 severity="error",
-                msg=_install_pycaret_extra_msg("tune-sklearn", "tuners"),
             )
 
             if not search_algorithm:
@@ -2124,43 +2123,43 @@ class _SupervisedExperiment(_TabularExperiment):
                 _check_soft_dependencies("hpbandster", severity="error")
                 _check_soft_dependencies(
                     "ray[tune]",
+                    extra="tuners",
                     severity="error",
-                    msg=_install_pycaret_extra_msg("ray[tune]", "tuners"),
                 )
 
             elif search_algorithm == "hyperopt":
                 _check_soft_dependencies(
                     "hyperopt",
+                    extra="tuners",
                     severity="error",
-                    msg=_install_pycaret_extra_msg("hyperopt", "tuners"),
                 )
                 _check_soft_dependencies(
                     "ray[tune]",
+                    extra="tuners",
                     severity="error",
-                    msg=_install_pycaret_extra_msg("ray[tune]", "tuners"),
                 )
 
             elif search_algorithm == "bayesian":
                 _check_soft_dependencies(
                     "scikit-optimize",
+                    extra="tuners",
                     severity="error",
-                    msg=_install_pycaret_extra_msg("scikit-optimize", "tuners"),
                 )
                 import skopt
 
             elif search_algorithm == "optuna":
                 _check_soft_dependencies(
                     "optuna",
+                    extra="tuners",
                     severity="error",
-                    msg=_install_pycaret_extra_msg("optuna", "tuners"),
                 )
                 import optuna
 
         elif search_library == "optuna":
             _check_soft_dependencies(
                 "optuna",
+                extra="tuners",
                 severity="error",
-                msg=_install_pycaret_extra_msg("optuna", "tuners"),
             )
             import optuna
 
@@ -4098,8 +4097,8 @@ class _SupervisedExperiment(_TabularExperiment):
         if plot in ["summary", "correlation", "reason"]:
             _check_soft_dependencies(
                 "shap",
+                extra="analysis",
                 severity="error",
-                msg=_install_pycaret_extra_msg("shap", "analysis"),
             )
             import shap
 
@@ -4107,24 +4106,24 @@ class _SupervisedExperiment(_TabularExperiment):
         if plot == "pdp":
             _check_soft_dependencies(
                 "interpret",
+                extra="analysis",
                 severity="error",
-                msg=_install_pycaret_extra_msg("interpret", "analysis"),
             )
 
         # checking interpret is available
         if plot == "msa":
             _check_soft_dependencies(
                 "interpret",
+                extra="analysis",
                 severity="error",
-                msg=_install_pycaret_extra_msg("interpret", "analysis"),
             )
 
         # checking interpret-community is available
         if plot == "pfi":
             _check_soft_dependencies(
                 "interpret-community",
+                extra=None,
                 severity="error",
-                msg=_install_pycaret_extra_msg("interpret-community", ""),
             )
 
         # get estimator from meta estimator
@@ -5384,8 +5383,8 @@ class _SupervisedExperiment(_TabularExperiment):
 
         _check_soft_dependencies(
             "fairlearn",
+            extra="analysis",
             severity="error",
-            msg=_install_pycaret_extra_msg("fairlearn", "analysis"),
         )
         from fairlearn.metrics import MetricFrame, count, selection_rate
 
@@ -5612,8 +5611,8 @@ class _SupervisedExperiment(_TabularExperiment):
 
         _check_soft_dependencies(
             "gradio",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("gradio", "mlops"),
         )
         import gradio as gr
 
@@ -5701,8 +5700,8 @@ class _SupervisedExperiment(_TabularExperiment):
 
         _check_soft_dependencies(
             "explainerdashboard",
+            extra="analysis",
             severity="error",
-            msg=_install_pycaret_extra_msg("explainerdashboard", "analysis"),
         )
 
     def check_drift(
@@ -5771,8 +5770,8 @@ class _SupervisedExperiment(_TabularExperiment):
         """
         _check_soft_dependencies(
             "evidently",
+            extra="mlops",
             severity="error",
-            msg=_install_pycaret_extra_msg("evidently", "mlops"),
         )
 
         if self._setup_ran:
