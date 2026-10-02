@@ -3,9 +3,8 @@
 from typing import Optional
 
 import requests
-from skbase.utils.dependencies import _check_soft_dependencies
 
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 
 
 def get_data(
@@ -150,8 +149,8 @@ def get_data(
         if profile:
             _check_soft_dependencies(
                 "fg-data-profiling",
+                extra="analysis",
                 severity="error",
-                msg=_install_pycaret_extra_msg("fg-data-profiling", "analysis"),
             )
             from data_profiling import ProfileReport
 

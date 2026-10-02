@@ -3,9 +3,8 @@ This module contains methods that can be used in various plot modules and don't 
 """
 
 import numpy as np
-from skbase.utils.dependencies import _check_soft_dependencies
 
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 
 
 def leverage_statistic(x: np.ndarray):
@@ -121,8 +120,8 @@ class MatplotlibDefaultDPI(object):
     def __init__(self, base_dpi: float = 100, scale_to_set: float = 1):
         _check_soft_dependencies(
             "mljar-scikit-plot",
+            extra="plots",
             severity="error",
-            msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
         )
         import scikitplot as skplt
 
@@ -138,8 +137,8 @@ class MatplotlibDefaultDPI(object):
     def __exit__(self, type, value, traceback):
         _check_soft_dependencies(
             "mljar-scikit-plot",
+            extra="plots",
             severity="error",
-            msg=_install_pycaret_extra_msg("mljar-scikit-plot", "plots"),
         )
         import scikitplot as skplt
 

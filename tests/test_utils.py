@@ -9,7 +9,10 @@ import pycaret.classification
 import pycaret.datasets
 import pycaret.regression
 import pycaret.utils
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import (
+    _check_soft_dependencies,
+    _install_pycaret_extra_msg,
+)
 from pycaret.utils.constants import LABEL_COLUMN
 from pycaret.utils.generic import check_metric
 
@@ -190,3 +193,33 @@ def test_install_pycaret_extra_msg():
     msg = _install_pycaret_extra_msg("interpret-community", "")
     expected = "interpret-community is a soft dependency and not included in the pycaret installation. "
     assert msg == expected
+
+
+def test_check_soft_dependencies(monkeypatch):
+    delegated_result = True
+    delegated_call = {}
+
+    def check_soft_dependencies(package, severity, msg):
+        delegated_call.update(
+            package=package,
+            severity=severity,
+            msg=msg,
+        )
+        return delegated_result
+
+    monkeypatch.setattr(
+        "pycaret.utils._dependencies._skbase_csd", check_soft_dependencies
+    )
+
+    result = _check_soft_dependencies(
+        "xgboost",
+        severity="warning",
+        extra="models",
+    )
+
+    assert result is delegated_result
+    assert delegated_call == {
+        "package": "xgboost",
+        "severity": "warning",
+        "msg": _install_pycaret_extra_msg("xgboost", "models"),
+    }
