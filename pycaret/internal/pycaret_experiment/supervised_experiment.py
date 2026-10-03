@@ -5401,7 +5401,9 @@ class _SupervisedExperiment(_TabularExperiment):
         metric_dict = {}
         metric_dict["Samples"] = count
         for i in all_metrics.index:
-            metric_dict[i] = partial(all_metrics.loc[i][0], **all_metrics.loc[i][1])
+            metric_dict[i] = partial(
+                all_metrics.loc[i, "Score Function"], **all_metrics.loc[i, "Args"]
+            )
 
         if self._ml_usecase == MLUsecase.CLASSIFICATION:
             metric_dict["Selection Rate"] = selection_rate
@@ -5536,7 +5538,7 @@ class _SupervisedExperiment(_TabularExperiment):
                     self.predict_model(model, verbose=False)  # type: ignore
 
                 p = self.pull(pop=True)
-                p = p[compare_dimension][0]
+                p = p[compare_dimension].iloc[0]
                 if compare_score(p, best_score):
                     best_model = model
                     best_score = p
@@ -5563,7 +5565,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 self.logger.info(f"Checking model {i}")
                 if scores is None:
                     scores = model["scores"]
-                r = scores[compare_dimension][-2:][0]
+                r = scores[compare_dimension].iloc[-2]
                 if compare_score(r, best_score):
                     best_model = model["model"]
                     best_score = r

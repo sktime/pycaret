@@ -877,7 +877,9 @@ class QuadraticDiscriminantAnalysisContainer(ClassifierContainer):
         np.random.seed(experiment.seed)
         from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
-        args = {}
+        # Regularize collinear features (for example, one-hot encoded columns).
+        # Recent sklearn releases reject singular covariance matrices.
+        args = {"reg_param": 0.1}
         tune_args = {}
         tune_grid = {"reg_param": np_list_arange(0, 1, 0.01, inclusive=True)}
         tune_distributions = {"reg_param": UniformDistribution(0, 1)}
@@ -922,8 +924,9 @@ class AdaBoostClassifierContainer(ClassifierContainer):
                 0.4,
                 0.5,
             ],
-            "algorithm": ["SAMME"],
         }
+        if "algorithm" in AdaBoostClassifier().get_params():
+            tune_grid["algorithm"] = ["SAMME"]
         tune_distributions = {
             "n_estimators": IntUniformDistribution(10, 300),
             "learning_rate": UniformDistribution(0.000001, 0.5, log=True),
