@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
+import pytest
 from fugue import transform
 from scipy.sparse import csr_matrix
 from sklearn.datasets import make_classification
@@ -13,6 +14,27 @@ from pycaret.containers.models.classification import AdaBoostClassifierContainer
 from pycaret.parallel import FugueBackend
 from pycaret.parallel.fugue_backend import _DisplayUtil
 from pycaret.utils.generic import to_df
+from pycaret.utils.time_series import clean_time_index
+
+
+@pytest.mark.parametrize(
+    "freq, offset",
+    [("2H", pd.offsets.Hour(2)), ("A-JUN", pd.offsets.YearEnd(month=6))],
+)
+def test_clean_time_index_legacy_alias_with_missing_period(freq, offset):
+    dates = pd.date_range("2019-01-01", periods=4, freq=offset)
+    data = pd.DataFrame({"date": dates.astype(str), "value": [1.0, 2.0, 3.0, 4.0]})
+    # A string index column with row labels that do not include zero.
+    data.index = [10, 20, 30, 40]
+    data = data.drop(index=20)
+
+    result = clean_time_index(data, freq=freq, index_col="date")
+
+    assert isinstance(result.index, pd.PeriodIndex)
+    assert result.index.freq == offset
+    assert len(result) == 4
+    assert pd.isna(result.iloc[1]["value"])
+    assert result.iloc[[0, 2, 3]]["value"].tolist() == [1.0, 3.0, 4.0]
 
 
 def test_scipy_sparse_input_preserves_zeros_and_missing_values():

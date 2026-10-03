@@ -93,11 +93,25 @@ def _get_seasonal_keys():
     return [freq for freq, _ in SeasonalPeriod.__members__.items()]
 
 
+def _get_pandas_offset(freq):
+    # Offset objects work with both old and new pandas frequency aliases.
+    return {
+        "M": pd.offsets.MonthEnd(),
+        "Q": pd.offsets.QuarterEnd(startingMonth=12),
+        "A": pd.offsets.YearEnd(),
+        "Y": pd.offsets.YearEnd(),
+        "H": pd.offsets.Hour(),
+        "T": pd.offsets.Minute(),
+        "S": pd.offsets.Second(),
+    }.get(freq, freq)
+
+
 @pytest.mark.parametrize("freq", _get_seasonal_keys())
 @pytest.mark.parametrize("index", [True, False])
 def test_clean_time_index_datetime(freq, index):
     """Test clean_time_index utility when index/column is of type DateTime"""
-    dates = pd.date_range("2019-01-01", "2022-01-30", freq=freq)
+    # Generate the bounded sample directly, including for second frequencies.
+    dates = pd.date_range("2019-01-01", periods=100, freq=_get_pandas_offset(freq))
 
     # At least 3 data points to allow test to insert a missing index in the middle
     # but not so many data points that the code slows down too much.
@@ -147,7 +161,9 @@ def test_clean_time_index_str_datetime(freq, index):
     NOTE: Index can not be string (only column). Code unchanges, just parameter
     restricted to False
     """
-    dates = pd.date_range("2019-01-01 00:00:00", "2022-01-30 00:00:00", freq=freq)
+    dates = pd.date_range(
+        "2019-01-01 00:00:00", periods=100, freq=_get_pandas_offset(freq)
+    )
 
     # At least 3 data points to allow test to insert a missing index in the middle
     # but not so many data points that the code slows down too much.
@@ -194,7 +210,9 @@ def test_clean_time_index_str_datetime(freq, index):
 def test_clean_time_index_period(freq, index):
     """Test clean_time_index utility when index/column is of type Period"""
     try:
-        dates = pd.period_range("2019-01-01", "2022-01-30", freq=freq)
+        dates = pd.period_range(
+            "2019-01-01", periods=100, freq=_get_pandas_offset(freq)
+        )
     except ValueError:
         # Unsupported freq for PeriodIndex
         return
@@ -244,7 +262,9 @@ def test_clean_time_index_str_period(freq, index):
     restricted to False
     """
     try:
-        dates = pd.period_range("2019-01-01", "2022-01-30", freq=freq)
+        dates = pd.period_range(
+            "2019-01-01", periods=100, freq=_get_pandas_offset(freq)
+        )
     except ValueError:
         # Unsupported freq for PeriodIndex
         return
