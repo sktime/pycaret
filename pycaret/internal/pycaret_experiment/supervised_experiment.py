@@ -1497,6 +1497,13 @@ class _SupervisedExperiment(_TabularExperiment):
             model = clone(estimator)
             model.set_params(**kwargs)
 
+            if self._ml_usecase == MLUsecase.TIME_SERIES:
+                from pycaret.internal.patches.sktime import (
+                    warn_if_native_autoets_is_affected,
+                )
+
+                warn_if_native_autoets_is_affected(model)
+
             full_name = self._get_model_name(model)
 
         # workaround for an issue with set_params in cuML

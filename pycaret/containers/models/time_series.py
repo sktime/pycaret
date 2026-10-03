@@ -12,7 +12,6 @@ import logging
 import random
 import warnings
 from abc import abstractmethod
-from importlib.metadata import version
 from inspect import getfullargspec
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -42,6 +41,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
+from pycaret.internal.patches.sktime import PyCaretAutoETS
 from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.datetime import (
     coerce_datetime_to_period_index,
@@ -50,6 +50,8 @@ from pycaret.utils.datetime import (
 from pycaret.utils.generic import get_logger, np_list_arange, param_grid_to_lists
 from pycaret.utils.time_series import TSModelTypes
 from pycaret.utils.time_series.forecasting.models import _check_enforcements
+
+# PyCaretAutoETS remains importable here for previously serialized models.
 
 # First one in the list is the default ----
 ALL_ALLOWED_ENGINES: Dict[str, List[str]] = {
@@ -871,43 +873,6 @@ class ExponentialSmoothingContainer(TimeSeriesContainer):
                 "sp": CategoricalDistribution(values=[None]),
             }
         return tune_distributions
-
-
-class PyCaretAutoETS(AutoETS):
-    """Work around sktime 1.2 passing nested simulation arguments to statsmodels."""
-
-    def _predict_interval(self, fh, X, coverage):
-        if tuple(map(int, version("sktime").split(".")[:2])) != (1, 2):
-            return super()._predict_interval(fh=fh, X=X, coverage=coverage)
-
-        # sktime 1.2 passes simulate_kwargs={...} to ETSResults.get_prediction.
-        # That method accepts **simulate_kwargs and forwards the nested dict to
-        # ETSResults.simulate, which raises TypeError. Pass the seed directly.
-        absolute_fh = fh.to_absolute_int(self._y_first_index, self.cutoff)
-        start, end = absolute_fh[[0, -1]]
-        fh_int = absolute_fh - self._y_len
-        fh_int = fh_int - fh_int[0]
-
-        prediction_results = self._fitted_forecaster.get_prediction(
-            start=start, end=end, random_state=self.random_state
-        )
-        var_names = self._get_varnames()
-        columns = pd.MultiIndex.from_product([var_names, coverage, ["lower", "upper"]])
-        pred_statsmodels = self._extract_conf_int(prediction_results, 1 - coverage[0])
-        pred_int = pd.DataFrame(
-            index=pred_statsmodels.iloc[fh_int].index, columns=columns
-        )
-
-        for c in coverage:
-            pred_statsmodels = self._extract_conf_int(prediction_results, 1 - c)
-            pred_int[(var_names[0], c, "lower")] = pred_statsmodels.iloc[fh_int][
-                "lower"
-            ]
-            pred_int[(var_names[0], c, "upper")] = pred_statsmodels.iloc[fh_int][
-                "upper"
-            ]
-
-        return pred_int
 
 
 class ETSContainer(TimeSeriesContainer):
