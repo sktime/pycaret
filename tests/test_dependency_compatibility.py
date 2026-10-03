@@ -11,10 +11,66 @@ from sklearn.datasets import make_classification
 
 from pycaret.classification import ClassificationExperiment
 from pycaret.containers.models.classification import AdaBoostClassifierContainer
+from pycaret.containers.models.regression import DecisionTreeRegressorContainer
 from pycaret.parallel import FugueBackend
 from pycaret.parallel.fugue_backend import _DisplayUtil
 from pycaret.utils.generic import to_df
 from pycaret.utils.time_series import clean_time_index
+from pycaret.utils.time_series.forecasting import model_selection
+
+
+def test_decision_tree_tuning_criteria_fit_after_set_params():
+    container = DecisionTreeRegressorContainer(SimpleNamespace(seed=42))
+    X = np.arange(20, dtype=float).reshape(-1, 1)
+    y = np.sin(X[:, 0])
+
+    for criterion in container.tune_grid["criterion"]:
+        model = container.class_def(**container.args)
+        model.set_params(criterion=criterion).fit(X, y)
+        assert np.isfinite(model.predict(X)).all()
+
+
+@pytest.mark.parametrize("error_score", [np.nan, "raise"])
+def test_forecasting_search_failed_fit_preserves_cutoff_and_error(
+    monkeypatch, error_score
+):
+    class FailedPipeline:
+        cutoff = None
+        is_fitted = False
+
+        def fit(self, y, X, **params):
+            raise ValueError("invalid candidate parameter")
+
+    y = pd.Series(
+        [1.0, 2.0, 3.0], index=pd.period_range("2020-01", periods=3, freq="M")
+    )
+    monkeypatch.setattr(
+        model_selection, "_get_imputed_data", lambda **kwargs: (y, None)
+    )
+
+    def evaluate():
+        return model_selection._fit_and_score(
+            pipeline=FailedPipeline(),
+            y=y,
+            X=None,
+            scoring={"mae": "neg_mean_absolute_error"},
+            train=np.array([0, 1]),
+            test=np.array([2]),
+            parameters=None,
+            fit_params={},
+            return_train_score=False,
+            alpha=None,
+            coverage=0.9,
+            error_score=error_score,
+        )
+
+    if error_score == "raise":
+        with pytest.raises(ValueError, match="invalid candidate parameter"):
+            evaluate()
+    else:
+        scores, _, _, cutoff = evaluate()
+        assert np.isnan(scores["mae"])
+        assert cutoff == y.index[1]
 
 
 @pytest.mark.parametrize(

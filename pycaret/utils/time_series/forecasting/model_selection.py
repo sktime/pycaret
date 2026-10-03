@@ -165,8 +165,9 @@ def _fit_and_score(
     fit_time = time.time() - start
 
     # Determine Cutoff ----
-    # NOTE: Cutoff is available irrespective of whether fit passed or failed
-    cutoff = pipeline.cutoff[0]
+    # A failed fit may leave the pipeline cutoff unset. The training split
+    # still defines the cutoff needed to report this candidate's scores.
+    cutoff = pipeline.cutoff[0] if pipeline.cutoff is not None else y_train.index[-1]
 
     # Score the model ----
     lower = pd.Series(dtype="float64")

@@ -2142,7 +2142,7 @@ class DecisionTreeCdsDtContainer(CdsDtContainer):
             "regressor__min_impurity_decrease": [0.1, 0.5],
             "regressor__min_samples_leaf": [2, 6],
             "regressor__min_samples_split": [2, 10],
-            "regressor__criterion": ["squared_error", "absolute_error", "friedman_mse"],
+            "regressor__criterion": ["squared_error", "absolute_error"],
         }
         return tune_grid
 
