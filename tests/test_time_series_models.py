@@ -2,6 +2,7 @@
 
 from types import SimpleNamespace
 
+import numpy as np
 import pandas as pd  # type: ignore
 import pytest
 
@@ -11,6 +12,35 @@ from pycaret.time_series import TSForecastingExperiment
 ##########################
 # Tests Start Here ####
 ##########################
+
+
+def test_ets_prediction_intervals_with_sktime_1_2():
+    """ETS prediction intervals work with the sktime 1.2 adapter."""
+    from importlib.metadata import version
+
+    if tuple(map(int, version("sktime").split(".")[:2])) != (1, 2):
+        pytest.skip("The sktime 1.2 compatibility path is not active")
+
+    y = pd.Series(
+        np.arange(1, 49, dtype=float) + np.sin(np.arange(48)),
+        index=pd.period_range("2020-01", periods=48, freq="M"),
+    )
+    forecaster = time_series.PyCaretAutoETS(
+        error="mul", trend="add", random_state=42
+    ).fit(y)
+    quantiles = forecaster.predict_quantiles(fh=[1, 2], alpha=[0.1, 0.9])
+
+    assert quantiles.shape == (2, 2)
+    assert np.isfinite(quantiles.to_numpy(dtype=float)).all()
+    assert (quantiles.iloc[:, 0] <= quantiles.iloc[:, 1]).all()
+
+    exp = TSForecastingExperiment()
+    exp.setup(data=y, fh=2, fold=2, seasonal_period=1, verbose=False)
+    model = exp.create_model("ets", error="mul", verbose=False)
+    predictions = exp.predict_model(model, verbose=False)
+
+    assert isinstance(model, time_series.PyCaretAutoETS)
+    assert np.isfinite(predictions["y_pred"].to_numpy(dtype=float)).all()
 
 
 def test_naive_models(load_pos_and_neg_data):

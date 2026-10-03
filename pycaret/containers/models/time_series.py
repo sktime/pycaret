@@ -12,6 +12,7 @@ import logging
 import random
 import warnings
 from abc import abstractmethod
+from importlib.metadata import version
 from inspect import getfullargspec
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -22,6 +23,7 @@ from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
     make_reduction,
 )
+from sktime.forecasting.ets import AutoETS  # type: ignore
 from sktime.forecasting.trend import PolynomialTrendForecaster  # type: ignore
 from sktime.transformations.series.detrend import (  # type: ignore
     ConditionalDeseasonalizer,
@@ -871,6 +873,43 @@ class ExponentialSmoothingContainer(TimeSeriesContainer):
         return tune_distributions
 
 
+class PyCaretAutoETS(AutoETS):
+    """Work around sktime 1.2 passing nested simulation arguments to statsmodels."""
+
+    def _predict_interval(self, fh, X, coverage):
+        if tuple(map(int, version("sktime").split(".")[:2])) != (1, 2):
+            return super()._predict_interval(fh=fh, X=X, coverage=coverage)
+
+        # sktime 1.2 passes simulate_kwargs={...} to ETSResults.get_prediction.
+        # That method accepts **simulate_kwargs and forwards the nested dict to
+        # ETSResults.simulate, which raises TypeError. Pass the seed directly.
+        absolute_fh = fh.to_absolute_int(self._y_first_index, self.cutoff)
+        start, end = absolute_fh[[0, -1]]
+        fh_int = absolute_fh - self._y_len
+        fh_int = fh_int - fh_int[0]
+
+        prediction_results = self._fitted_forecaster.get_prediction(
+            start=start, end=end, random_state=self.random_state
+        )
+        var_names = self._get_varnames()
+        columns = pd.MultiIndex.from_product([var_names, coverage, ["lower", "upper"]])
+        pred_statsmodels = self._extract_conf_int(prediction_results, 1 - coverage[0])
+        pred_int = pd.DataFrame(
+            index=pred_statsmodels.iloc[fh_int].index, columns=columns
+        )
+
+        for c in coverage:
+            pred_statsmodels = self._extract_conf_int(prediction_results, 1 - c)
+            pred_int[(var_names[0], c, "lower")] = pred_statsmodels.iloc[fh_int][
+                "lower"
+            ]
+            pred_int[(var_names[0], c, "upper")] = pred_statsmodels.iloc[fh_int][
+                "upper"
+            ]
+
+        return pred_int
+
+
 class ETSContainer(TimeSeriesContainer):
     model_type = TSModelTypes.CLASSICAL
 
@@ -879,10 +918,8 @@ class ETSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        from sktime.forecasting.ets import AutoETS  # type: ignore
-
         # Disable container if certain features are not supported but enforced ----
-        dummy = AutoETS()
+        dummy = PyCaretAutoETS()
         self.active = _check_enforcements(forecaster=dummy, experiment=experiment)
         if not self.active:
             return
@@ -901,7 +938,8 @@ class ETSContainer(TimeSeriesContainer):
         super().__init__(
             id="ets",
             name="ETS",
-            class_def=AutoETS,
+            class_def=PyCaretAutoETS,
+            eq_function=lambda x: isinstance(x, AutoETS),
             args=args,
             tune_grid=tune_grid,
             tune_distribution=tune_distributions,
