@@ -1,6 +1,7 @@
-from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.linear_model._ridge import _RidgeClassifierMixin
 from sklearn.preprocessing import LabelEncoder
+
+from pycaret.utils._dependencies import _check_soft_dependencies
 
 if _check_soft_dependencies("cuml", severity="warning"):
     from cuml.cluster import DBSCAN as cuMLDBSCAN

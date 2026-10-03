@@ -1,6 +1,6 @@
-# This module now only exports compatibility helpers for version checking.
-# The main _check_soft_dependencies has been migrated to use scikit-base directly.
+from typing import Optional
 
+from skbase.utils.dependencies import _check_soft_dependencies as _skbase_csd
 from skbase.utils.dependencies._dependencies import _get_installed_packages
 
 
@@ -21,7 +21,7 @@ def get_module_version_str(modname: str) -> str:
     return versions.get(modname, "Not installed")
 
 
-def _install_pycaret_extra_msg(pkg_name: str, extra: str) -> str:
+def _install_pycaret_extra_msg(pkg_name: str, extra: Optional[str]) -> str:
     """Generate installation message for PyCaret soft dependencies.
 
     This function generates a custom message for scikit-base's _check_soft_dependencies.
@@ -46,5 +46,14 @@ def _install_pycaret_extra_msg(pkg_name: str, extra: str) -> str:
             f"installation. Alternatively, you can install {pkg_name} by running "
             f"`pip install pycaret-core[{extra}]` "
         )
-    else:
-        return f"{pkg_name} is a soft dependency and not included in the pycaret installation. "
+    return f"{pkg_name} is a soft dependency and not included in the pycaret installation. "
+
+
+def _check_soft_dependencies(
+    package: str,
+    severity: str = "error",
+    extra: Optional[str] = None,
+) -> bool:
+    """Check a soft dependency using scikit-base's implementation."""
+    msg = _install_pycaret_extra_msg(package, extra)
+    return _skbase_csd(package, severity=severity, msg=msg)

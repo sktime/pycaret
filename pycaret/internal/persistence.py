@@ -5,10 +5,9 @@ import os
 from typing import Dict, Optional
 
 import joblib
-from skbase.utils.dependencies import _check_soft_dependencies
 from sklearn.pipeline import Pipeline
 
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.generic import MLUsecase, get_logger
 
 
@@ -133,7 +132,7 @@ def deploy_model(
         logger.info("Platform : AWS S3")
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", severity="error")
+        _check_soft_dependencies("boto3", extra="mlops", severity="error")
         import boto3
 
         # initialize s3
@@ -178,8 +177,8 @@ def deploy_model(
 
         _check_soft_dependencies(
             "google-cloud-storage",
+            extra=None,
             severity="error",
-            msg=_install_pycaret_extra_msg("google-cloud-storage", ""),
         )
 
         # initialize deployment
@@ -213,8 +212,8 @@ def deploy_model(
 
         _check_soft_dependencies(
             "azure-storage-blob",
+            extra=None,
             severity="error",
-            msg=_install_pycaret_extra_msg("azure-storage-blob", ""),
         )
 
         # initialize deployment
@@ -403,7 +402,7 @@ def load_model(
         import os
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", severity="error")
+        _check_soft_dependencies("boto3", extra="mlops", severity="error")
         import boto3
 
         bucketname = authentication.get("bucket")

@@ -17,7 +17,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-from skbase.utils.dependencies import _check_soft_dependencies
 from sktime.forecasting.base import BaseForecaster  # type: ignore
 from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
@@ -41,7 +40,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
-from pycaret.utils._dependencies import _install_pycaret_extra_msg
+from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.datetime import (
     coerce_datetime_to_period_index,
     coerce_period_to_datetime_index,
@@ -686,11 +685,7 @@ class AutoArimaContainer(TimeSeriesContainer):
         if self.engine == "pmdarima":
             from sktime.forecasting.arima import AutoARIMA
         elif self.engine == "statsforecast":
-            _check_soft_dependencies(
-                "statsforecast",
-                severity="error",
-                msg=_install_pycaret_extra_msg("statsforecast", "models"),
-            )
+            _check_soft_dependencies("statsforecast", extra="models", severity="error")
             from sktime.forecasting.statsforecast import (
                 StatsForecastAutoARIMA as AutoARIMA,
             )
@@ -1520,7 +1515,9 @@ class LinearCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", severity="error")
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="error"
+            )
             from sklearnex.linear_model import LinearRegression
 
         if self.gpu_param == "force":
@@ -1577,7 +1574,9 @@ class ElasticNetCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", severity="error")
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="error"
+            )
             from sklearnex.linear_model import ElasticNet
 
         if self.gpu_param == "force":
@@ -1638,7 +1637,9 @@ class RidgeCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", severity="error")
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="error"
+            )
             from sklearnex.linear_model import Ridge
 
         if self.gpu_param == "force":
@@ -1698,7 +1699,9 @@ class LassoCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", severity="error")
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="error"
+            )
             from sklearnex.linear_model import Lasso
 
         if self.gpu_param == "force":
@@ -2065,7 +2068,9 @@ class KNeighborsCdsDtContainer(CdsDtContainer):
         if self.engine == "sklearn":
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
-            _check_soft_dependencies("scikit-learn-intelex", severity="error")
+            _check_soft_dependencies(
+                "scikit-learn-intelex", extra="models", severity="error"
+            )
             from sklearnex.neighbors import KNeighborsRegressor
 
         if self.gpu_param == "force":
@@ -2393,11 +2398,7 @@ class XGBCdsDtContainer(CdsDtContainer):
     model_type = TSModelTypes.TREE
 
     def return_regressor_class(self):
-        if _check_soft_dependencies(
-            "xgboost",
-            severity="warning",
-            msg=_install_pycaret_extra_msg("xgboost", "models"),
-        ):
+        if _check_soft_dependencies("xgboost", extra="models", severity="warning"):
             import xgboost
         else:
             self.active = False
@@ -2568,11 +2569,7 @@ class CatBoostCdsDtContainer(CdsDtContainer):
         super().__init__(experiment=experiment)
 
     def return_regressor_class(self):
-        if _check_soft_dependencies(
-            "catboost",
-            severity="warning",
-            msg=_install_pycaret_extra_msg("catboost", "models"),
-        ):
+        if _check_soft_dependencies("catboost", extra="models", severity="warning"):
             import catboost
         else:
             self.active = False
