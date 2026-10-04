@@ -48,7 +48,7 @@ def test_coerce_period_to_datetime_index():
     assert isinstance(new_data.index, original_index_type)
 
     # Corner condition (Q-DEC with only 2 data points)----
-    orig_freq = "Q-DEC"
+    orig_freq = pd.offsets.QuarterEnd(startingMonth=12)
     data = pd.DataFrame(
         [1, 2], index=pd.PeriodIndex(["2018Q2", "2018Q3"], freq=orig_freq)
     )

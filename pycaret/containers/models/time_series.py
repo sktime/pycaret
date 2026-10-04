@@ -22,6 +22,7 @@ from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
     make_reduction,
 )
+from sktime.forecasting.ets import AutoETS  # type: ignore
 from sktime.forecasting.trend import PolynomialTrendForecaster  # type: ignore
 from sktime.transformations.series.detrend import (  # type: ignore
     ConditionalDeseasonalizer,
@@ -40,6 +41,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
+from pycaret.internal.patches.sktime import PyCaretAutoETS
 from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.datetime import (
     coerce_datetime_to_period_index,
@@ -48,6 +50,8 @@ from pycaret.utils.datetime import (
 from pycaret.utils.generic import get_logger, np_list_arange, param_grid_to_lists
 from pycaret.utils.time_series import TSModelTypes
 from pycaret.utils.time_series.forecasting.models import _check_enforcements
+
+# PyCaretAutoETS remains importable here for previously serialized models.
 
 # First one in the list is the default ----
 ALL_ALLOWED_ENGINES: Dict[str, List[str]] = {
@@ -879,10 +883,8 @@ class ETSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        from sktime.forecasting.ets import AutoETS  # type: ignore
-
         # Disable container if certain features are not supported but enforced ----
-        dummy = AutoETS()
+        dummy = PyCaretAutoETS()
         self.active = _check_enforcements(forecaster=dummy, experiment=experiment)
         if not self.active:
             return
@@ -901,7 +903,8 @@ class ETSContainer(TimeSeriesContainer):
         super().__init__(
             id="ets",
             name="ETS",
-            class_def=AutoETS,
+            class_def=PyCaretAutoETS,
+            eq_function=lambda x: isinstance(x, AutoETS),
             args=args,
             tune_grid=tune_grid,
             tune_distribution=tune_distributions,
@@ -2139,7 +2142,7 @@ class DecisionTreeCdsDtContainer(CdsDtContainer):
             "regressor__min_impurity_decrease": [0.1, 0.5],
             "regressor__min_samples_leaf": [2, 6],
             "regressor__min_samples_split": [2, 10],
-            "regressor__criterion": ["squared_error", "absolute_error", "friedman_mse"],
+            "regressor__criterion": ["squared_error", "absolute_error"],
         }
         return tune_grid
 

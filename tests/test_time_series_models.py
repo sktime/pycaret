@@ -2,15 +2,74 @@
 
 from types import SimpleNamespace
 
+import numpy as np
 import pandas as pd  # type: ignore
 import pytest
+from sktime.forecasting.ets import AutoETS
 
 from pycaret.containers.models import time_series
+from pycaret.internal.patches import sktime as sktime_patches
 from pycaret.time_series import TSForecastingExperiment
 
 ##########################
 # Tests Start Here ####
 ##########################
+
+
+def test_ets_simulated_prediction_intervals():
+    """The public ETS API supports simulated intervals on supported sktime."""
+    y = pd.Series(
+        np.arange(1, 49, dtype=float) + np.sin(np.arange(48)),
+        index=pd.period_range("2020-01", periods=48, freq="M"),
+    )
+    exp = TSForecastingExperiment()
+    exp.setup(data=y, fh=2, fold=2, seasonal_period=1, verbose=False)
+    model = exp.create_model("ets", error="mul", random_state=42, verbose=False)
+    predictions = exp.predict_model(model, return_pred_int=True, verbose=False)
+    quantiles = model.predict_quantiles(fh=[1, 2], alpha=[0.1, 0.9])
+
+    assert quantiles.shape == (2, 2)
+    assert np.isfinite(quantiles.to_numpy(dtype=float)).all()
+    assert (quantiles.iloc[:, 0] <= quantiles.iloc[:, 1]).all()
+    assert isinstance(model, AutoETS)
+    assert np.isfinite(
+        predictions[["y_pred", "lower", "upper"]].to_numpy(dtype=float)
+    ).all()
+
+
+@pytest.mark.parametrize("sktime_version", ["0.31.0", "1.1.0", "1.3.0"])
+def test_ets_workaround_delegates_other_versions(monkeypatch, sktime_version):
+    """Releases outside the targeted series retain sktime's implementation."""
+    monkeypatch.setattr(sktime_patches, "version", lambda package: sktime_version)
+    expected = object()
+    monkeypatch.setattr(AutoETS, "_predict_interval", lambda *args, **kwargs: expected)
+
+    result = sktime_patches.PyCaretAutoETS()._predict_interval(
+        fh=None, X=None, coverage=[0.9]
+    )
+
+    assert result is expected
+
+
+def test_native_autoets_custom_model_warns():
+    """Custom native ETS users receive guidance when bypassing the workaround."""
+    if not sktime_patches._needs_ets_prediction_interval_workaround():
+        pytest.skip("The native AutoETS bug only affects the patched versions")
+
+    y = pd.Series(
+        np.arange(1, 49, dtype=float) + np.sin(np.arange(48)),
+        index=pd.period_range("2020-01", periods=48, freq="M"),
+    )
+    exp = TSForecastingExperiment()
+    exp.setup(data=y, fh=2, fold=2, seasonal_period=1, verbose=False)
+
+    with pytest.warns(UserWarning, match="Use create_model\\('ets'"):
+        with pytest.raises(TypeError, match="simulate_kwargs"):
+            exp.create_model(
+                AutoETS(error="mul", trend="add", random_state=42),
+                cross_validation=False,
+                verbose=False,
+            )
 
 
 def test_naive_models(load_pos_and_neg_data):

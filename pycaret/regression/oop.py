@@ -874,7 +874,7 @@ class RegressionExperiment(_NonTSSupervisedExperiment, Preprocessor):
         for fx, cols in self._fxs.items():
             if len(cols) > 0:
                 container.append([f"{fx} features", len(cols)])
-        if self.data.isna().sum().sum():
+        if self.data.isna().any().any():
             n_nans = 100 * self.data.isna().any(axis=1).sum() / len(self.data)
             container.append(["Rows with missing values", f"{round(n_nans, 1)}%"])
         if preprocess:
