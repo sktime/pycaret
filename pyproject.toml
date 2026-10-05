@@ -193,7 +193,7 @@ prophet = [
 # dev - the developer dependency set, for contributors
 dev = [
   "ruff<0.17",
-  "mypy>=1,<2.4",
+  "mypy>=1,<2.5",
 ]
 
 # docs - the dependency set used for doc build
