@@ -103,6 +103,10 @@ def to_df(data, index=None, columns=None, dtypes=None):
             # Create dataframe from sparse matrix or directly from data
             if sparse.issparse(data):
                 data = pd.DataFrame.sparse.from_spmatrix(data, index, columns)
+                # SciPy's unstored entries are zeros. Some pandas releases
+                # default floating sparse columns to a NaN fill value.
+                for _, column in data.items():
+                    column.array.fill_value = 0
             else:
                 data = pd.DataFrame(data, index, columns)
 

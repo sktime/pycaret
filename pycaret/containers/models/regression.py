@@ -1154,7 +1154,7 @@ class DecisionTreeRegressorContainer(RegressorContainer):
                 0.4,
                 0.5,
             ],
-            "criterion": ["squared_error", "absolute_error", "friedman_mse"],
+            "criterion": ["squared_error", "absolute_error"],
         }
         tune_distributions = {
             "max_depth": IntUniformDistribution(1, 16),
