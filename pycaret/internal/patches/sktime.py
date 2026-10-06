@@ -14,8 +14,8 @@ import warnings
 from importlib.metadata import version
 
 import pandas as pd
-from packaging.version import Version
 from sktime.forecasting.ets import AutoETS
+from verlib2 import Version
 
 
 def _needs_ets_prediction_interval_workaround():

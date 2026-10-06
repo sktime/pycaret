@@ -65,6 +65,7 @@ dependencies = [
   "cloudpickle",
   "xxhash",
   "sktime>=0.31.0",
+  "verlib2",
 ]
 
 [project.optional-dependencies]
