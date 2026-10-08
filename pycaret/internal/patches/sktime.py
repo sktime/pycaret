@@ -12,6 +12,7 @@ Keep the public API regression test when removing the workaround.
 
 import warnings
 from importlib.metadata import version
+from inspect import signature
 
 import pandas as pd
 from sktime.forecasting.ets import AutoETS
@@ -44,13 +45,19 @@ class PyCaretAutoETS(AutoETS):
 
         # ETSResults.get_prediction accepts **simulate_kwargs, so the seed must
         # be a direct keyword argument rather than a nested simulate_kwargs dict.
+        # statsmodels 0.15 changed the randomness argument from random_state to rng.
         absolute_fh = fh.to_absolute_int(self._y_first_index, self.cutoff)
         start, end = absolute_fh[[0, -1]]
         fh_int = absolute_fh - self._y_len
         fh_int = fh_int - fh_int[0]
 
+        simulate_parameters = signature(self._fitted_forecaster.simulate).parameters
+        simulate_keyword = "rng" if "rng" in simulate_parameters else "random_state"
+
         prediction_results = self._fitted_forecaster.get_prediction(
-            start=start, end=end, random_state=self.random_state
+            start=start,
+            end=end,
+            **{simulate_keyword: self.random_state},
         )
         var_names = self._get_varnames()
         columns = pd.MultiIndex.from_product([var_names, coverage, ["lower", "upper"]])
