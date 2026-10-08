@@ -119,7 +119,7 @@ models = [
   "statsforecast>=1.6.0,<=2.1.1",
   "scikit-learn-intelex==2024.2.0; (python_version < '3.13' and platform_system == 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
   "scikit-learn-intelex>=2024.0.0; (python_version >= '3.13' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
-  "statsmodels>=0.12.1,<0.15.0",
+  "statsmodels>=0.12.1,<0.16.0",
   "tbats>=1.1.3",
   "pmdarima>=2.0.4; python_version<'3.13'",
   "pmdarima>=2.1.0; python_version>='3.13'",
