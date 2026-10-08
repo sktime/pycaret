@@ -1,13 +1,19 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>61",
+]
+
 [project]
 name = "pycaret-core"
 version = "3.5.0"
 description = "PyCaret - An open source, low-code machine learning library in Python."
 readme = "README.md"
 keywords = [
-  "data-mining",
-  "data-science",
   "classification",
   "clustering",
+  "data-mining",
+  "data-science",
   "detection",
   "forecasting",
   "machine-learning",
@@ -16,11 +22,11 @@ keywords = [
 ]
 license = { file = "LICENSE" }
 maintainers = [
-  { name = "pycaret developers" },
+  { name = "PyCaret developers" },
 ]
 # for full credits see contributors.md
 authors = [
-    { name = "pycaret developers" },
+  { name = "PyCaret developers" },
 ]
 requires-python = ">=3.10,<3.15"
 classifiers = [
@@ -45,30 +51,58 @@ classifiers = [
 # core dependencies of pycaret
 # this set should be kept minimal!
 dependencies = [
-  "scikit-base>=0.6.1",
+  "category-encoders>=2.4.0",
+  "cloudpickle",
+  "imbalanced-learn>=0.12.0",
   "ipython>=5.5.0",
-  "tqdm>=4.62.0",
+  "jinja2>=3",
+  "joblib>=1.4.2",
   "numpy>=1.21,<2.0; python_version<'3.13'",
   "numpy>=2.0,<3; python_version>='3.13'",
   "pandas>=1.5.0,<2.2; python_version<'3.13'",
   "pandas>=2.2.0; python_version>='3.13'",
-  "jinja2>=3",
-  "scipy>=1.6.1,<=1.11.4; python_version<'3.13'",
-  "scipy>=1.14.0,<2; python_version>='3.13'",
-  "joblib>=1.4.2",
+  "psutil>=5.9.0",
+  "requests>=2.27.1",
+  "scikit-base>=0.6.1",
   "scikit-learn>=1.4,<1.5; python_version<'3.13'",
   "scikit-learn>=1.5; python_version>='3.13'",
-  "imbalanced-learn>=0.12.0",
-  "category-encoders>=2.4.0",
-  "requests>=2.27.1",
-  "psutil>=5.9.0",
-  "cloudpickle",
-  "xxhash",
+  "scipy>=1.6.1,<=1.11.4; python_version<'3.13'",
+  "scipy>=1.14.0,<2; python_version>='3.13'",
   "sktime>=0.31.0",
+  "tqdm>=4.62.0",
   "verlib2",
+  "xxhash",
 ]
-
-[project.optional-dependencies]
+optional-dependencies.analysis = [
+  "explainerdashboard>=0.3.8",
+  "fairlearn>=0.7.0",
+  "fg-data-profiling<5",
+  "interpret>=0.2.7",
+  "lightgbm>=3.0.0,<4.7.0; python_version<'3.13'",
+  "lightgbm>=3.0.0; python_version>='3.13'",
+  "numba>=0.55.0; python_version<'3.13'",
+  "numba>=0.60.0,<0.69; python_version>='3.13'",
+  "numba>=0.67.0,<0.69; python_version>='3.14'",
+  "pyod>=1.1.3",
+  "pyyaml",
+  "shap>=0.49.1,<0.50.0; python_version<'3.13'",
+  "shap>=0.50.0; python_version>='3.13'",
+  "standard-imghdr; python_version>='3.13'",
+  "umap-learn>=0.5.2",
+]
+# dev - the developer dependency set, for contributors
+optional-dependencies.dev = [
+  "mypy>=1,<2.5",
+  "pyproject-fmt<3",
+  "ruff<0.17",
+]
+# docs - the dependency set used for doc build
+optional-dependencies.docs = [
+  "numpy",
+  "pydata-sphinx-theme",
+  "sphinx>=3.0.0",
+  "sphinx-copybutton",
+]
 # there are the following dependency sets:
 # - full - curated set of soft dependencies, see below
 # - analysis
@@ -79,80 +113,53 @@ dependencies = [
 # - plots
 # - dev
 # - test
-
 # soft dependencies are not required for the core functionality of pycaret
-
 # full - curated set of soft dependencies:
 # should contain only framework level soft dependencies.
 # dependencies severely capping a core dependency should not be included.
 #
 # users can install via "pip install pycaret-core[full]"
 #
-full = [
+optional-dependencies.full = [
   "pycaret-core[analysis,mlops,models,parallel,plots,tuners]",
 ]
-
-analysis = [
-  "pyod>=1.1.3",
-  "lightgbm>=3.0.0,<4.7.0; python_version < '3.13'",
-  "lightgbm>=3.0.0; python_version >= '3.13'",
-  "numba>=0.55.0; python_version<'3.13'",
-  "numba>=0.60.0,<0.69; python_version>='3.13'",
-  "numba>=0.67.0,<0.69; python_version>='3.14'",
-  "shap>=0.49.1,<0.50.0; python_version < '3.13'",
-  "shap>=0.50.0; python_version >= '3.13'",
-  "interpret>=0.2.7",
-  "umap-learn>=0.5.2",
-  "pyyaml",
-  "fg-data-profiling<5",
-  "standard-imghdr; python_version>='3.13'",
-  "explainerdashboard>=0.3.8",
-  "fairlearn>=0.7.0",
+optional-dependencies.mlops = [
+  "boto3>=1.24.56",
+  "evidently>=0.7.0,<0.8.0",
+  "fastapi",
+  "gradio>=3.50.2",
+  "m2cgen>=0.9.0",
+  "mlflow>=2.0.0",
+  "uvicorn>=0.17.6",
 ]
-
-models = [
-  "xgboost>=2.0.0,<3.1.0; python_version < '3.13'",
-  "xgboost>=3.1.1; python_version >= '3.13'",
+optional-dependencies.models = [
   "catboost>=1.2.5",
   "kmodes>=0.11.1",
   "mlxtend>=0.19.0",
-  "statsforecast>=1.6.0,<=2.1.1",
-  "scikit-learn-intelex==2024.2.0; (python_version < '3.13' and platform_system == 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
-  "scikit-learn-intelex>=2024.0.0; (python_version >= '3.13' or platform_system != 'Windows') and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
-  "statsmodels>=0.12.1,<0.16.0",
-  "tbats>=1.1.3",
   "pmdarima>=2.0.4; python_version<'3.13'",
   "pmdarima>=2.1.0; python_version>='3.13'",
+  """\
+  scikit-learn-intelex==2024.2.0; (python_version<'3.13' and platform_system=='Windows') and \
+  (platform_machine=='x86_64' or platform_machine=='AMD64')\
+  """,
+  """\
+  scikit-learn-intelex>=2024.0.0; (python_version>='3.13' or platform_system!='Windows') and \
+  (platform_machine=='x86_64' or platform_machine=='AMD64')\
+  """,
+  "statsforecast>=1.6.0,<=2.1.1",
+  "statsmodels>=0.12.1,<0.16.0",
+  "tbats>=1.1.3",
+  "xgboost>=2.0.0,<3.1.0; python_version<'3.13'",
+  "xgboost>=3.1.1; python_version>='3.13'",
 ]
-
-tuners = [
-  "tune-sklearn; python_version<'3.13'",
-  "ray[tune]; python_version<'3.13'",
-  "hyperopt>=0.2.7",
-  "optuna>=3.0.0",
-  "optuna-integration",
-  "scikit-optimize>=0.9.0; python_version<'3.12'",
-]
-
-mlops = [
-  "mlflow>=2.0.0",
-  "gradio>=3.50.2",
-  "boto3>=1.24.56",
-  "fastapi",
-  "uvicorn>=0.17.6",
-  "m2cgen>=0.9.0",
-  "evidently>=0.7.0,<0.8.0",
-]
-
-parallel = [
+optional-dependencies.parallel = [
   "dask>=2024.1.0",
   "distributed>=2024.1.0",
-  "fugue[dask]>=0.9.0",
   "flask",
-  "Werkzeug>=2.2,<=3.2",
+  "fugue[dask]>=0.9.0",
+  "werkzeug>=2.2,<=3.2",
 ]
-
-plots = [
+optional-dependencies.plots = [
   "dash-bootstrap-components<3.0.0",
   "ipywidgets>=7.6.5",
   "kaleido>=0.2.1",
@@ -163,92 +170,69 @@ plots = [
   "plotly-resampler>=0.8.3.1",
   "schemdraw",
 ]
-
-prophet = [
+optional-dependencies.prophet = [
   "prophet>=1.0.1",
 ]
-
-# dev - the developer dependency set, for contributors
-dev = [
-  "ruff<0.17",
-  "mypy>=1,<2.5",
-]
-
-# docs - the dependency set used for doc build
-docs = [
-  "sphinx>=3.0.0",
-  "pydata-sphinx-theme",
-  "sphinx-copybutton",
-  "numpy",
-]
-
-
 # CI related soft dependency sets - not for users of pycaret
 # they are stable and subject to deprecation policies
-test = [
-  "pytest>=8.0.0",
-  "pytest-xdist>=3.0.0",
-  "moto>=4.0.0",
-  "fugue[dask]",
+optional-dependencies.test = [
   "dash[testing]",
+  "fugue[dask]",
+  "moto>=4.0.0",
+  "pytest>=8.0.0",
   "pytest-cov",
   "pytest-timeout",
+  "pytest-xdist>=3.0.0",
 ]
-
-
-[project.urls]
-"API Reference" = "https://www.pycaret.net/en/latest/"
-Documentation = "https://www.pycaret.net/en/latest/"
-Download = "https://pypi.org/project/pycaret-core/#files"
-Homepage = "https://www.pycaret.net/en/latest/"
-"Release Notes" = "https://github.com/sktime/pycaret/releases"
-Repository = "https://github.com/sktime/pycaret"
-
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = [
-  "setuptools>61",
+optional-dependencies.tuners = [
+  "hyperopt>=0.2.7",
+  "optuna>=3.0.0",
+  "optuna-integration",
+  "ray[tune]; python_version<'3.13'",
+  "scikit-optimize>=0.9.0; python_version<'3.12'",
+  "tune-sklearn; python_version<'3.13'",
 ]
+urls."API Reference" = "https://www.pycaret.net/en/latest/"
+urls."Release Notes" = "https://github.com/sktime/pycaret/releases"
+urls.Documentation = "https://www.pycaret.net/en/latest/"
+urls.Download = "https://pypi.org/project/pycaret-core/#files"
+urls.Homepage = "https://www.pycaret.net/en/latest/"
+urls.Repository = "https://github.com/sktime/pycaret"
 
-[tool.setuptools.packages.find]
-include = ["pycaret", "pycaret.*"]
+[tool.setuptools]
+packages.find.include = [ "pycaret", "pycaret.*" ]
 
 [tool.ruff]
 line-length = 88
 # tutorial notebooks use `import *` by design and need their own rule set;
 # see https://github.com/sktime/pycaret/issues/99
-extend-exclude = ["*.ipynb"]
-
-[tool.ruff.lint]
+extend-exclude = [ "*.ipynb" ]
 # default rule set (pycodestyle errors, pyflakes) plus isort
-select = ["E4", "E7", "E9", "F", "I"]
-ignore = [
+lint.select = [ "E4", "E7", "E9", "F", "I" ]
+lint.ignore = [
   # Assign a lambda expression
   "E731",
 ]
-
-[tool.ruff.lint.per-file-ignores]
 # Imported but unused
-"__init__.py" = ["F401"]
-"pycaret/distributions.py" = ["F401"]
-"pycaret/internal/preprocess/iterative_imputer.py" = ["F401"]
-"pycaret/internal/display/display_backend.py" = ["F401"]
+lint.per-file-ignores."__init__.py" = [ "F401" ]
 # Redefinition of unused imports
-"pycaret/containers/models/classification.py" = ["F811"]
-"pycaret/containers/models/clustering.py" = ["F811"]
-"pycaret/containers/models/regression.py" = ["F811"]
-"pycaret/containers/models/time_series.py" = ["F811"]
+lint.per-file-ignores."pycaret/containers/models/classification.py" = [ "F811" ]
+lint.per-file-ignores."pycaret/containers/models/clustering.py" = [ "F811" ]
+lint.per-file-ignores."pycaret/containers/models/regression.py" = [ "F811" ]
+lint.per-file-ignores."pycaret/containers/models/time_series.py" = [ "F811" ]
+lint.per-file-ignores."pycaret/distributions.py" = [ "F401" ]
+lint.per-file-ignores."pycaret/internal/display/display_backend.py" = [ "F401" ]
+lint.per-file-ignores."pycaret/internal/preprocess/iterative_imputer.py" = [ "F401" ]
 # Local variable is assigned to but never used
-"tests/test_time_series_mlflow.py" = ["F841"]
-
+lint.per-file-ignores."tests/test_time_series_mlflow.py" = [ "F841" ]
 
 [tool.pytest]
-ini_options.addopts = """
-  -rfEXsS -p pytester --strict-markers --verbosity=3
-  """
 ini_options.testpaths = "tests/"
 ini_options.python_files = "*.py"
 ini_options.python_functions = "test_*"
+ini_options.addopts = """
+  -rfEXsS -p pytester --strict-markers --verbosity=3
+  """
 ini_options.markers = [
   "benchmark",
   "plotting",
