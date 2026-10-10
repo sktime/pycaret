@@ -17,11 +17,9 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import sklearn
 from cycler import cycler
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
-from packaging import version
 from sklearn.feature_selection import RFECV
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.linear_model import LinearRegression
@@ -46,6 +44,7 @@ from sklearn.preprocessing import label_binarize
 from sklearn.utils.multiclass import type_of_target
 
 from pycaret.internal.logging import get_logger
+from pycaret.utils._dependencies import _check_soft_dependencies
 
 # Default look of all plots in this module. The values mirror the style and
 # context that yellowbrick applied, so that plots look as they did before
@@ -234,7 +233,7 @@ def _fit_params(fit_kwargs: Optional[dict]) -> dict:
     """
     if not fit_kwargs:
         return {}
-    if version.parse(sklearn.__version__) >= version.parse("1.6"):
+    if _check_soft_dependencies("scikit-learn>=1.6", severity="none"):
         return {"params": fit_kwargs}
     return {"fit_params": fit_kwargs}
 

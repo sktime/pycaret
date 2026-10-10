@@ -11,7 +11,6 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from packaging import version
 
 import pycaret.containers.base_container
 from pycaret.containers.models.base_model import (
@@ -233,7 +232,7 @@ class LinearRegressionContainer(RegressorContainer):
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.linear_model import LinearRegression
             else:
@@ -245,7 +244,7 @@ class LinearRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.LinearRegression")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import LinearRegression
 
                 logger.info("Imported cuml.linear_model.LinearRegression")
@@ -289,7 +288,7 @@ class LassoRegressionContainer(RegressorContainer):
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.linear_model import Lasso
             else:
@@ -301,7 +300,7 @@ class LassoRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.Lasso")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Lasso
 
                 logger.info("Imported cuml.linear_model.Lasso")
@@ -348,7 +347,7 @@ class RidgeRegressionContainer(RegressorContainer):
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.linear_model import Ridge
             else:
@@ -360,7 +359,7 @@ class RidgeRegressionContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.Ridge")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Ridge
 
                 logger.info("Imported cuml.linear_model.Ridge")
@@ -407,7 +406,7 @@ class ElasticNetContainer(RegressorContainer):
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.linear_model import ElasticNet
             else:
@@ -419,7 +418,7 @@ class ElasticNetContainer(RegressorContainer):
             logger.info("Imported cuml.linear_model.ElasticNet")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import ElasticNet
 
                 logger.info("Imported cuml.linear_model.ElasticNet")
@@ -1012,7 +1011,7 @@ class SVRContainer(RegressorContainer):
             from sklearn.svm import SVR
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.svm import SVR
             else:
@@ -1024,7 +1023,7 @@ class SVRContainer(RegressorContainer):
             logger.info("Imported cuml.svm.SVR")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.svm import SVR
 
                 logger.info("Imported cuml.svm.SVR")
@@ -1075,7 +1074,7 @@ class KNeighborsRegressorContainer(RegressorContainer):
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.neighbors import KNeighborsRegressor
             else:
@@ -1087,7 +1086,7 @@ class KNeighborsRegressorContainer(RegressorContainer):
             logger.info("Imported cuml.neighbors.KNeighborsRegressor")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.neighbors import KNeighborsRegressor
 
                 logger.info("Imported cuml.neighbors.KNeighborsRegressor")
@@ -1155,7 +1154,7 @@ class DecisionTreeRegressorContainer(RegressorContainer):
                 0.4,
                 0.5,
             ],
-            "criterion": ["squared_error", "absolute_error", "friedman_mse"],
+            "criterion": ["squared_error", "absolute_error"],
         }
         tune_distributions = {
             "max_depth": IntUniformDistribution(1, 16),
@@ -1193,8 +1192,8 @@ class RandomForestRegressorContainer(RegressorContainer):
             logger.info("Imported cuml.ensemble")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
-                import cuml.ensemble
+            if _check_soft_dependencies("cuml", severity="warning"):
+                import cuml.ensemble  # noqa: F401
 
                 logger.info("Imported cuml.ensemble")
                 gpu_imported = True
@@ -1210,9 +1209,7 @@ class RandomForestRegressorContainer(RegressorContainer):
                 "n_jobs": experiment.n_jobs_param,
             }
         else:
-            import cuml
-
-            if version.parse(cuml.__version__) >= version.parse("0.19"):
+            if _check_soft_dependencies("cuml>=0.19", severity="none"):
                 args = {"random_state": experiment.seed}
             else:
                 args = {"seed": experiment.seed}
@@ -1522,7 +1519,7 @@ class XGBRegressorContainer(RegressorContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -1539,7 +1536,7 @@ class XGBRegressorContainer(RegressorContainer):
         }
 
         # If using XGBoost version 2.0 or higher
-        if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+        if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
             args["tree_method"] = "hist" if experiment.gpu_param else "auto"
             args["device"] = "gpu" if experiment.gpu_param else "cpu"
         else:
@@ -1807,7 +1804,7 @@ class CatBoostRegressorContainer(RegressorContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )

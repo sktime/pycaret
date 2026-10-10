@@ -13,7 +13,6 @@ from unittest.mock import patch
 
 import numpy as np  # type: ignore
 import pandas as pd
-import plotly.express as px
 import sklearn
 from joblib.memory import Memory
 from scipy.optimize import shgo
@@ -918,7 +917,7 @@ class ClassificationExperiment(_NonTSSupervisedExperiment, Preprocessor):
         for fx, cols in self._fxs.items():
             if len(cols) > 0:
                 container.append([f"{fx} features", len(cols)])
-        if self.data.isna().sum().sum():
+        if self.data.isna().any().any():
             n_nans = 100 * self.data.isna().any(axis=1).sum() / len(self.data)
             container.append(["Rows with missing values", f"{round(n_nans, 1)}%"])
         if preprocess:
@@ -2611,6 +2610,7 @@ class ClassificationExperiment(_NonTSSupervisedExperiment, Preprocessor):
         self.logger.info("Importing libraries")
 
         # import libraries
+        import plotly.express as px
 
         np.random.seed(self.seed)
 

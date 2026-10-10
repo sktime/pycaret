@@ -1,5 +1,4 @@
-"""Module to test time_series forecasting - univariate with exogenous variables
-"""
+"""Module to test time_series forecasting - univariate with exogenous variables"""
 
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore

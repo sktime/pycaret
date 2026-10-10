@@ -74,7 +74,3 @@ def test_datasets():
 
     exceptionmsg = errmsg.value.args[0]
     assert exceptionmsg == "Data could not be read. Please check your inputs..."
-
-
-if __name__ == "__main__":
-    test_datasets()

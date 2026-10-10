@@ -41,8 +41,3 @@ def test_regression_convert_model():
     # convert model
     lr_java = pycaret.regression.convert_model(lr, "java")
     assert isinstance(lr_java, str)
-
-
-if __name__ == "__main__":
-    test_classification_convert_model()
-    test_regression_convert_model()

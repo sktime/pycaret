@@ -11,7 +11,6 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
-from packaging import version
 
 import pycaret.containers.base_container
 import pycaret.internal.cuml_wrappers
@@ -263,7 +262,7 @@ class LogisticRegressionClassifierContainer(ClassifierContainer):
             from sklearn.linear_model import LogisticRegression
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.linear_model import LogisticRegression
             else:
@@ -275,7 +274,7 @@ class LogisticRegressionClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.linear_model.LogisticRegression")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import LogisticRegression
 
                 logger.info("Imported cuml.linear_model.LogisticRegression")
@@ -326,7 +325,7 @@ class KNeighborsClassifierContainer(ClassifierContainer):
             from sklearn.neighbors import KNeighborsClassifier
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.neighbors import KNeighborsClassifier
             else:
@@ -338,7 +337,7 @@ class KNeighborsClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.neighbors.KNeighborsClassifier")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.neighbors import KNeighborsClassifier
 
                 logger.info("Imported cuml.neighbors.KNeighborsClassifier")
@@ -497,7 +496,7 @@ class SGDClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.MBSGDClassifier")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml import MBSGDClassifier as SGDClassifier
 
                 logger.info("Imported cuml.MBSGDClassifier")
@@ -584,7 +583,7 @@ class SVCClassifierContainer(ClassifierContainer):
             from sklearn.svm import SVC
         elif self.engine == "sklearnex":
             if _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="warning"
+                "scikit-learn-intelex", extra="models", severity="warning"
             ):
                 from sklearnex.svm import SVC
             else:
@@ -596,7 +595,7 @@ class SVCClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.svm.SVC")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.svm import SVC
 
                 logger.info("Imported cuml.svm.SVC")
@@ -738,7 +737,7 @@ class RidgeClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.linear_model")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 import cuml.linear_model
 
                 logger.info("Imported cuml.linear_model")
@@ -790,7 +789,7 @@ class RandomForestClassifierContainer(ClassifierContainer):
             logger.info("Imported cuml.ensemble")
             gpu_imported = True
         elif experiment.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 import cuml.ensemble
 
                 logger.info("Imported cuml.ensemble")
@@ -809,7 +808,7 @@ class RandomForestClassifierContainer(ClassifierContainer):
         else:
             import cuml
 
-            if version.parse(cuml.__version__) >= version.parse("0.19"):
+            if _check_soft_dependencies("cuml>=0.19", severity="none"):
                 args = {"random_state": experiment.seed}
             else:
                 args = {"seed": experiment.seed}
@@ -878,7 +877,9 @@ class QuadraticDiscriminantAnalysisContainer(ClassifierContainer):
         np.random.seed(experiment.seed)
         from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
-        args = {}
+        # Regularize collinear features (for example, one-hot encoded columns).
+        # Recent sklearn releases reject singular covariance matrices.
+        args = {"reg_param": 0.1}
         tune_args = {}
         tune_grid = {"reg_param": np_list_arange(0, 1, 0.01, inclusive=True)}
         tune_distributions = {"reg_param": UniformDistribution(0, 1)}
@@ -923,8 +924,9 @@ class AdaBoostClassifierContainer(ClassifierContainer):
                 0.4,
                 0.5,
             ],
-            "algorithm": ["SAMME"],
         }
+        if "algorithm" in AdaBoostClassifier().get_params():
+            tune_grid["algorithm"] = ["SAMME"]
         tune_distributions = {
             "n_estimators": IntUniformDistribution(10, 300),
             "learning_rate": UniformDistribution(0.000001, 0.5, log=True),
@@ -1138,7 +1140,7 @@ class XGBClassifierContainer(ClassifierContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -1155,7 +1157,7 @@ class XGBClassifierContainer(ClassifierContainer):
         }
 
         # If using XGBoost version 2.0 or higher
-        if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+        if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
             args["tree_method"] = "hist" if experiment.gpu_param else "auto"
             args["device"] = "gpu" if experiment.gpu_param else "cpu"
         else:
@@ -1423,7 +1425,7 @@ class CatBoostClassifierContainer(ClassifierContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )

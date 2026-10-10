@@ -17,12 +17,12 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np  # type: ignore
 import pandas as pd
-from packaging import version
 from sktime.forecasting.base import BaseForecaster  # type: ignore
 from sktime.forecasting.compose import (  # type: ignore
     TransformedTargetForecaster,
     make_reduction,
 )
+from sktime.forecasting.ets import AutoETS  # type: ignore
 from sktime.forecasting.trend import PolynomialTrendForecaster  # type: ignore
 from sktime.transformations.series.detrend import (  # type: ignore
     ConditionalDeseasonalizer,
@@ -41,6 +41,7 @@ from pycaret.internal.distributions import (
     IntUniformDistribution,
     UniformDistribution,
 )
+from pycaret.internal.patches.sktime import PyCaretAutoETS
 from pycaret.utils._dependencies import _check_soft_dependencies
 from pycaret.utils.datetime import (
     coerce_datetime_to_period_index,
@@ -49,6 +50,8 @@ from pycaret.utils.datetime import (
 from pycaret.utils.generic import get_logger, np_list_arange, param_grid_to_lists
 from pycaret.utils.time_series import TSModelTypes
 from pycaret.utils.time_series.forecasting.models import _check_enforcements
+
+# PyCaretAutoETS remains importable here for previously serialized models.
 
 # First one in the list is the default ----
 ALL_ALLOWED_ENGINES: Dict[str, List[str]] = {
@@ -303,8 +306,8 @@ class NaiveContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is NaiveForecaster
+        eq_function = lambda x: (
+            type(x) is NaiveForecaster
             and x.sp == 1
             and (x.strategy == "last" or x.strategy == "drift")
         )
@@ -364,10 +367,8 @@ class GrandMeansContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is NaiveForecaster
-            and x.sp == 1
-            and (x.strategy == "mean")
+        eq_function = lambda x: (
+            type(x) is NaiveForecaster and x.sp == 1 and (x.strategy == "mean")
         )
 
         super().__init__(
@@ -882,10 +883,8 @@ class ETSContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        from sktime.forecasting.ets import AutoETS  # type: ignore
-
         # Disable container if certain features are not supported but enforced ----
-        dummy = AutoETS()
+        dummy = PyCaretAutoETS()
         self.active = _check_enforcements(forecaster=dummy, experiment=experiment)
         if not self.active:
             return
@@ -904,7 +903,8 @@ class ETSContainer(TimeSeriesContainer):
         super().__init__(
             id="ets",
             name="ETS",
-            class_def=AutoETS,
+            class_def=PyCaretAutoETS,
+            eq_function=lambda x: isinstance(x, AutoETS),
             args=args,
             tune_grid=tune_grid,
             tune_distribution=tune_distributions,
@@ -1308,7 +1308,7 @@ class ProphetContainer(TimeSeriesContainer):
         np.random.seed(experiment.seed)
         self.gpu_imported = False
 
-        if not _check_soft_dependencies("prophet", extra=None, severity="warning"):
+        if not _check_soft_dependencies("prophet", severity="warning"):
             self.active = False
             return
 
@@ -1432,9 +1432,8 @@ class CdsDtContainer(TimeSeriesContainer):
         tune_distributions = self._set_tune_distributions
         leftover_parameters_to_categorical_distributions(tune_grid, tune_distributions)
 
-        eq_function = (
-            lambda x: type(x) is BaseCdsDtForecaster
-            and type(x.regressor) is regressor_class
+        eq_function = lambda x: (
+            type(x) is BaseCdsDtForecaster and type(x.regressor) is regressor_class
         )
 
         super().__init__(
@@ -1520,7 +1519,7 @@ class LinearCdsDtContainer(CdsDtContainer):
             from sklearn.linear_model import LinearRegression
         elif self.engine == "sklearnex":
             _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="error"
+                "scikit-learn-intelex", extra="models", severity="error"
             )
             from sklearnex.linear_model import LinearRegression
 
@@ -1530,7 +1529,7 @@ class LinearCdsDtContainer(CdsDtContainer):
             self.logger.info("Imported cuml.linear_model.LinearRegression")
             self.gpu_imported = True
         elif self.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import LinearRegression  # type: ignore
 
                 self.logger.info("Imported cuml.linear_model.LinearRegression")
@@ -1579,7 +1578,7 @@ class ElasticNetCdsDtContainer(CdsDtContainer):
             from sklearn.linear_model import ElasticNet
         elif self.engine == "sklearnex":
             _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="error"
+                "scikit-learn-intelex", extra="models", severity="error"
             )
             from sklearnex.linear_model import ElasticNet
 
@@ -1589,7 +1588,7 @@ class ElasticNetCdsDtContainer(CdsDtContainer):
             self.logger.info("Imported cuml.linear_model.ElasticNet")
             self.gpu_imported = True
         elif self.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import ElasticNet  # type: ignore
 
                 self.logger.info("Imported cuml.linear_model.ElasticNet")
@@ -1642,7 +1641,7 @@ class RidgeCdsDtContainer(CdsDtContainer):
             from sklearn.linear_model import Ridge
         elif self.engine == "sklearnex":
             _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="error"
+                "scikit-learn-intelex", extra="models", severity="error"
             )
             from sklearnex.linear_model import Ridge
 
@@ -1652,7 +1651,7 @@ class RidgeCdsDtContainer(CdsDtContainer):
             self.logger.info("Imported cuml.linear_model.Ridge")
             self.gpu_imported = True
         elif self.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Ridge  # type: ignore
 
                 self.logger.info("Imported cuml.linear_model.Ridge")
@@ -1704,7 +1703,7 @@ class LassoCdsDtContainer(CdsDtContainer):
             from sklearn.linear_model import Lasso
         elif self.engine == "sklearnex":
             _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="error"
+                "scikit-learn-intelex", extra="models", severity="error"
             )
             from sklearnex.linear_model import Lasso
 
@@ -1714,7 +1713,7 @@ class LassoCdsDtContainer(CdsDtContainer):
             self.logger.info("Imported cuml.linear_model.Lasso")
             self.gpu_imported = True
         elif self.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.linear_model import Lasso  # type: ignore
 
                 self.logger.info("Imported cuml.linear_model.Lasso")
@@ -2073,7 +2072,7 @@ class KNeighborsCdsDtContainer(CdsDtContainer):
             from sklearn.neighbors import KNeighborsRegressor
         elif self.engine == "sklearnex":
             _check_soft_dependencies(
-                "scikit-learn-intelex", extra=None, severity="error"
+                "scikit-learn-intelex", extra="models", severity="error"
             )
             from sklearnex.neighbors import KNeighborsRegressor
 
@@ -2083,7 +2082,7 @@ class KNeighborsCdsDtContainer(CdsDtContainer):
             self.logger.info("Imported cuml.neighbors.KNeighborsRegressor")
             self.gpu_imported = True
         elif self.gpu_param:
-            if _check_soft_dependencies("cuml", extra=None, severity="warning"):
+            if _check_soft_dependencies("cuml", severity="warning"):
                 from cuml.neighbors import KNeighborsRegressor  # type: ignore
 
                 self.logger.info("Imported cuml.neighbors.KNeighborsRegressor")
@@ -2143,7 +2142,7 @@ class DecisionTreeCdsDtContainer(CdsDtContainer):
             "regressor__min_impurity_decrease": [0.1, 0.5],
             "regressor__min_samples_leaf": [2, 6],
             "regressor__min_samples_split": [2, 10],
-            "regressor__criterion": ["squared_error", "absolute_error", "friedman_mse"],
+            "regressor__criterion": ["squared_error", "absolute_error"],
         }
         return tune_grid
 
@@ -2408,7 +2407,7 @@ class XGBCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(xgboost.__version__) < version.parse("1.1.0"):
+        if _check_soft_dependencies("xgboost<1.1.0", severity="none"):
             self.logger.warning(
                 f"Wrong xgboost version. Expected xgboost>=1.1.0, got xgboost=={xgboost.__version__}"
             )
@@ -2426,9 +2425,7 @@ class XGBCdsDtContainer(CdsDtContainer):
         regressor_args["booster"] = "gbtree"
         # If using XGBoost version 2.0 or higher
         if self.active:
-            import xgboost
-
-            if version.parse(xgboost.__version__) >= version.parse("2.0.0"):
+            if _check_soft_dependencies("xgboost>=2.0.0", severity="none"):
                 regressor_args["tree_method"] = "hist" if self.gpu_param else "auto"
                 regressor_args["device"] = "gpu" if self.gpu_param else "cpu"
             else:
@@ -2581,7 +2578,7 @@ class CatBoostCdsDtContainer(CdsDtContainer):
             self.active = False
             return
 
-        if version.parse(catboost.__version__) < version.parse("0.23.2"):
+        if _check_soft_dependencies("catboost<0.23.2", severity="none"):
             self.logger.warning(
                 f"Wrong catboost version. Expected catboost>=0.23.2, got catboost=={catboost.__version__}"
             )
@@ -2765,7 +2762,7 @@ class BaseCdsDtForecaster(BaseForecaster):
         return y
 
 
-if _check_soft_dependencies("prophet", extra=None, severity="warning"):
+if _check_soft_dependencies("prophet", severity="warning"):
     from sktime.forecasting.fbprophet import Prophet  # type: ignore
 
     class ProphetPeriodPatched(Prophet):

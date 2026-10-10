@@ -1,5 +1,4 @@
-"""Module to test time_series functionality
-"""
+"""Module to test time_series functionality"""
 
 import numpy as np
 import pytest

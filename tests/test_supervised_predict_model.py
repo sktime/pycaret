@@ -47,9 +47,9 @@ def test_classification_predict_model():
     assert all(item in predictions.columns for item in unseen_data.columns)
 
     # Check that all metrics are valid
-    assert all(
-        metrics[metric][0] is not None for metric in metrics.columns
-    ), "Some metrics are None or invalid"
+    assert all(metrics[metric][0] is not None for metric in metrics.columns), (
+        "Some metrics are None or invalid"
+    )
 
     predictions = pycaret.classification.predict_model(lr_model)
     metrics = pycaret.classification.pull()

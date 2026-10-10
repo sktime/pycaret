@@ -1,5 +1,4 @@
-"""Module to benchmark auto detection of time series seasonal period
-"""
+"""Module to benchmark auto detection of time series seasonal period"""
 
 import pytest
 

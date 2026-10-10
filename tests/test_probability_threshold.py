@@ -123,7 +123,3 @@ def test_probability_threshold():
     assert saved_best._final_estimator.probability_threshold == probability_threshold
 
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_probability_threshold()

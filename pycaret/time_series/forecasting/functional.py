@@ -2,8 +2,7 @@
 # Contributors (https://github.com/sktime/pycaret/graphs/contributors)
 
 
-"""Functional API for Time Series Forecasting Experiment
-"""
+"""Functional API for Time Series Forecasting Experiment"""
 
 import logging
 import os

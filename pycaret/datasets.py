@@ -1,5 +1,4 @@
-"""Module to get datasets in pycaret
-"""
+"""Module to get datasets in pycaret"""
 
 from typing import Optional
 
@@ -114,8 +113,6 @@ def get_data(
     # If that does not exist then read sktime datasets
     if os.path.isfile(filename):
         data = pd.read_csv(filename)
-    elif requests.get(complete_address).status_code == 200:
-        data = pd.read_csv(complete_address)
     elif dataset in sktime_datasets:
         from sktime.datasets import load_airline, load_lynx, load_uschange
 
@@ -129,6 +126,8 @@ def get_data(
             y = data[0]
             X = data[1]
             data = pd.concat([y, X], axis=1)
+    elif requests.head(complete_address).status_code == 200:
+        data = pd.read_csv(complete_address)
     else:
         raise ValueError("Data could not be read. Please check your inputs...")
 
@@ -149,17 +148,16 @@ def get_data(
     else:
         if profile:
             _check_soft_dependencies(
-                "ydata_profiling",
+                "fg-data-profiling",
                 extra="analysis",
                 severity="error",
-                install_name="ydata-profiling",
             )
-            import ydata_profiling
+            from data_profiling import ProfileReport
 
             # create a copy for pandas profiler
             data_for_profiling = data.copy()
 
-            pf = ydata_profiling.ProfileReport(data_for_profiling)
+            pf = ProfileReport(data_for_profiling)
             display.display(pf)
 
         else:

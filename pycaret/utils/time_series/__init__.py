@@ -397,12 +397,22 @@ def clean_time_index(
     """
     data_ = data.copy()
 
+    # Keep accepting PyCaret's legacy period aliases under pandas 3. Preserve
+    # multipliers and year anchors, for example "2H" and "A-JUN".
+    if isinstance(freq, str) and int(pd.__version__.split(".")[0]) >= 3:
+        period_aliases = {"A": "Y", "H": "h", "T": "min", "S": "s"}
+        freq = re.sub(
+            r"^(\d*)(A|H|T|S)(?=-|$)",
+            lambda match: match[1] + period_aliases[match[2]],
+            freq,
+        )
+
     # Step 1: Set the index if not already set
     if index_col is not None:
         # If column has string values, convert to PeriodIndex since pycaret
         # works best with PeriodIndex. For all other index types (DatetimeIndex,
         # PeriodIndex, Int64Index), leave as is.
-        if isinstance(data_[index_col][0], str):
+        if isinstance(data_[index_col].iloc[0], str):
             data_[index_col] = pd.PeriodIndex(data_[index_col], freq=freq)
         data_.set_index(index_col, inplace=True)
 

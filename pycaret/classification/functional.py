@@ -3152,7 +3152,7 @@ def create_api(
 
 @check_if_global_is_not_none(globals(), _CURRENT_EXPERIMENT_DECORATOR_DICT)
 def create_docker(
-    api_name: str, base_image: str = "python:3.8-slim", expose_port: int = 8000
+    api_name: str, base_image: str = "python:3.11-slim", expose_port: int = 8000
 ) -> None:
     """
     This function creates a ``Dockerfile`` and ``requirements.txt`` for
@@ -3174,7 +3174,7 @@ def create_docker(
         Name of API. Must be saved as a .py file in the same folder.
 
 
-    base_image: str, default = "python:3.8-slim"
+    base_image: str, default = "python:3.11-slim"
         Name of the base image for Dockerfile.
 
 

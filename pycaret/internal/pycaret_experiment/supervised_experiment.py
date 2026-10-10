@@ -15,7 +15,6 @@ from functools import partial
 from typing import Any, BinaryIO, Dict, List, Optional, Set, Tuple, Union
 from unittest.mock import patch
 
-import matplotlib.pyplot as plt
 import numpy as np  # type: ignore
 import pandas as pd  # type ignore
 import pandas.io.formats.style
@@ -1498,6 +1497,13 @@ class _SupervisedExperiment(_TabularExperiment):
             model = clone(estimator)
             model.set_params(**kwargs)
 
+            if self._ml_usecase == MLUsecase.TIME_SERIES:
+                from pycaret.internal.patches.sktime import (
+                    warn_if_native_autoets_is_affected,
+                )
+
+                warn_if_native_autoets_is_affected(model)
+
             full_name = self._get_model_name(model)
 
         # workaround for an issue with set_params in cuML
@@ -2081,10 +2087,9 @@ class _SupervisedExperiment(_TabularExperiment):
 
         if search_library == "scikit-optimize":
             _check_soft_dependencies(
-                "skopt",
+                "scikit-optimize",
                 extra="tuners",
                 severity="error",
-                install_name="scikit-optimize",
             )
             import skopt
 
@@ -2099,10 +2104,9 @@ class _SupervisedExperiment(_TabularExperiment):
 
         elif search_library == "tune-sklearn":
             _check_soft_dependencies(
-                "tune_sklearn",
+                "tune-sklearn",
                 extra="tuners",
                 severity="error",
-                install_name="tune-sklearn ray[tune]",
             )
 
             if not search_algorithm:
@@ -2122,33 +2126,48 @@ class _SupervisedExperiment(_TabularExperiment):
                 )
 
             if search_algorithm == "bohb":
-                _check_soft_dependencies("ConfigSpace", extra=None, severity="error")
-                _check_soft_dependencies("hpbandster", extra=None, severity="error")
+                _check_soft_dependencies("ConfigSpace", severity="error")
+                _check_soft_dependencies("hpbandster", severity="error")
                 _check_soft_dependencies(
-                    "ray", extra="tuners", severity="error", install_name="ray[tune]"
+                    "ray[tune]",
+                    extra="tuners",
+                    severity="error",
                 )
 
             elif search_algorithm == "hyperopt":
-                _check_soft_dependencies("hyperopt", extra="tuners", severity="error")
                 _check_soft_dependencies(
-                    "ray", extra="tuners", severity="error", install_name="ray[tune]"
+                    "hyperopt",
+                    extra="tuners",
+                    severity="error",
+                )
+                _check_soft_dependencies(
+                    "ray[tune]",
+                    extra="tuners",
+                    severity="error",
                 )
 
             elif search_algorithm == "bayesian":
                 _check_soft_dependencies(
-                    "skopt",
+                    "scikit-optimize",
                     extra="tuners",
                     severity="error",
-                    install_name="scikit-optimize",
                 )
                 import skopt
 
             elif search_algorithm == "optuna":
-                _check_soft_dependencies("optuna", extra="tuners", severity="error")
+                _check_soft_dependencies(
+                    "optuna",
+                    extra="tuners",
+                    severity="error",
+                )
                 import optuna
 
         elif search_library == "optuna":
-            _check_soft_dependencies("optuna", extra="tuners", severity="error")
+            _check_soft_dependencies(
+                "optuna",
+                extra="tuners",
+                severity="error",
+            )
             import optuna
 
             if not search_algorithm:
@@ -2530,11 +2549,11 @@ class _SupervisedExperiment(_TabularExperiment):
                 ):
                     if "actual_estimator__n_estimators" in param_grid:
                         if custom_grid is None:
-                            extra_params[
-                                "actual_estimator__n_estimators"
-                            ] = pipeline_with_model.get_params()[
-                                "actual_estimator__n_estimators"
-                            ]
+                            extra_params["actual_estimator__n_estimators"] = (
+                                pipeline_with_model.get_params()[
+                                    "actual_estimator__n_estimators"
+                                ]
+                            )
                             param_grid.pop("actual_estimator__n_estimators")
                         else:
                             raise ValueError(
@@ -4083,24 +4102,35 @@ class _SupervisedExperiment(_TabularExperiment):
 
         # checking if shap available
         if plot in ["summary", "correlation", "reason"]:
-            _check_soft_dependencies("shap", extra="analysis", severity="error")
+            _check_soft_dependencies(
+                "shap",
+                extra="analysis",
+                severity="error",
+            )
             import shap
 
         # checking if pdpbox is available
         if plot == "pdp":
-            _check_soft_dependencies("interpret", extra="analysis", severity="error")
+            _check_soft_dependencies(
+                "interpret",
+                extra="analysis",
+                severity="error",
+            )
 
         # checking interpret is available
         if plot == "msa":
-            _check_soft_dependencies("interpret", extra="analysis", severity="error")
+            _check_soft_dependencies(
+                "interpret",
+                extra="analysis",
+                severity="error",
+            )
 
         # checking interpret-community is available
         if plot == "pfi":
             _check_soft_dependencies(
-                "interpret_community",
+                "interpret-community",
                 extra=None,
                 severity="error",
-                install_name="interpret-community",
             )
 
         # get estimator from meta estimator
@@ -4244,6 +4274,8 @@ class _SupervisedExperiment(_TabularExperiment):
             except Exception:
                 shap_plot = shap.summary_plot(shap_values, test_X, show=show, **kwargs)
             if save:
+                import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)
@@ -4293,6 +4325,8 @@ class _SupervisedExperiment(_TabularExperiment):
                     dependence, shap_values, test_X, show=show, **kwargs
                 )
             if save:
+                import matplotlib.pyplot as plt
+
                 plot_filename = f"SHAP {plot}.png"
                 if not isinstance(save, bool):
                     plot_filename = os.path.join(save, plot_filename)
@@ -5354,7 +5388,11 @@ class _SupervisedExperiment(_TabularExperiment):
 
         """
 
-        _check_soft_dependencies("fairlearn", extra="analysis", severity="error")
+        _check_soft_dependencies(
+            "fairlearn",
+            extra="analysis",
+            severity="error",
+        )
         from fairlearn.metrics import MetricFrame, count, selection_rate
 
         all_metrics = self.get_metrics()[["Name", "Score Function", "Args"]].set_index(
@@ -5363,7 +5401,9 @@ class _SupervisedExperiment(_TabularExperiment):
         metric_dict = {}
         metric_dict["Samples"] = count
         for i in all_metrics.index:
-            metric_dict[i] = partial(all_metrics.loc[i][0], **all_metrics.loc[i][1])
+            metric_dict[i] = partial(
+                all_metrics.loc[i, "Score Function"], **all_metrics.loc[i, "Args"]
+            )
 
         if self._ml_usecase == MLUsecase.CLASSIFICATION:
             metric_dict["Selection Rate"] = selection_rate
@@ -5498,7 +5538,7 @@ class _SupervisedExperiment(_TabularExperiment):
                     self.predict_model(model, verbose=False)  # type: ignore
 
                 p = self.pull(pop=True)
-                p = p[compare_dimension][0]
+                p = p[compare_dimension].iloc[0]
                 if compare_score(p, best_score):
                     best_model = model
                     best_score = p
@@ -5525,7 +5565,7 @@ class _SupervisedExperiment(_TabularExperiment):
                 self.logger.info(f"Checking model {i}")
                 if scores is None:
                     scores = model["scores"]
-                r = scores[compare_dimension][-2:][0]
+                r = scores[compare_dimension].iloc[-2]
                 if compare_score(r, best_score):
                     best_model = model["model"]
                     best_score = r
@@ -5578,7 +5618,11 @@ class _SupervisedExperiment(_TabularExperiment):
             None
         """
 
-        _check_soft_dependencies("gradio", extra="mlops", severity="error")
+        _check_soft_dependencies(
+            "gradio",
+            extra="mlops",
+            severity="error",
+        )
         import gradio as gr
 
         all_inputs = []
@@ -5664,7 +5708,9 @@ class _SupervisedExperiment(_TabularExperiment):
         """
 
         _check_soft_dependencies(
-            "explainerdashboard", extra="analysis", severity="error"
+            "explainerdashboard",
+            extra="analysis",
+            severity="error",
         )
 
     def check_drift(
@@ -5731,7 +5777,11 @@ class _SupervisedExperiment(_TabularExperiment):
         Returns:
             Path the generated HTML file was saved to.
         """
-        _check_soft_dependencies("evidently", extra="mlops", severity="error")
+        _check_soft_dependencies(
+            "evidently",
+            extra="mlops",
+            severity="error",
+        )
 
         if self._setup_ran:
             reference_data = self.train if reference_data is None else reference_data

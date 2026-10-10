@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 from IPython.display import display as ipython_display
 from pandas.api.types import is_string_dtype
-from plotly_resampler import FigureResampler, FigureWidgetResampler
 from sklearn.base import clone
 from sktime.forecasting.base import BaseForecaster, ForecastingHorizon
 from sktime.forecasting.compose import ForecastingPipeline, TransformedTargetForecaster
@@ -42,12 +41,10 @@ from pycaret.internal.display import CommonDisplay
 from pycaret.internal.distributions import get_base_distributions
 from pycaret.internal.logging import get_logger, redirect_output
 from pycaret.internal.parallel.parallel_backend import ParallelBackend
-from pycaret.internal.plots.time_series import _get_plot
-from pycaret.internal.plots.utils.time_series import (
+from pycaret.internal.plots.utils.data import (
     _clean_model_results_labels,
     _get_data_types_to_plot,
     _reformat_dataframes_for_plots,
-    _resolve_renderer,
 )
 from pycaret.internal.preprocess.time_series.forecasting.preprocessor import (
     TSForecastingPreprocessor,
@@ -1086,8 +1083,7 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                 # Even if there are no explicit exogenous variables, we can create
                 # them using index. Hence, we do not include the exogenous_present
                 # check here.
-                self.fe_exogenous
-                is not None
+                self.fe_exogenous is not None
             )
         ):
             self.preprocess = True
@@ -3686,10 +3682,22 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
 
         # Import required libraries ----
         if display_format == "streamlit":
-            _check_soft_dependencies("streamlit", extra=None, severity="error")
+            _check_soft_dependencies("streamlit", severity="error")
             import importlib
 
             st = importlib.import_module("streamlit")
+
+        _check_soft_dependencies(
+            "matplotlib",
+            extra="plots",
+            severity="error",
+        )
+        _check_soft_dependencies(
+            "plotly",
+            extra="plots",
+            severity="error",
+        )
+        from pycaret.internal.plots.time_series import _get_plot
 
         # Add sp value (used in decomp plots)
         data_kwargs = data_kwargs or {}
@@ -3933,6 +3941,8 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                 return_obj.append(plot_filename)
 
             elif system and not return_fig:
+                from plotly_resampler import FigureResampler, FigureWidgetResampler
+
                 if display_format == "streamlit":
                     st.write(fig)
                 elif display_format == "plotly-widget":
@@ -3952,6 +3962,10 @@ class TSForecastingExperiment(_TSSupervisedExperiment, TSForecastingPreprocessor
                         convert_traces_kwargs=dict(limit_to_views=True),
                     ).show_dash(**show_dash_kwargs)
                 else:  # just a plain plotly-figure
+                    from pycaret.internal.plots.utils.time_series import (
+                        _resolve_renderer,
+                    )
+
                     try:
                         big_data_threshold = _resolve_dict_keys(
                             dict_=fig_kwargs,

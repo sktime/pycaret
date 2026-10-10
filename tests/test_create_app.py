@@ -41,8 +41,3 @@ def test_regression_create_app():
     # create app
     # pycaret.regression.create_app(lr) #disabling test because it get stuck on git
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_classification_create_app()
-    test_regression_create_app()

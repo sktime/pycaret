@@ -3,6 +3,7 @@
 
 import random
 from collections.abc import Callable
+from io import StringIO
 from math import ceil
 from threading import RLock
 from typing import Any, Dict, List, Optional, Union
@@ -39,7 +40,9 @@ class _DisplayUtil:
         self._asc = asc
         self._df: Optional[pd.DataFrame] = None
 
-    def update(self, df: pd.DataFrame) -> None:
+    def update(self, df: Union[pd.DataFrame, str]) -> None:
+        if isinstance(df, str):
+            df = pd.read_json(StringIO(df), orient="split")
         with self._lock:
             if self._df is None:
                 self._df = df
@@ -155,7 +158,9 @@ class FugueBackend(ParallelBackend):
         )
         outputs = transform(
             shuffled_idx,
-            self._remote_compare_models,
+            self._remote_compare_models
+            if self._display_remote
+            else self._remote_compare_models_without_report,
             schema="output:binary",
             partition={
                 "num": ceil(shuffled_idx.shape[0] / self._batch_size),
@@ -183,6 +188,13 @@ class FugueBackend(ParallelBackend):
         du.finish(res.iloc[:, :-1])
         return top_models[0] if len(top_models) == 1 else top_models
 
+    def _remote_compare_models_without_report(
+        self, idx: List[List[Any]]
+    ) -> List[List[Any]]:
+        # Fugue treats a Callable argument as requiring an RPC callback, even
+        # when that argument is optional. Omit it when remote display is off.
+        return self._remote_compare_models(idx)
+
     def _remote_compare_models(
         self, idx: List[List[Any]], report: Optional[Callable] = None
     ) -> List[List[Any]]:
@@ -205,7 +217,8 @@ class FugueBackend(ParallelBackend):
                 m = [m]
             res = instance.pull()[:top]
             if report is not None:
-                report(res)
+                # The Flask RPC transport accepts JSON values, not DataFrames.
+                report(res.to_json(orient="split", double_precision=15))
             results.append(
                 [
                     cloudpickle.dumps(

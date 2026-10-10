@@ -48,8 +48,3 @@ def test_regression_create_api():
     # create api
     pycaret.regression.create_api(lr, "boston_api")
     assert 1 == 1
-
-
-if __name__ == "__main__":
-    test_classification_create_api()
-    test_regression_create_api()

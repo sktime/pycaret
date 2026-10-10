@@ -91,11 +91,3 @@ def test_model_equality_anomaly(disable_numba):
         pycaret.datasets.get_data("anomaly"),
     )
     check_exp(exp)
-
-
-if __name__ == "__main__":
-    test_model_equality_classification()
-    test_model_equality_regression()
-    test_model_equality_time_series()
-    test_model_equality_clustering()
-    test_model_equality_anomaly()

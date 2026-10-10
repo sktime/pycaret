@@ -1,11 +1,11 @@
 # Contribution Guidelines
 
-Thank you for choosing to contribute in PyCaret. There are a ton of great open-source projects out there, so we appreciate your interest in contributing to PyCaret. 
+Thank you for choosing to contribute in PyCaret. There are a ton of great open-source projects out there, so we appreciate your interest in contributing to PyCaret.
 
 # Documentation
 There is always a room for improvement in documentation. We welcome all the pull requests to fix typo / improve grammar or semantic structuring of documents. Here are few documents you can work on:
 
-- [Official Documentation](https://github.com/sktime/pycaret-docs) 
+- [Official Documentation](https://github.com/sktime/pycaret-docs)
 - [Tutorials](https://github.com/sktime/pycaret/tree/main/tutorials)
 - [Docstrings](https://www.pycaret.net/en/stable/)
 
@@ -19,10 +19,10 @@ Follow [installation instructions](https://www.pycaret.net/en/latest/installatio
 pip install -e .[test]
 ```
 
-We use [black](https://github.com/psf/black) (version `22.12.0`) and [isort](https://github.com/PyCQA/isort) (latest version)
-for code formatting. Make sure to run `isort pycaret` and `black pycaret`
-from the home directory before creating the PR. Failing to do so can result
-in a failed build, which would prevent the adoption of your code.
+We use [ruff](https://docs.astral.sh/ruff/) for linting, import sorting, and code
+formatting. Run `ruff check --fix` and `ruff format` from the home directory
+before you create the pull request. Code that is not formatted fails the build,
+which would prevent the adoption of your code.
 
 
 # Unit testing

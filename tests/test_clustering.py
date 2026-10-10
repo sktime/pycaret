@@ -1,12 +1,18 @@
+"""Tests for the functional API of the clustering module.
+
+All tests share one experiment and one fitted instance of each model. Each
+test checks a single step on them: assigning, predicting, plotting, saving,
+configuration or mlflow logging.
+"""
+
 import sys
-import uuid
 
 import pandas as pd
 import pytest
-from mlflow.tracking import MlflowClient
+from mlflow_test_utils import mlflow_run_tags
 
 import pycaret.clustering
-import pycaret.datasets
+from pycaret.datasets import get_data
 
 if sys.platform == "win32":
     pytest.skip("Skipping test module on Windows", allow_module_level=True)
@@ -14,12 +20,14 @@ if sys.platform == "win32":
 
 @pytest.fixture(scope="module")
 def data():
-    return pycaret.datasets.get_data("jewellery")
+    """Dataset that the experiment is set up on."""
+    return get_data("jewellery")
 
 
-def test_clustering(data):
-    experiment_name = uuid.uuid4().hex
-    pycaret.clustering.setup(
+@pytest.fixture(scope="module")
+def experiment(data, experiment_name):
+    """Experiment set up once for the module, with mlflow logging and custom tags."""
+    return pycaret.clustering.setup(
         data,
         normalize=True,
         log_experiment=True,
@@ -31,63 +39,85 @@ def test_clustering(data):
         n_jobs=1,
     )
 
-    # create model
-    kmeans = pycaret.clustering.create_model(
-        "kmeans", experiment_custom_tags={"tag": 1}
+
+@pytest.fixture(autouse=True)
+def current_experiment(experiment):
+    """Activate the module's experiment before each test.
+
+    The functional API works on a global current experiment, which the test
+    suite resets after every test.
+    """
+    pycaret.clustering.set_current_experiment(experiment)
+
+
+@pytest.fixture(scope="module", params=["kmeans", "kmodes"])
+def model(request, experiment):
+    """Fitted model, created once per model id for the module.
+
+    Module fixtures run before ``current_experiment``, so the experiment is
+    activated here as well.
+    """
+    pycaret.clustering.set_current_experiment(experiment)
+    return pycaret.clustering.create_model(
+        request.param, experiment_custom_tags={"tag": 1}
     )
-    kmodes = pycaret.clustering.create_model(
-        "kmodes", experiment_custom_tags={"tag": 1}
-    )
 
-    # Plot Model
-    pycaret.clustering.plot_model(kmeans)
-    pycaret.clustering.plot_model(kmodes)
 
-    # assign model
-    kmeans_results = pycaret.clustering.assign_model(kmeans)
-    kmodes_results = pycaret.clustering.assign_model(kmodes)
-    assert isinstance(kmeans_results, pd.DataFrame)
-    assert isinstance(kmodes_results, pd.DataFrame)
+def test_assign_model(model, data):
+    """``assign_model`` gives every training row a cluster label."""
+    result = pycaret.clustering.assign_model(model)
+    assert isinstance(result, pd.DataFrame)
+    assert len(result) == len(data)
+    assert "Cluster" in result.columns
 
-    # predict model
-    kmeans_predictions = pycaret.clustering.predict_model(model=kmeans, data=data)
-    assert isinstance(kmeans_predictions, pd.DataFrame)
 
-    # returns table of models
-    all_models = pycaret.clustering.models()
-    assert isinstance(all_models, pd.DataFrame)
+def test_predict_model(model, data):
+    """``predict_model`` gives every new row a cluster label."""
+    predictions = pycaret.clustering.predict_model(model, data=data)
+    assert isinstance(predictions, pd.DataFrame)
+    assert len(predictions) == len(data)
+    assert "Cluster" in predictions.columns
 
-    # get config
-    X = pycaret.clustering.get_config("X")
-    seed = pycaret.clustering.get_config("seed")
-    assert isinstance(X, pd.DataFrame)
-    assert isinstance(seed, int)
 
-    # set config
-    pycaret.clustering.set_config("seed", 124)
-    seed = pycaret.clustering.get_config("seed")
-    assert seed == 124
+@pytest.mark.plotting
+def test_plot_model(model):
+    """The default plot renders for every model."""
+    pycaret.clustering.plot_model(model)
 
-    # Assert the custom tags are created
-    client = MlflowClient()
-    experiment = client.get_experiment_by_name(experiment_name)
-    for experiment_run in client.search_runs(experiment.experiment_id):
-        run = client.get_run(experiment_run.info.run_id)
-        assert run.data.tags.get("tag") == "1"
 
-    # save model
-    pycaret.clustering.save_model(kmeans, "kmeans_model_23122019")
-
-    # reset
+def test_load_model_predicts_without_setup(model, data, tmp_path):
+    """A saved model predicts after loading into an experiment without ``setup``."""
+    path = str(tmp_path / "model")
+    pycaret.clustering.save_model(model, path)
     pycaret.clustering.set_current_experiment(pycaret.clustering.ClusteringExperiment())
 
-    # load model
-    kmeans = pycaret.clustering.load_model("kmeans_model_23122019")
-
-    # predict model
-    kmeans_predictions = pycaret.clustering.predict_model(model=kmeans, data=data)
-    assert isinstance(kmeans_predictions, pd.DataFrame)
+    loaded = pycaret.clustering.load_model(path)
+    predictions = pycaret.clustering.predict_model(loaded, data=data)
+    assert isinstance(predictions, pd.DataFrame)
+    assert len(predictions) == len(data)
 
 
-if __name__ == "__main__":
-    test_clustering()
+def test_custom_tags_are_logged(model, experiment_name):
+    """Every run carries the tags given to ``setup`` and ``create_model``."""
+    tags = mlflow_run_tags(experiment_name)
+    assert tags
+    assert all(run_tags["tag"] == "1" for run_tags in tags)
+
+
+def test_get_and_set_config():
+    """``get_config`` reads and ``set_config`` writes experiment attributes."""
+    assert isinstance(pycaret.clustering.get_config("X"), pd.DataFrame)
+    seed = pycaret.clustering.get_config("seed")
+    assert isinstance(seed, int)
+
+    pycaret.clustering.set_config("seed", seed + 1)
+    assert pycaret.clustering.get_config("seed") == seed + 1
+    # Restore the seed, the experiment is shared with the other tests.
+    pycaret.clustering.set_config("seed", seed)
+
+
+def test_models():
+    """``models`` lists the available models by id."""
+    all_models = pycaret.clustering.models()
+    assert isinstance(all_models, pd.DataFrame)
+    assert {"kmeans", "kmodes"} <= set(all_models.index)

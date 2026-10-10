@@ -132,7 +132,7 @@ def deploy_model(
         logger.info("Platform : AWS S3")
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", extra=None, severity="error")
+        _check_soft_dependencies("boto3", extra="mlops", severity="error")
         import boto3
 
         # initialize s3
@@ -176,7 +176,9 @@ def deploy_model(
         logger.info("Platform : GCP")
 
         _check_soft_dependencies(
-            "google", extra=None, severity="error", install_name="google-cloud-storage"
+            "google-cloud-storage",
+            extra=None,
+            severity="error",
         )
 
         # initialize deployment
@@ -209,7 +211,9 @@ def deploy_model(
         logger.info("Platform : Azure Blob Storage")
 
         _check_soft_dependencies(
-            "azure", extra=None, severity="error", install_name="azure-storage-blob"
+            "azure-storage-blob",
+            extra=None,
+            severity="error",
         )
 
         # initialize deployment
@@ -228,7 +232,6 @@ def deploy_model(
         try:
             _create_container_azure(container_name)
             _upload_blob_azure(container_name, filename, key)
-            del container_client
         except Exception:
             _upload_blob_azure(container_name, filename, key)
 
@@ -399,7 +402,7 @@ def load_model(
         import os
 
         # checking if boto3 is available
-        _check_soft_dependencies("boto3", extra=None, severity="error")
+        _check_soft_dependencies("boto3", extra="mlops", severity="error")
         import boto3
 
         bucketname = authentication.get("bucket")

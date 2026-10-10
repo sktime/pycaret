@@ -1,5 +1,4 @@
-"""Module to test time_series forecasting utils
-"""
+"""Module to test time_series forecasting utils"""
 
 import pytest
 

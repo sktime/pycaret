@@ -1,5 +1,4 @@
-"""Module to test time_series plotting functionality
-"""
+"""Module to test time_series plotting functionality"""
 
 import os
 import sys
@@ -369,7 +368,7 @@ def test_plot_final_model_exo():
     FH = 3
     train = data.iloc[: int(len(data) - FH)]
     test = data.iloc[int(len(data)) - FH :]
-    test = test.drop(columns=[target], axis=1)
+    test = test.drop(columns=[target])
 
     exp = TSForecastingExperiment()
     exp.setup(data=train, target=target, fh=FH, session_id=42)
