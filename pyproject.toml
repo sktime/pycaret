@@ -59,6 +59,7 @@ dependencies = [
   "joblib>=1.4.2",
   "numpy>=1.21,<2.0; python_version<'3.13'",
   "numpy>=2.0,<3; python_version>='3.13'",
+  "packaging",
   "pandas>=1.5.0,<2.2; python_version<'3.13'",
   "pandas>=2.2.0; python_version>='3.13'",
   "psutil>=5.9.0",
