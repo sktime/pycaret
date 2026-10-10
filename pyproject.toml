@@ -70,7 +70,6 @@ dependencies = [
   "scipy>=1.14.0,<2; python_version>='3.13'",
   "sktime>=0.31.0",
   "tqdm>=4.62.0",
-  "verlib2",
   "xxhash",
 ]
 optional-dependencies.analysis = [
