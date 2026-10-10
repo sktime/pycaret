@@ -184,7 +184,6 @@ class ClusterContainer(ModelContainer):
 
 
 class _SklearnMixin:
-
     def _get_cls_path(self):
         pth = self.get_tag("cls_path")
         pkg_name = "scikit-learn"
@@ -211,7 +210,6 @@ class _SklearnMixin:
 
 
 class KMeansClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.KMeans"}
 
     def __init__(self, experiment):
@@ -254,7 +252,6 @@ class KMeansClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class AffinityPropagationClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.AffinityPropagation"}
 
     def __init__(self, experiment):
@@ -270,7 +267,6 @@ class AffinityPropagationClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class MeanShiftClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.MeanShift"}
 
     def __init__(self, experiment):
@@ -289,7 +285,6 @@ class MeanShiftClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class SpectralClusteringClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.SpectralClustering"}
 
     def __init__(self, experiment):
@@ -312,7 +307,6 @@ class SpectralClusteringClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class AgglomerativeClusteringClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.AgglomerativeClustering"}
 
     def __init__(self, experiment):
@@ -331,7 +325,6 @@ class AgglomerativeClusteringClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class DBSCANClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.DBSCAN"}
 
     def __init__(self, experiment):
@@ -375,7 +368,6 @@ class DBSCANClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class OPTICSClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.OPTICS"}
 
     def __init__(self, experiment):
@@ -394,7 +386,6 @@ class OPTICSClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class BirchClusterContainer(_SklearnMixin, ClusterContainer):
-
     _tags = {"cls_path": "sklearn.cluster.Birch"}
 
     def __init__(self, experiment):
@@ -413,7 +404,6 @@ class BirchClusterContainer(_SklearnMixin, ClusterContainer):
 
 
 class KModesClusterContainer(ClusterContainer):
-
     _tags = {"cls_path": "kmodes.kmodes.KModes"}
 
     def __init__(self, experiment):
