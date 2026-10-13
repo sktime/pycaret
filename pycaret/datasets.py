@@ -1,10 +1,145 @@
 """Module to get datasets in pycaret"""
 
-from typing import Optional
+from typing import Any, Callable, Dict, Optional
 
 import requests
 
 from pycaret.utils._dependencies import _check_soft_dependencies
+
+# Module-level constants
+DEFAULT_GITHUB_ROOT = "https://raw.githubusercontent.com/pycaret/datasets/main/"
+DATA_DIR = "data/"
+META_DIR = "meta/"
+DEFAULT_FOLDER = "common"
+SKTIME_DATASETS = ("airline", "lynx", "uschange")
+
+
+class DatasetReference:
+    """Reference to a dataset holding identity and a loader callable.
+
+    This class separates dataset identity from the actual loading mechanism,
+    allowing alternative backends (such as Hugging Face or custom stores)
+    without altering get_data() callers.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        folder: str = DEFAULT_FOLDER,
+        loader: Optional[Callable[[], Any]] = None,
+    ):
+        """Initialize dataset reference.
+
+        Parameters
+        ----------
+        name : str
+            Dataset name / identifier.
+        folder : str, default='common'
+            Dataset category folder.
+        loader : Optional[Callable[[], Any]], default=None
+            Callable that executes loading and returns the dataset.
+        """
+        self.name = name
+        self.folder = folder
+        self.loader = loader
+
+    def load(self) -> Any:
+        """Load and return the dataset.
+
+        Returns
+        -------
+        Any
+            Dataset object returned by the loader callable.
+        """
+        if self.loader is None:
+            raise ValueError(
+                f"No loader configured for dataset reference '{self.name}'"
+            )
+        return self.loader()
+
+
+class DatasetRegistry:
+    """Registry for dataset references.
+
+    Provides centralized management of dataset references and allows
+    registering custom loaders or alternative storage backends.
+    """
+
+    def __init__(self):
+        self._datasets: Dict[str, DatasetReference] = {}
+
+    def register(self, dataset_ref: DatasetReference) -> None:
+        """Register a dataset reference.
+
+        Parameters
+        ----------
+        dataset_ref : DatasetReference
+            Dataset reference to register.
+        """
+        self._datasets[dataset_ref.name] = dataset_ref
+
+    def get(self, name: str) -> Optional[DatasetReference]:
+        """Get dataset reference by name.
+
+        Parameters
+        ----------
+        name : str
+            Dataset name.
+
+        Returns
+        -------
+        Optional[DatasetReference]
+            Dataset reference if found, None otherwise.
+        """
+        return self._datasets.get(name)
+
+
+# Global dataset registry
+_dataset_registry = DatasetRegistry()
+
+
+def _make_sktime_loader(dataset_name: str) -> Callable[[], Any]:
+    """Create a lazy loader for sktime datasets that validates dependency when called."""
+
+    def _loader():
+        _check_soft_dependencies("sktime", severity="error")
+        import importlib
+
+        import pandas as pd
+
+        sktime_datasets = importlib.import_module("sktime.datasets")
+        func_name = f"load_{dataset_name}"
+        loader_func = getattr(sktime_datasets, func_name, None)
+        if loader_func is None:
+            raise ValueError(f"Unknown sktime dataset: {dataset_name}")
+        data = loader_func()
+        if isinstance(data, tuple):
+            y = data[0]
+            X = data[1]
+            data = pd.concat([y, X], axis=1)
+        return data
+
+    return _loader
+
+
+def _initialize_registry() -> None:
+    """Initialize registry with built-in reference entries.
+
+    Registers sktime datasets lazily. No dependency checks or imports
+    occur at module import time.
+    """
+    for name in SKTIME_DATASETS:
+        _dataset_registry.register(
+            DatasetReference(
+                name=name,
+                folder=DEFAULT_FOLDER,
+                loader=_make_sktime_loader(name),
+            )
+        )
+
+
+# Initialize built-in dataset references
+_initialize_registry()
 
 
 def get_data(
@@ -20,8 +155,8 @@ def get_data(
 
     Order of read:
     (1) Tries to read dataset from local folder first.
-    (2) Then tries to read dataset from folder in GitHub "address" (see below)
-    (3) Then tries to read from sktime (if installed)
+    (2) Then tries to read from registered dataset loaders (e.g., sktime)
+    (3) Then tries to read dataset from folder in GitHub "address" (see below)
     (4) Raises error if none exist
 
     List of available datasets on GitHub can be checked using
@@ -93,42 +228,40 @@ def get_data(
 
     extension = ".csv"
     filename = str(dataset) + extension
+
+    folder_name = DEFAULT_FOLDER if folder is None else folder
+
     if address is None:
-        root = "https://raw.githubusercontent.com/pycaret/datasets/main/"
-        data_dir, meta_dir = "data/", "meta/"
-
-        folder = "common" if folder is None else folder
-
+        root = DEFAULT_GITHUB_ROOT
         if dataset == "index":
-            complete_address = root + meta_dir + folder + "/" + filename
+            complete_address = root + META_DIR + folder_name + "/" + filename
         else:
-            complete_address = root + data_dir + folder + "/" + filename
+            complete_address = root + DATA_DIR + folder_name + "/" + filename
     else:
         complete_address = address + "/" + filename
 
-    sktime_datasets = ["airline", "lynx", "uschange"]
+    data = None
 
-    # Read the file name from local folder first
-    # If it does not exist, then read the file from GitHub
-    # If that does not exist then read sktime datasets
+    # (1) Read the file name from local folder first
     if os.path.isfile(filename):
         data = pd.read_csv(filename)
-    elif dataset in sktime_datasets:
-        from sktime.datasets import load_airline, load_lynx, load_uschange
 
-        ts_dataset_mapping = {
-            "airline": load_airline,
-            "lynx": load_lynx,
-            "uschange": load_uschange,
-        }
-        data = ts_dataset_mapping.get(dataset)()
-        if isinstance(data, tuple):
-            y = data[0]
-            X = data[1]
-            data = pd.concat([y, X], axis=1)
-    elif requests.head(complete_address).status_code == 200:
+    # (2) Try loading from registered dataset reference (e.g., sktime)
+    if data is None:
+        dataset_ref = _dataset_registry.get(dataset)
+        if dataset_ref is not None:
+            data = dataset_ref.load()
+            if data is None:
+                raise ValueError(
+                    f"Loader for registered dataset reference '{dataset}' returned no data."
+                )
+
+    # (3) Try HTTP request from GitHub or specified address
+    if data is None and requests.head(complete_address).status_code == 200:
         data = pd.read_csv(complete_address)
-    else:
+
+    # (4) If still no data, raise error
+    if data is None:
         raise ValueError("Data could not be read. Please check your inputs...")
 
     data = data.infer_objects()
