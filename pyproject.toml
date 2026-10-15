@@ -94,7 +94,7 @@ optional-dependencies.analysis = [
 optional-dependencies.dev = [
   "mypy>=1,<2.5",
   "pyproject-fmt<3",
-  "ruff<0.17",
+  "ruff<0.18",
 ]
 # docs - the dependency set used for doc build
 optional-dependencies.docs = [
