@@ -11,17 +11,16 @@ Keep the public API regression test when removing the workaround.
 """
 
 import warnings
-from importlib.metadata import version
 from inspect import signature
 
 import pandas as pd
+from skbase.utils.dependencies import _check_soft_dependencies
 from sktime.forecasting.ets import AutoETS
-from verlib2 import Version
 
 
 def _needs_ets_prediction_interval_workaround():
     """Limit the workaround to the sktime release series verified affected."""
-    return Version("1.2.0") <= Version(version("sktime")) < Version("1.3.0")
+    _check_soft_dependencies(["sktime>=1.2.0", "sktime<1.3.0"])
 
 
 def warn_if_native_autoets_is_affected(model):
