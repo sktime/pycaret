@@ -175,7 +175,7 @@ jobs:
           export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
           python -m pip install -U pip
           python -m pip install -U uv
-          python -m uv pip install ".[dev,test]"
+          python -m uv pip install ".[dev,test]" mlflow
         env:
           UV_SYSTEM_PYTHON: 1
           UV_EXCLUDE_NEWER: ${{ matrix.exclude-newer }}
