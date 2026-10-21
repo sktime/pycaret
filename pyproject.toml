@@ -143,7 +143,11 @@ optional-dependencies.models = [
   (platform_machine=='x86_64' or platform_machine=='AMD64')\
   """,
   """\
-  scikit-learn-intelex>=2024.0.0; (python_version>='3.13' or platform_system!='Windows') and \
+  scikit-learn-intelex>=2024.0.0,<2026.2.0; (python_version<'3.13' and platform_system!='Windows') and \
+  (platform_machine=='x86_64' or platform_machine=='AMD64')\
+  """,
+  """\
+  scikit-learn-intelex>=2024.0.0; python_version>='3.13' and \
   (platform_machine=='x86_64' or platform_machine=='AMD64')\
   """,
   "statsforecast>=1.6.0,<=2.1.1",
