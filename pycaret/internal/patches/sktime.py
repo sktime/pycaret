@@ -19,8 +19,13 @@ from sktime.forecasting.ets import AutoETS
 
 
 def _needs_ets_prediction_interval_workaround():
-    """Limit the workaround to the sktime release series verified affected."""
-    _check_soft_dependencies(["sktime>=1.2.0", "sktime<1.3.0"])
+    """Limit the workaround to the sktime release series verified affected.
+
+    Returns True only when the installed sktime falls within the affected
+    release series [1.2.0, 1.3.0).  Uses severity="none" so that versions
+    outside this range produce False rather than raising an exception.
+    """
+    return _check_soft_dependencies(["sktime>=1.2.0", "sktime<1.3.0"], severity="none")
 
 
 def warn_if_native_autoets_is_affected(model):

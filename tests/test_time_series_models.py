@@ -39,8 +39,18 @@ def test_ets_simulated_prediction_intervals():
 
 @pytest.mark.parametrize("sktime_version", ["0.31.0", "1.1.0", "1.3.0"])
 def test_ets_workaround_delegates_other_versions(monkeypatch, sktime_version):
-    """Releases outside the targeted series retain sktime's implementation."""
-    monkeypatch.setattr(sktime_patches, "version", lambda package: sktime_version)
+    """Releases outside the targeted series retain sktime's implementation.
+
+    The predicate is mocked at the module level so the test is insulated
+    from the installed sktime version.  We verify that _predict_interval
+    delegates to the parent class (i.e. the workaround is NOT applied)
+    when the predicate returns False.
+    """
+    monkeypatch.setattr(
+        sktime_patches,
+        "_needs_ets_prediction_interval_workaround",
+        lambda: False,
+    )
     expected = object()
     monkeypatch.setattr(AutoETS, "_predict_interval", lambda *args, **kwargs: expected)
 
@@ -49,6 +59,36 @@ def test_ets_workaround_delegates_other_versions(monkeypatch, sktime_version):
     )
 
     assert result is expected
+
+
+def test_ets_workaround_predicate_affected_version(monkeypatch):
+    """Predicate returns True when the installed sktime is in the affected range.
+
+    _check_soft_dependencies is mocked to return True (simulating sktime 1.2.x).
+    Verifies that _needs_ets_prediction_interval_workaround propagates that
+    return value so callers apply the workaround path.
+    """
+    monkeypatch.setattr(
+        sktime_patches,
+        "_check_soft_dependencies",
+        lambda *args, **kwargs: True,
+    )
+    assert sktime_patches._needs_ets_prediction_interval_workaround() is True
+
+
+def test_ets_workaround_predicate_unaffected_version(monkeypatch):
+    """Predicate returns False when the installed sktime is outside the affected range.
+
+    _check_soft_dependencies is mocked to return False (simulating sktime >=1.3.0
+    or <1.2.0).  Verifies that _needs_ets_prediction_interval_workaround
+    propagates False so callers skip the workaround.
+    """
+    monkeypatch.setattr(
+        sktime_patches,
+        "_check_soft_dependencies",
+        lambda *args, **kwargs: False,
+    )
+    assert sktime_patches._needs_ets_prediction_interval_workaround() is False
 
 
 def test_native_autoets_custom_model_warns():
