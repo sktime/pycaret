@@ -1,10 +1,14 @@
 """Module to test setting of engines in time series"""
 
+import pytest
 from sklearn.linear_model import LinearRegression as SklearnLinearRegression
 from sktime.forecasting.arima import AutoARIMA as PmdAutoARIMA
 from sktime.forecasting.statsforecast import StatsForecastAutoARIMA
 
 from pycaret.time_series import TSForecastingExperiment
+
+# pyproject.toml only installs scikit-learn-intelex on x86_64
+pytest.importorskip("sklearnex")
 
 ##############################
 # Functions Start Here ####
